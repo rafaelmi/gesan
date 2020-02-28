@@ -3,7 +3,7 @@
     <template #activator="{ on }">
       <v-btn color="primary" dark class="mb-2" v-on="on">{{ buttonTitle }}</v-btn>
     </template>
-    <v-snackbar v-model="alert.sw" color="success">
+    <v-snackbar v-model="alert.sw" color="success" top>
       <!--<v-alert
         type="success"
         transition="scale-transition"

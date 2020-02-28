@@ -25,7 +25,7 @@ export default {
       ],
       items: [],
       newTitle: 'Nuevo Contrato',
-      sortBy: 'contrato'
+      sortBy: '_id'
     },
     editedIndex: -1,
     editedItem: {},
