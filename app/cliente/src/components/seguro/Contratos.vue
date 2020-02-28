@@ -1,10 +1,5 @@
 <template>
-  <cmpTable
-    :headers="headers"
-    :items="items"
-    newTitle="Nuevo Contrato"
-    sortBy="contrato"
-  />
+  <cmpTable v-bind="tableProps"/>
 </template>
 
 <script>
@@ -16,27 +11,25 @@ export default {
   },
 
   data: () => ({
-    dialog: false,
-    headers: [
-      { value: 'contrato', text: 'Contrato', type: 'String', editable: false },
-      { value: 'nombre', text: 'Nombre', type: 'String' },
-      { value: 'cedula', text: 'Cédula', type: 'String' },
-      { value: 'plan', text: 'Plan', type: 'String' },
-      { value: 'direccion', text: 'Dirección', type: 'String' },
-      { value: 'telefono', text: 'Teléfono', type: 'String' },
-      { value: 'ciudad', text: 'Ciudad', type: 'String' },
-      { value: 'departamento', text: 'Departamento', type: 'String' }
-    ],
-    items: [],
+    tableProps: {
+      apiUrl: '/seguro/contratos',
+      headers: [
+        { value: '_id', text: 'Contrato', type: 'String', editable: false },
+        { value: 'nombre', text: 'Nombre', type: 'String', icon: 'mdi-account' },
+        { value: 'cedula', text: 'Cédula', type: 'String', icon: 'mdi-smart-card' },
+        { value: 'plan', text: 'Plan', type: 'String', icon: 'mdi-format-list-checks' },
+        { value: 'direccion', text: 'Dirección', type: 'String', icon: 'mdi-map-marker' },
+        { value: 'telefono', text: 'Teléfono', type: 'String', icon: 'mdi-phone' },
+        { value: 'ciudad', text: 'Ciudad', type: 'String', icon: 'mdi-home-city' },
+        { value: 'departamento', text: 'Departamento', type: 'String', icon: 'mdi-city-variant' }
+      ],
+      items: [],
+      newTitle: 'Nuevo Contrato',
+      sortBy: 'contrato'
+    },
     editedIndex: -1,
     editedItem: {},
-    defaultItem: {
-      name: '',
-      calories: 0,
-      fat: 0,
-      carbs: 0,
-      protein: 0
-    }
+    defaultItem: {}
   }),
 
   computed: {
@@ -65,23 +58,6 @@ export default {
     deleteItem (item) {
       const index = this.desserts.indexOf(item)
       confirm('Are you sure you want to delete this item?') && this.desserts.splice(index, 1)
-    },
-
-    close () {
-      this.dialog = false
-      setTimeout(() => {
-        this.editedItem = Object.assign({}, this.defaultItem)
-        this.editedIndex = -1
-      }, 300)
-    },
-
-    save () {
-      if (this.editedIndex > -1) {
-        Object.assign(this.desserts[this.editedIndex], this.editedItem)
-      } else {
-        this.desserts.push(this.editedItem)
-      }
-      this.close()
     }
   }
 }

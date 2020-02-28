@@ -46,9 +46,10 @@ export default {
     tab: null,
     tabs: [
       { title: 'CONTRATOS', component: 'cmpContratos' },
-      { title: 'ASEGURADOS', component: 'cmpContratos' },
-      { title: 'PAGOS', component: 'cmpContratos' },
-      { title: 'VISACIONES', component: 'cmpContratos' }
+      { title: 'ASEGURADOS', component: '' },
+      { title: 'PAGOS', component: '' },
+      { title: 'VISACIONES', component: '' },
+      { title: 'PLANES', component: '' }
     ]
   })
 }
