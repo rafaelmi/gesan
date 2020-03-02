@@ -53,7 +53,6 @@ export default {
   props: {
     headers: Array,
     apiUrl: String,
-    items: Array,
     newTitle: String,
     sortBy: String
   },

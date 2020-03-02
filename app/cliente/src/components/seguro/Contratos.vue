@@ -14,14 +14,20 @@ export default {
     tableProps: {
       apiUrl: '/seguro/contratos',
       headers: [
-        { value: '_id', text: 'Contrato', type: 'String', editable: false },
-        { value: 'nombre', text: 'Nombre', type: 'String', icon: 'mdi-account' },
-        { value: 'cedula', text: 'Cédula', type: 'String', icon: 'mdi-smart-card' },
-        { value: 'plan', text: 'Plan', type: 'String', icon: 'mdi-format-list-checks' },
-        { value: 'direccion', text: 'Dirección', type: 'String', icon: 'mdi-map-marker' },
-        { value: 'telefono', text: 'Teléfono', type: 'String', icon: 'mdi-phone' },
-        { value: 'ciudad', text: 'Ciudad', type: 'String', icon: 'mdi-home-city' },
-        { value: 'departamento', text: 'Departamento', type: 'String', icon: 'mdi-city-variant' }
+        { value: '_id', text: 'Contrato', type: 'id', editable: false },
+        { value: 'nombre', text: 'Nombre', type: 'nombre', required: true },
+        { value: 'cedula', text: 'Cédula', type: 'cedula', required: true },
+        {
+          value: 'plan',
+          text: 'Plan',
+          type: 'select',
+          options: ['FAMILIAR', 'GOLD', 'PLATINUM', 'TERCERA EDAD'],
+          required: true
+        },
+        { value: 'direccion', text: 'Dirección', type: 'direccion', icon: 'mdi-map-marker' },
+        { value: 'telefono', text: 'Teléfono', type: 'telefono', icon: 'mdi-phone' },
+        { value: 'ciudad', text: 'Ciudad', type: 'ciudad', icon: 'mdi-home-city' },
+        { value: 'departamento', text: 'Departamento', type: 'departamento', icon: 'mdi-city-variant' }
       ],
       items: [],
       newTitle: 'Nuevo Contrato',
@@ -45,7 +51,6 @@ export default {
   },
 
   created () {
-    this.initialize()
   },
 
   methods: {
