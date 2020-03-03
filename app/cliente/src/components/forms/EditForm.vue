@@ -1,17 +1,12 @@
 <template>
-  <cmpForm v-bind="formProps" @success="$emit('success')">
-    <template #activator="{ on }">
-      <v-btn color="primary" dark class="mb-2" v-on="on">{{ buttonTitle }}</v-btn>
-    </template>
+  <cmpForm v-bind="formProps" :success="$emit('success')">
   </cmpForm>
 </template>
 
 <script>
 export default {
   components: {
-    cmpForm () {
-      return import('@/components/forms/Form.vue')
-    }
+    cmpForm () { return import('@/components/forms/Form.vue') }
   },
 
   mixins: [
@@ -40,7 +35,7 @@ export default {
       return {
         title: this.title,
         fields: this.cFields,
-        api: Object.assign({ command: 'create' }, this.api)
+        api: Object.assign({ command: 'update' }, this.api)
       }
     }
   },

@@ -9,7 +9,9 @@ const user = require('./db/user');
 const compras = require('./db/compras');
 const ventas = require('./db/ventas');
 const seguro = {
-  contratos: require('./db/seguro/contratos')
+  contratos: require('./db/seguro/contratos'),
+  asegurados: require('./db/seguro/asegurados'),
+  pagos: require('./db/seguro/pagos')
 }
 const app = express();
 
@@ -69,6 +71,14 @@ app.post('/compras', (req, res) => {
 
 app.post('/seguro/contratos', (req, res) => {
   handle(req, res, seguro.contratos)
+});
+
+app.post('/seguro/asegurados', (req, res) => {
+  handle(req, res, seguro.asegurados)
+});
+
+app.post('/seguro/pagos', (req, res) => {
+  handle(req, res, seguro.pagos)
 });
 
 const port = process.env.PORT || 4000;

@@ -42,9 +42,6 @@
         width="22px"
         height="auto"
       />-->
-      <!--<span class="white--text">Sistema de Gestión Sanatorial</span>
-      <v-spacer/>-->
-      <!--<span class="white--text">&copy; 2020</span>-->
       <span class="white--text">Sanatorio del Sur | Sistema de Gestión Sanatorial</span>
     </v-footer>
   </v-app>

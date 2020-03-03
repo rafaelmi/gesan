@@ -12,7 +12,7 @@
   >
     <template v-slot:top>
       <v-toolbar flat color="white">
-        <cmpForm v-bind="newFormProps" @success="update"/>
+        <cmpNewForm v-bind="newFormProps" @success="update"/>
       </v-toolbar>
     </template>
     <template v-slot:item.action="{ item }">
@@ -38,16 +38,18 @@
 
 <script>
 import mixApi from '@/mixins/api'
+import mixUtils from '@/mixins/utils'
 
 export default {
   components: {
-    cmpForm () {
-      return import('@/components/forms/Form.vue')
+    cmpNewForm () {
+      return import('@/components/forms/NewForm.vue')
     }
   },
 
   mixins: [
-    mixApi
+    mixApi,
+    mixUtils
   ],
 
   props: {
@@ -100,9 +102,27 @@ export default {
         args: {}
       })
         .then((result) => {
-          console.log(result)
           if (result.result === 200) {
             this.items = result.data
+
+            this.items.map(item => {
+              this.fields.forEach(field => {
+                const key = field.value
+                switch (field.type) {
+                  case 'cedula':
+                    item[key] = this.toMilSeparator(item[key])
+                    break
+                  case 'factura':
+                    item[key] = this.toFacturaId(item[key])
+                    break
+                  case 'dinero':
+                    item[key] = this.toMoney(item[key])
+                    break
+                  default:
+                }
+              })
+              return item
+            })
           } else {
           }
         })

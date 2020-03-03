@@ -1,7 +1,7 @@
 <template>
   <v-dialog v-model="dialog" max-width="500px">
     <template #activator="{ on }">
-      <v-btn color="primary" dark class="mb-2" v-on="on">{{ buttonTitle }}</v-btn>
+      <slot name="activator" :on="on"/>
     </template>
     <v-snackbar v-model="alert.sw" color="success" top>
       <v-icon dark>mdi-check-circle</v-icon>
@@ -22,7 +22,31 @@
                 :key="i"
               >
                 <v-list-item-title>
-                  <v-select v-if="field.type === 'select'"
+                  <v-menu v-if="field.type === 'fecha'"
+                    v-model="menu"
+                    :close-on-content-click="false"
+                    :nudge-right="40"
+                    transition="scale-transition"
+                    offset-y
+                    min-width="290px"
+                  >
+                    <template v-slot:activator="{ on }">
+                      <v-text-field
+                        v-model="editedItem[field.value]"
+                        :label="field.text"
+                        :prepend-icon="field.icon"
+                        :rules="field.rules"
+                        readonly
+                        v-on="on"
+                      ></v-text-field>
+                    </template>
+                    <v-date-picker
+                      v-model="editedItem[field.value]"
+                      @input="menu = false"
+                    >
+                    </v-date-picker>
+                  </v-menu>
+                  <v-select v-else-if="field.type === 'select'"
                     :items="field.options"
                     :label="field.text"
                     :prepend-icon="field.icon"
@@ -34,7 +58,7 @@
                     :type="field.type"
                     :prepend-icon="field.icon"
                     :rules="field.rules"
-                    :hint="field.hint"
+                    :messages="field.messages"
                     v-model="editedItem[field.value]"
                   />
                 </v-list-item-title>
@@ -64,37 +88,38 @@ export default {
   ],
 
   props: {
-    // sw: Boolean,
-    value: Object,
-    buttonTitle: {
-      type: String,
-      default: 'NUEVO'
-    },
     title: String,
     fields: Array,
     api: Object
   },
 
   data: () => ({
+    datePicker: new Date().toISOString().substr(0, 10),
     dialog: false,
     valid: false,
     editedItem: {},
     alert: {
       sw: false,
       msg: ''
-    }
+    },
+    menu: false
   }),
 
   computed: {
     cFields () {
       const extras = {
-        id: { icon: '', type: 'text' },
+        text: { icon: '', type: 'text' },
+        number: { icon: '', type: 'number' },
+        id: { icon: 'mdi-numeric', type: 'number' },
         nombre: { icon: 'mdi-account', type: 'text' },
         cedula: { icon: 'mdi-smart-card', type: 'number' },
         direccion: { icon: 'mdi-map-marker', type: 'text' },
         telefono: { icon: 'mdi-phone', type: 'text' },
         ciudad: { icon: 'mdi-home-city', type: 'text' },
         departamento: { icon: 'mdi-city-variant', type: 'text' },
+        fecha: { icon: 'mdi-calendar', type: 'date' },
+        dinero: { icon: 'mdi-cash-usd-outline', type: 'number' },
+        factura: { icon: 'mdi-receipt', type: 'number' },
         select: { icon: 'mdi-format-list-checks', type: 'text' }
       }
       return this.fields.map(item => {
@@ -104,10 +129,21 @@ export default {
         if (item.required) {
           item.rules.push(val => !!val || 'Este campo es obligatorio')
         }
+        switch (item.type) {
+          case 'cedula':
+            item.messages = this.toMilSeparator(this.editedItem[item.value])
+            break
+          case 'factura':
+            item.messages = this.toFacturaId(this.editedItem[item.value])
+            break
+          case 'dinero':
+            item.messages = this.toMoney(this.editedItem[item.value])
+            break
+          default:
+        }
         switch (extra.type) {
           case 'number':
             item.rules.push(val => !/\D/.test(val) || 'Ingrese sólo números')
-            item.hint = this.toMilSeparator(this.editedItem[item.value])
             break
           default:
         }
@@ -124,11 +160,6 @@ export default {
   },
   */
   methods: {
-    validate () {
-      if (this.$refs.form.validate()) {
-      }
-    },
-
     close () {
       this.dialog = false
     },

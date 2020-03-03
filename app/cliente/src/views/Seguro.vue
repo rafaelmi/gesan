@@ -36,9 +36,9 @@
 <script>
 export default {
   components: {
-    cmpContratos () {
-      return import('@/components/seguro/Contratos.vue')
-    }
+    cmpContratos () { return import('@/components/seguro/Contratos.vue') },
+    cmpAsegurados () { return import('@/components/seguro/Asegurados.vue') },
+    cmpPagos () { return import('@/components/seguro/Pagos.vue') }
   },
 
   data: () => ({
@@ -46,8 +46,8 @@ export default {
     tab: null,
     tabs: [
       { title: 'CONTRATOS', component: 'cmpContratos' },
-      { title: 'ASEGURADOS', component: '' },
-      { title: 'PAGOS', component: '' },
+      { title: 'ASEGURADOS', component: 'cmpAsegurados' },
+      { title: 'PAGOS', component: 'cmpPagos' },
       { title: 'VISACIONES', component: '' },
       { title: 'PLANES', component: '' }
     ]
