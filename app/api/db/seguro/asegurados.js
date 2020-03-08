@@ -39,16 +39,33 @@ function getAll(args, session) {
     data.map(record => Object.assign(record, {
       contrato: record.contrato[0]._id,
       plan: record.contrato[0].plan,
-      direccion: record.contrato[0].direccion,
-      telefono: record.contrato[0].telefono,
-      ciudad: record.contrato[0].ciudad,
-      departamento: record.contrato[0].departamento
+      direccion: record.direccion || record.contrato[0].direccion,
+      telefono: record.telefono || record.contrato[0].telefono,
+      ciudad: record.ciudad || record.contrato[0].ciudad,
+      departamento: record.departamento || record.contrato[0].departamento
     }));
     return response(200, data);
   });
 }
 
+function update(args) {
+  let _id = monk.id(args._id);
+  delete args._id;
+  return asegurados.findOneAndUpdate({
+    _id: _id,
+  },
+  {$set: args})
+  .then(dbres => {
+    var resCode = 500;
+    if (dbres) {
+      resCode = 200;
+    }
+    return response(resCode, dbres);
+  })
+}
+
 module.exports = {
     create,
     getAll,
+    update
 };

@@ -27,7 +27,6 @@
       <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
       <v-toolbar-title>{{ menuItems[drawerItem].title }}</v-toolbar-title>
       <v-spacer></v-spacer>
-
     </v-app-bar>
 
     <v-content>
@@ -56,7 +55,7 @@ export default {
   },
 
   data: () => ({
-    drawer: true,
+    drawer: null,
     drawerItem: 0,
     barColor: 'blue darken-3',
     menuItems: [

@@ -44,8 +44,37 @@ function getAll(args, session) {
   });
 }
 
+function update(args) {
+  return contratos.findOneAndUpdate({
+    _id: args._id,
+  },
+  {$set: args},{castIds: false})
+  .then(dbres => {
+    var resCode = 500;
+    if (dbres) {
+      resCode = 200;
+    }
+    return response(resCode, dbres);
+  })
+}
+
+function remove(args) {
+  return contratos.remove({
+    _id: args._id,
+  },{castIds: false})
+  .then(dbres => {
+    var resCode = 500;
+    if (dbres.result.n == 1) {
+      resCode = 200;
+    }
+    return response(resCode, dbres);
+  })
+}
+
 module.exports = {
     create,
     get,
     getAll,
+    update,
+    remove
 };
