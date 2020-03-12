@@ -10,17 +10,18 @@ export default {
 
   data: () => ({
     tableProps: {
-      apiUrl: '/seguro/pagos',
+      apiUrl: '/seguro/planes',
       headers: [
-        { value: '_id', text: 'Factura No.', type: 'factura', required: true },
-        { value: 'contrato', text: 'Contrato', type: 'id', required: true },
-        { value: 'fecha', text: 'Fecha', type: 'fecha', required: true },
-        { value: 'monto', text: 'Monto', type: 'dinero', required: true }
+        { value: 'nombre', text: 'Plan', type: 'text', icon: 'mdi-format-list-checks', required: true, editable: false },
+        { value: 'cuota', text: 'Cuota', type: 'dinero', required: true },
+        { value: 'adicional', text: 'Adicional', type: 'dinero', required: true },
+        { value: 'cobertura', text: 'Cobertura', type: 'dinero', required: true }
       ],
       items: [],
-      newTitle: 'Nueva Factura',
-      editTitle: 'Detalles Factura',
+      newTitle: '',
+      editTitle: 'Detalles Planes',
       sortBy: 'factura',
+      creable: false,
       editable: false,
       borrable: false
     }

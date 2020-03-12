@@ -2,10 +2,16 @@
   <v-dialog v-model="dialog" max-width="500px">
     <template #activator="{ on }">
       <slot name="activator" :on="on">
-        <v-btn color="primary" dark class="mb-2" v-on="on">{{ buttonTitle }}</v-btn>
+        <v-btn v-if="swCreateButton"
+          color="primary"
+          dark class="mb-2"
+          v-on="on"
+        >
+          {{ buttonTitle }}
+        </v-btn>
       </slot>
     </template>
-    <v-snackbar v-model="alert.sw" color="success" top>
+    <v-snackbar v-model="alert.sw" :color="alert.color" top>
       <v-icon dark>mdi-check-circle</v-icon>
       <span class="title pl-1" :top="true" v-text="alert.msg"/>
       <v-spacer/>
@@ -140,6 +146,10 @@ export default {
       type: Boolean,
       default: true
     },
+    swCreateButton: {
+      type: Boolean,
+      default: true
+    },
     swRemoveButton: {
       type: Boolean,
       default: false
@@ -162,7 +172,8 @@ export default {
     valid: false,
     alert: {
       sw: false,
-      msg: ''
+      msg: '',
+      color: ''
     },
     menu: false,
     swModificar: false
@@ -185,8 +196,8 @@ export default {
 
     cFields () {
       const extras = {
-        text: { icon: '', type: 'text' },
-        number: { icon: '', type: 'number' },
+        text: { icon: 'mdi-text-subject', type: 'text' },
+        number: { icon: 'mdi-text-short', type: 'number' },
         id: { icon: 'mdi-file-document-edit', type: 'number' },
         nombre: { icon: 'mdi-account', type: 'text' },
         cedula: { icon: 'mdi-smart-card', type: 'number' },
@@ -229,13 +240,7 @@ export default {
       })
     }
   },
-  /*
-  watch: {
-    item (val) {
-      this.editedItem = Object.assign({}, val)
-    }
-  },
-  */
+
   methods: {
     close () {
       this.dialog = false
@@ -249,14 +254,26 @@ export default {
       ))
         .then((result) => {
           if (result.result === 200) {
-            this.$refs.form.reset()
-            this.editedItem = {}
-            this.alert.msg = 'Operación exitosa.'
-            this.alert.sw = true
+            this.swModificar = false
+            if (this.api.command === 'create') {
+              this.$refs.form.reset()
+            }
+            Object.assign(this.alert, {
+              msg: 'Operación exitosa.',
+              sw: true,
+              color: 'success'
+            })
             this.$emit('success')
             if (opts.close) { this.dialog = false }
+            /* if (this.api.command === 'nuevo') {
+              this.editedItem = {}
+            } */
           } else {
-            this.error = result
+            Object.assign(this.alert, {
+              msg: 'Operación rechazada.',
+              sw: true,
+              color: 'error'
+            })
           }
         })
     },

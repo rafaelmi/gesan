@@ -9,15 +9,17 @@ function create(args, session) {
   if (!session.username) {
     return Promise.resolve(response(403));
   }
-  console.log(args);
-  return contratos.findOne(
-    {_id: args.contrato }, {castIds: false}
-  ).then((contrato) => {
-    return pagos.insert(args, {castIds: false})
-    .then(data => {
-      return response(200, data);
+  args.monto = parseInt(args.monto, 10);
+  return pagos.insert(args, {castIds: false})
+    .then(pago => {
+      return contratos.findOneAndUpdate(
+        {_id: args.contrato},
+        {$inc:{acreditado: parseInt(args.monto, 10)}},
+        {castIds: false}
+      ).then((contrato) => {
+        return response(200, pago);
+      });
     });
-  });
 }
 
 function get(args, session) {

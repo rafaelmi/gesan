@@ -1,6 +1,6 @@
 <template>
   <v-data-table
-    :headers="headers"
+    :headers="cHeaders"
     :items="cItems"
     :sort-by="sortBy"
     class="elevation-1"
@@ -51,6 +51,10 @@ export default {
     newTitle: String,
     editTitle: String,
     sortBy: String,
+    creable: {
+      type: Boolean,
+      default: true
+    },
     editable: {
       type: Boolean,
       default: true
@@ -77,6 +81,9 @@ export default {
   }),
 
   computed: {
+    cHeaders () {
+      return this.headers.filter(header => header.inTable !== false)
+    },
     cItems () {
       const items = []
       this.items.forEach((item, i) => {
@@ -114,6 +121,7 @@ export default {
             command: 'update'
           }
         } : {
+          swCreateButton: this.creable,
           title: this.newTitle,
           fields: this.fields,
           api: {
@@ -172,6 +180,15 @@ export default {
             break
           case 'dinero':
             res[key] = this.toMoney(item[key])
+            break
+          case 'nombre':
+          case 'direccion':
+          case 'ciudad':
+          case 'departamento':
+          case 'text':
+            if (item[key] !== undefined) {
+              res[key] = item[key].toUpperCase()
+            }
             break
           default:
         }

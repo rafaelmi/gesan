@@ -6,14 +6,16 @@
     >
       <v-list dense>
         <v-list-item-group v-model="drawerItem">
-          <v-list-item link v-for="(item, i) in menuItems" :key="i" :to="item.to">
-            <v-list-item-action>
-              <v-icon>{{item.icon}}</v-icon>
-            </v-list-item-action>
-            <v-list-item-content>
-              <v-list-item-title>{{item.title}}</v-list-item-title>
-            </v-list-item-content>
-          </v-list-item>
+          <template v-for="(item, i) in menuItems">
+            <v-list-item :disabled="!item.to" link :key="i" :to="item.to">
+              <v-list-item-action>
+                <v-icon>{{item.icon}}</v-icon>
+              </v-list-item-action>
+              <v-list-item-content>
+                <v-list-item-title>{{item.title}}</v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+          </template>
         </v-list-item-group>
       </v-list>
     </v-navigation-drawer>
@@ -61,11 +63,11 @@ export default {
     menuItems: [
       { title: 'Inicio', icon: 'mdi-home', to: '/' },
       { title: 'Seguro Médico', icon: 'mdi-shield-half-full', to: '/seguro' },
-      { title: 'Farmacia', icon: 'mdi-pill' },
-      { title: 'Facturación', icon: 'mdi-receipt' },
-      { title: 'Tesorería', icon: 'mdi-cash-usd' },
-      { title: 'Historial Médico', icon: 'mdi-account-details' },
-      { title: 'Control de Citas', icon: 'mdi-calendar' }
+      { title: 'Farmacia', icon: 'mdi-pill', to: false },
+      { title: 'Facturación', icon: 'mdi-receipt', to: false },
+      { title: 'Tesorería', icon: 'mdi-cash-usd', to: false },
+      { title: 'Historial Médico', icon: 'mdi-account-details', to: false },
+      { title: 'Control de Citas', icon: 'mdi-calendar', to: false }
     ]
   })
 }
