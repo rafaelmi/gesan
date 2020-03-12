@@ -19,7 +19,10 @@ export default {
       ],
       items: [],
       newTitle: 'Nueva Factura',
-      sortBy: 'factura'
+      editTitle: 'Detalles Factura',
+      sortBy: 'factura',
+      editable: false,
+      borrable: false
     }
   }),
 

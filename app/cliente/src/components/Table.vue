@@ -1,7 +1,7 @@
 <template>
   <v-data-table
-    :headers="headers"
-    :items="items"
+    :headers="cHeaders"
+    :items="cItems"
     :sort-by="sortBy"
     class="elevation-1"
     :footer-props="{
@@ -9,26 +9,21 @@
       'items-per-page-all-text': 'Todos',
       'items-per-page-text': 'Registros por página'
     }"
+    :search="search"
+    @click:row="editItem"
   >
     <template v-slot:top>
       <v-toolbar flat color="white">
-        <cmpNewForm v-bind="newFormProps" @success="update"/>
+        <cmpForm v-model="swForm" v-bind="formProps" @success="update"/>
+        <v-spacer/>
+        <v-text-field
+          v-model="search"
+          append-icon="mdi-magnify"
+          label="Buscar"
+          single-line
+          hide-details
+        ></v-text-field>
       </v-toolbar>
-    </template>
-    <template v-slot:item.action="{ item }">
-      <v-icon
-        small
-        class="mr-2"
-        @click="editItem(item)"
-      >
-        mdi-pencil
-      </v-icon>
-      <v-icon
-        small
-        @click="deleteItem(item)"
-      >
-        mdi-delete
-      </v-icon>
     </template>
     <template v-slot:no-data>
       <span class="error--text">NO HAY REGISTROS</span>
@@ -42,9 +37,7 @@ import mixUtils from '@/mixins/utils'
 
 export default {
   components: {
-    cmpNewForm () {
-      return import('@/components/forms/NewForm.vue')
-    }
+    cmpForm () { return import('@/components/forms/Form.vue') }
   },
 
   mixins: [
@@ -56,37 +49,93 @@ export default {
     headers: Array,
     apiUrl: String,
     newTitle: String,
-    sortBy: String
+    editTitle: String,
+    sortBy: String,
+    creable: {
+      type: Boolean,
+      default: true
+    },
+    editable: {
+      type: Boolean,
+      default: true
+    },
+    borrable: {
+      type: Boolean,
+      default: true
+    }
   },
 
   data: () => ({
     editedIndex: -1,
     editedItem: {},
     defaultItem: {},
-    items: []
+    items: [],
+    search: null,
+    swForm: false,
+    formType: 'nuevo',
+    formatFunctions: {
+      cedula: (val) => this.toMilSeparator(val),
+      factura: (val) => this.toFacturaId(val),
+      dinero: (val) => this.toMoney(val)
+    }
   }),
 
   computed: {
-    formTitle () {
-      return this.editedIndex === -1 ? 'New Item' : 'Edit Item'
+    cHeaders () {
+      return this.headers.filter(header => header.inTable !== false)
+    },
+    cItems () {
+      const items = []
+      this.items.forEach((item, i) => {
+        items.push(Object.assign(this.format(item), { __index: i }))
+      })
+      return items
     },
     fields () {
       return this.headers.map(item => {
-        if (item.editable === undefined) {
-          item.editable = true
+        item.disabled = false
+        item.hidden = false
+        if (this.formType === 'nuevo') {
+          if (item.creable !== undefined && !item.creable) {
+            item.hidden = true
+          }
+        } else {
+          if (item.editable !== undefined && !item.editable) {
+            item.disabled = true
+          }
         }
         return item
       })
     },
-    newFormProps () {
-      return {
-        title: this.newTitle,
-        fields: this.fields,
-        api: {
-          url: this.apiUrl,
-          command: 'create'
+    formProps () {
+      const props = this.formType === 'editar'
+        ? {
+          swEditButton: this.editable,
+          editable: this.editable,
+          swRemoveButton: this.borrable,
+          title: this.editTitle,
+          fields: this.fields,
+          editedItem: this.editedItem,
+          api: {
+            url: this.apiUrl,
+            command: 'update'
+          }
+        } : {
+          swCreateButton: this.creable,
+          title: this.newTitle,
+          fields: this.fields,
+          api: {
+            url: this.apiUrl,
+            command: 'create'
+          }
         }
-      }
+      return props
+    }
+  },
+
+  watch: {
+    swForm (val) {
+      if (!val) { this.formType = 'nuevo' }
     }
   },
 
@@ -104,23 +153,7 @@ export default {
         .then((result) => {
           if (result.result === 200) {
             this.items = result.data
-
             this.items.map(item => {
-              this.fields.forEach(field => {
-                const key = field.value
-                switch (field.type) {
-                  case 'cedula':
-                    item[key] = this.toMilSeparator(item[key])
-                    break
-                  case 'factura':
-                    item[key] = this.toFacturaId(item[key])
-                    break
-                  case 'dinero':
-                    item[key] = this.toMoney(item[key])
-                    break
-                  default:
-                }
-              })
               return item
             })
           } else {
@@ -129,14 +162,38 @@ export default {
     },
 
     editItem (item) {
-      this.editedIndex = this.desserts.indexOf(item)
-      this.editedItem = Object.assign({}, item)
-      this.dialog = true
+      this.editedItem = Object.assign({}, this.items[item.__index])
+      this.formType = 'editar'
+      this.swForm = true
     },
 
-    deleteItem (item) {
-      const index = this.desserts.indexOf(item)
-      confirm('Are you sure you want to delete this item?') && this.desserts.splice(index, 1)
+    format (item) {
+      const res = Object.assign({}, item)
+      this.fields.forEach(field => {
+        const key = field.value
+        switch (field.type) {
+          case 'cedula':
+            res[key] = this.toMilSeparator(item[key])
+            break
+          case 'factura':
+            res[key] = this.toFacturaId(item[key])
+            break
+          case 'dinero':
+            res[key] = this.toMoney(item[key])
+            break
+          case 'nombre':
+          case 'direccion':
+          case 'ciudad':
+          case 'departamento':
+          case 'text':
+            if (item[key] !== undefined) {
+              res[key] = item[key].toUpperCase()
+            }
+            break
+          default:
+        }
+      })
+      return res
     }
   }
 }

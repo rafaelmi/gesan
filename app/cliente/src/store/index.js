@@ -5,8 +5,11 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
+    search: ''
   },
   mutations: {
+    set (state) {
+    }
   },
   actions: {
   },

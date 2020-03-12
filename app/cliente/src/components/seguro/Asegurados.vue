@@ -12,10 +12,10 @@ export default {
     tableProps: {
       apiUrl: '/seguro/asegurados',
       headers: [
-        { value: 'contrato', text: 'Contrato', type: 'id' },
-        { value: 'nombre', text: 'Nombre', type: 'nombre', required: true },
-        { value: 'cedula', text: 'Cédula', type: 'cedula', required: true },
-        { value: 'plan', text: 'Plan', type: 'text', required: false, editable: false },
+        { value: 'contrato', text: 'Contrato', type: 'id', required: true, editable: false },
+        { value: 'nombre', text: 'Nombre', type: 'nombre', required: true, editable: false },
+        { value: 'cedula', text: 'Cédula', type: 'cedula', required: true, editable: false },
+        { value: 'plan', text: 'Plan', type: 'text', icon: 'mdi-format-list-checks', creable: false, editable: false },
         { value: 'direccion', text: 'Dirección', type: 'direccion', icon: 'mdi-map-marker' },
         { value: 'telefono', text: 'Teléfono', type: 'telefono', icon: 'mdi-phone' },
         { value: 'ciudad', text: 'Ciudad', type: 'ciudad', icon: 'mdi-home-city' },
@@ -23,7 +23,8 @@ export default {
       ],
       items: [],
       newTitle: 'Nuevo Asegurado',
-      sortBy: 'nombre'
+      editTitle: 'Detalles Asegurado',
+      sortBy: 'contrato'
     }
   }),
 

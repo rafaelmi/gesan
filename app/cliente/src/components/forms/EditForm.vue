@@ -1,5 +1,8 @@
 <template>
-  <cmpForm v-bind="formProps" :success="$emit('success')">
+  <cmpForm v-if="value"
+    v-bind="formProps"
+    @success="success"
+  >
   </cmpForm>
 </template>
 
@@ -13,10 +16,7 @@ export default {
   ],
 
   props: {
-    buttonTitle: {
-      type: String,
-      default: 'NUEVO'
-    },
+    value: Boolean,
     title: String,
     fields: Array,
     api: Object
@@ -41,6 +41,10 @@ export default {
   },
 
   methods: {
+    success () {
+      this.$emit('input', false)
+      this.$emit('success')
+    }
   }
 }
 </script>

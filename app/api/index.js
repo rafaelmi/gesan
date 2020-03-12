@@ -6,12 +6,12 @@ const session = require('express-session');
 
 const admin = require('./db/admin');
 const user = require('./db/user');
-const compras = require('./db/compras');
-const ventas = require('./db/ventas');
 const seguro = {
   contratos: require('./db/seguro/contratos'),
   asegurados: require('./db/seguro/asegurados'),
-  pagos: require('./db/seguro/pagos')
+  pagos: require('./db/seguro/pagos'),
+  visaciones: require('./db/seguro/visaciones'),
+  planes: require('./db/seguro/planes')
 }
 const app = express();
 
@@ -51,24 +51,6 @@ app.post('/user', (req, res) => {
   })
 });
 
-app.post('/ventas', (req, res) => {
-  handle(req, res, {
-    'getAll': ventas.getAll,
-    'get': ventas.get,
-    'create': ventas.create,
-  })
-});
-
-app.post('/compras', (req, res) => {
-  handle(req, res, {
-    'getAll': compras.getAll,
-    'get': compras.get,
-    'reserve': compras.reserve,
-    'confirm': compras.confirm,
-    'cancel': compras.cancel,
-  })
-});
-
 app.post('/seguro/contratos', (req, res) => {
   handle(req, res, seguro.contratos)
 });
@@ -79,6 +61,14 @@ app.post('/seguro/asegurados', (req, res) => {
 
 app.post('/seguro/pagos', (req, res) => {
   handle(req, res, seguro.pagos)
+});
+
+app.post('/seguro/visaciones', (req, res) => {
+  handle(req, res, seguro.visaciones)
+});
+
+app.post('/seguro/planes', (req, res) => {
+  handle(req, res, seguro.planes)
 });
 
 const port = process.env.PORT || 4000;

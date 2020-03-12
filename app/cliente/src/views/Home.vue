@@ -1,6 +1,7 @@
 <template>
   <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png">
+    <img alt="Sanatorio del Sur" src="../assets/logo-sanatorio-del-sur.jpg"
+      width="500px" max-width="500px">
     <HelloWorld msg="Welcome to Your Vue.js App"/>
   </div>
 </template>
