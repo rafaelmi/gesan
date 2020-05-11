@@ -29,7 +29,10 @@
       </v-btn>
       </v-card-title>
       <v-card-text>
-        <v-form v-model="valid" ref="form">
+        <v-form v-if="dialog"
+          v-model="valid"
+          ref="form"
+        > <!-- condicional necesario para valor default -->
           <v-list>
             <v-list-item v-if="swEditButton">
                 <v-switch
@@ -137,6 +140,7 @@ export default {
   ],
 
   props: {
+    namespace: String,
     value: Boolean,
     swEditButton: {
       type: Boolean,
@@ -160,9 +164,9 @@ export default {
     },
     title: String,
     fields: Array,
-    editedItem: {
-      type: Object,
-      default: Object.assign({})
+    itemValues: {
+      type: Object
+      // default: Object.assign({})
     },
     api: Object
   },
@@ -176,7 +180,8 @@ export default {
       color: ''
     },
     menu: false,
-    swModificar: false
+    swModificar: false,
+    editedItem: {}
   }),
 
   computed: {
@@ -186,7 +191,7 @@ export default {
       },
       set (val) {
         this.$emit('input', val)
-        if (val) { this.$refs.form.reset() }
+        if (val) { this.$refs.form.reset() } // OJO: Impide valores por defecto
       }
     },
 
@@ -241,22 +246,26 @@ export default {
     }
   },
 
+  watch: {
+    dialog (val) {
+      if (val) this.setDefault()
+      // this.setDefault()
+    }
+  },
+
   methods: {
     close () {
       this.dialog = false
     },
 
     send (opts) {
-      this.apiCommand(Object.assign(
-        {},
-        opts ? opts.api || this.api : this.api,
-        { args: this.editedItem }
-      ))
-        .then((result) => {
-          if (result.result === 200) {
+      if (this.namespace) {
+        this.$store.dispatch(this.namespace + '/send', { command: this.api.command, args: this.editedItem })
+          .then((result) => {
             this.swModificar = false
             if (this.api.command === 'create') {
-              this.$refs.form.reset()
+              this.$refs.form.resetValidation()
+              this.setDefault()
             }
             Object.assign(this.alert, {
               msg: 'Operación exitosa.',
@@ -264,18 +273,47 @@ export default {
               color: 'success'
             })
             this.$emit('success')
-            if (opts.close) { this.dialog = false }
-            /* if (this.api.command === 'nuevo') {
-              this.editedItem = {}
-            } */
-          } else {
+            if (opts && opts.close) { this.dialog = false }
+          })
+          .catch(() => {
             Object.assign(this.alert, {
               msg: 'Operación rechazada.',
               sw: true,
               color: 'error'
             })
-          }
-        })
+          })
+      } else {
+        this.apiCommand(Object.assign(
+          {},
+          opts ? opts.api || this.api : this.api,
+          { args: this.editedItem }
+        ))
+          .then((result) => {
+            if (result.result === 200) {
+              this.swModificar = false
+              if (this.api.command === 'create') {
+                this.$refs.form.resetValidation()
+                this.setDefault()
+              }
+              Object.assign(this.alert, {
+                msg: 'Operación exitosa.',
+                sw: true,
+                color: 'success'
+              })
+              this.$emit('success')
+              if (opts.close) { this.dialog = false }
+              /* if (this.api.command === 'nuevo') {
+                this.editedItem = {}
+              } */
+            } else {
+              Object.assign(this.alert, {
+                msg: 'Operación rechazada.',
+                sw: true,
+                color: 'error'
+              })
+            }
+          })
+      }
     },
 
     save () {
@@ -289,6 +327,13 @@ export default {
         api: Object.assign({}, this.api, { command: 'remove' }),
         close: true
       })
+    },
+
+    setDefault () {
+      this.editedItem = Object.assign({}, this.itemValues ||
+        Object.fromEntries(this.cFields.reduce(
+          (acc, cur) => [...acc, ...cur.default ? [[cur.value, cur.default]] : []], []
+        )))
     }
   }
 }

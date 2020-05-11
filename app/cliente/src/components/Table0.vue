@@ -15,7 +15,6 @@
     <template v-slot:top>
       <v-toolbar flat color="white">
         <cmpForm v-model="swForm" v-bind="formProps" @success="update"/>
-        <slot name="top"/>
         <v-spacer/>
         <v-text-field
           v-model="search"
@@ -47,9 +46,7 @@ export default {
   ],
 
   props: {
-    namespace: String,
     headers: Array,
-    externalItems: Array,
     apiUrl: String,
     newTitle: String,
     editTitle: String,
@@ -65,15 +62,14 @@ export default {
     borrable: {
       type: Boolean,
       default: true
-    },
-    onClickRow: Function
+    }
   },
 
   data: () => ({
     editedIndex: -1,
     editedItem: {},
     defaultItem: {},
-    internalItems: [],
+    items: [],
     search: null,
     swForm: false,
     formType: 'nuevo',
@@ -88,16 +84,6 @@ export default {
     cHeaders () {
       return this.headers.filter(header => header.inTable !== false)
     },
-
-    items: {
-      get () {
-        return this.externalItems || this.internalItems
-      },
-      set (val) {
-        this.internalItems = val
-      }
-    },
-
     cItems () {
       const items = []
       this.items.forEach((item, i) => {
@@ -130,7 +116,6 @@ export default {
           title: this.editTitle,
           fields: this.fields,
           itemValues: this.editedItem,
-          namespace: this.namespace,
           api: {
             url: this.apiUrl,
             command: 'update'
@@ -143,7 +128,6 @@ export default {
             Object.fromEntries(this.fields.reduce(
               (acc, cur) => [...acc, ...cur.default ? [[cur.value, cur.default]] : []], []
             ))), */
-          namespace: this.namespace,
           api: {
             url: this.apiUrl,
             command: 'create'
@@ -165,32 +149,26 @@ export default {
 
   methods: {
     update () {
-      if (this.apiUrl) {
-        this.apiCommand({
-          url: this.apiUrl,
-          command: 'getAll',
-          args: {}
+      this.apiCommand({
+        url: this.apiUrl,
+        command: 'getAll',
+        args: {}
+      })
+        .then((result) => {
+          if (result.result === 200) {
+            this.items = result.data
+            this.items.map(item => {
+              return item
+            })
+          } else {
+          }
         })
-          .then((result) => {
-            if (result.result === 200) {
-              this.items = result.data
-              this.items.map(item => { // NO LE VEO SENTIDO, A BORRAR?
-                return item
-              })
-            } else {
-            }
-          })
-      }
     },
 
     editItem (item) {
-      if (this.onClickRow) {
-        this.onClickRow(item)
-      } else {
-        this.editedItem = Object.assign({}, this.items[item.__index])
-        this.formType = 'editar'
-        this.swForm = true
-      }
+      this.editedItem = Object.assign({}, this.items[item.__index])
+      this.formType = 'editar'
+      this.swForm = true
     },
 
     format (item) {
@@ -206,9 +184,6 @@ export default {
             break
           case 'dinero':
             res[key] = this.toMoney(item[key])
-            break
-          case 'fecha':
-            res[key] = this.toTimestamp(item[key])
             break
           case 'nombre':
           case 'direccion':

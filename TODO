@@ -1,0 +1,13 @@
+# PENDIENTES
+- Lista con letras mas grandes en vista 'Pantalla'
+- Posibilidad de borrar los servicios del paciente
+- Restringir los accesos por usuarios
+
+# DONE
+- Permitir asignación de letras
+- Asignar storage para sockets en API
+
+# OPCIONAL
+- Limitar a 48 horas los registros devueltos
+- Grabaciones para llamar al turno
+- Optimizar contador de turnos

@@ -1,5 +1,5 @@
 const monk = require('monk');
-const db = require('./connection');
+const db = monk('localhost/sanasur');
 const crypto = require('crypto');
 const response = require('./response').response;
 
