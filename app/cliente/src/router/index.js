@@ -1,34 +1,92 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
-
+import Login from '../views/Login.vue'
+import Seguro from '../views/Seguro.vue'
+const Citas = {
+  Index: () => import('../views/Citas/Index.vue'),
+  Consulta: () => import('../views/Citas/Consulta.vue'),
+  Turnos: () => import('../views/Citas/Turnos.vue'),
+  Consultorio: () => import('../views/Citas/Consultorio.vue'),
+  Pantalla: () => import('../views/Citas/Pantalla.vue')
+}
 Vue.use(VueRouter)
 
 const routes = [
   {
     path: '/',
+    name: 'Root',
+    redirect: '/home'
+  },
+  {
+    path: '/home',
     name: 'Home',
     component: Home
   },
   {
-    path: '/about',
-    name: 'About',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: function () {
-      return import(/* webpackChunkName: "about" */ '../views/About.vue')
-    }
+    path: '/init',
+    name: 'Init',
+    redirect: '/login'
+  },
+  {
+    path: '/login',
+    name: 'Login',
+    component: Login
+  },
+  {
+    path: '/logout',
+    name: 'Logout'
   },
   {
     path: '/seguro',
     name: 'Seguro',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: function () {
-      return import(/* webpackChunkName: "about" */ '../views/Seguro.vue')
-    }
+    component: Seguro
+  },
+  {
+    path: '/citas/pantalla',
+    name: 'Pantalla',
+    component: Citas.Pantalla
+  },
+  {
+    path: '/citas',
+    name: 'Citas',
+    component: Citas.Index,
+    children: [
+      {
+        path: 'turnos',
+        name: 'Turnos',
+        component: Citas.Turnos
+      },
+      {
+        path: 'consulta/:consulta',
+        name: 'Consulta',
+        component: Citas.Consulta
+      },
+      {
+        path: 'consultorio/:consultorio',
+        name: 'Consultorio',
+        component: Citas.Consultorio,
+        children: [
+          /* {
+            path: ':consultorio',
+            name: 'setConsultorio',
+            component: Citas.Consultorio,
+            children: [ */
+          {
+            path: 'consulta/:consulta',
+            name: 'innerConsulta',
+            component: Citas.Consulta
+          }
+          // ]
+          // }
+        ]
+      }
+      /* {
+        path: 'pantalla',
+        name: 'Pantalla',
+        component: Citas.Pantalla
+      } */
+    ]
   }
 ]
 

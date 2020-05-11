@@ -16,6 +16,10 @@ export default {
       return num.slice(0, 3) + '-' +
       num.slice(3, 6) + '-' +
       num.slice(-7)
+    },
+    toTimestamp (val) {
+      const date = new Date(val)
+      return date.toLocaleDateString('es-PY') + ' ' + date.toLocaleTimeString('es-PY')
     }
   }
 }

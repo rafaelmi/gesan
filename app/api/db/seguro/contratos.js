@@ -63,7 +63,6 @@ function getAll(args, session) {
       });
       let mora = meses - (abonado/cuota);
       let disponible = record.planDetails[0].cobertura;
-      console.log(disponible);
       record.visaciones.forEach(visacion => {
         disponible -= visacion.cobertura;
       });

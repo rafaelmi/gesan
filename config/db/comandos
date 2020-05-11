@@ -2,7 +2,7 @@
 db.createView("viewContratos", "contratos", [{$lookup: {from: "planes", localField: "plan", foreignField: "nombre", as: "planDetails"}}, {$lookup: {from: "asegurados", let: {contrato: "$_id"}, pipeline: [{$match: {$expr: {$eq: ["$contrato", "$$contrato"]}}}], as: "cuentaAsegurados"}}]);
 
 # viewAsegurados
-db.createView("viewAsegurados, "asegurados", [{$lookup: {from: "contratos", localField: "contrato", foreignField: "_id", as: "contrato"}}]);
+db.createView("viewAsegurados", "asegurados", [{$lookup: {from: "contratos", localField: "contrato", foreignField: "_id", as: "contrato"}}]);
 
 # counters
 db.createCollection("counters");
