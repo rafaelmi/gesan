@@ -65,11 +65,11 @@ function handle(req, res, module) {
     res.json(error);
   }
 }
-
+/*
 app.post('/admin', function(req, res) {
   handle(req, res, admin)
 });
-
+*/
 app.post('/user', (req, res) => {
   // req.body.args.session = req.session;
   handle(req, res, user)

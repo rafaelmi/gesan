@@ -13,7 +13,7 @@ Vue.config.productionTip = false
 // Vue.use(VueCookies)
 Vue.use(new VueSocketIO({
   debug: true,
-  connection: /* 'https://capensacursos.com', // */ 'http://192.168.0.3:8080',
+  connection: window.location.host, // /* 'https://capensacursos.com', // */ 'http://192.168.0.3:8080',
   vuex: {
     store,
     actionPrefix: 'SOCKET_',
