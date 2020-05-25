@@ -19,22 +19,22 @@
         <v-row>
           <v-col cols="6">
             <v-card
-              class="mx-2 elevation-10"
+              class="mx-2 d-flux elevation-10"
               color="green lighten-5"
             >
               <!--<v-card-text class="text-center display-1 font-weight-light blue--text text--darken-4">-->
               <v-card-title class="text-center white">
-                <v-img :src="require('@/assets/logo-sanatorio-del-sur.jpg')"/>
+                <v-img max-width="30%" :src="require('@/assets/logo-sanatorio-del-sur.jpg')"/>
                 <v-list>
                   <v-list-item>
                     <v-list>
                       <v-list-item>
-                        <v-col cols="12" class="display-1 font-weight-bold">
+                        <v-col cols="12" class="headline font-weight-bold">
                           Sanatorio del Sur
                         </v-col>
                       </v-list-item>
                       <v-list-item>
-                        <v-col cols="12" class="headline font-italic">
+                        <v-col cols="12" class="title font-italic">
                           "Un excelente servicio para tu salud"
                         </v-col>
                       </v-list-item>

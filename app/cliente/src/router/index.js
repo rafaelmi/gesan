@@ -3,6 +3,7 @@ import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
 import Login from '../views/Login.vue'
 import Seguro from '../views/Seguro.vue'
+// import Medisur from '../views/Medisur'
 const Citas = {
   Index: () => import('../views/Citas/Index.vue'),
   Consulta: () => import('../views/Citas/Consulta.vue'),
@@ -10,6 +11,7 @@ const Citas = {
   Consultorio: () => import('../views/Citas/Consultorio.vue'),
   Pantalla: () => import('../views/Citas/Pantalla.vue')
 }
+
 Vue.use(VueRouter)
 
 const routes = [
@@ -45,7 +47,8 @@ const routes = [
   {
     path: '/citas/pantalla',
     name: 'Pantalla',
-    component: Citas.Pantalla
+    component: Citas.Pantalla,
+    meta: { public: true }
   },
   {
     path: '/citas',
@@ -87,7 +90,39 @@ const routes = [
         component: Citas.Pantalla
       } */
     ]
-  }
+  } /* ,
+  {
+    path: '/medisur',
+    name: 'Medisur',
+    component: Medisur.Index,
+    children: [
+      {
+        path: 'contratos',
+        name: 'Contratos',
+        component: Medisur.Contratos
+      },
+      {
+        path: 'asegurados',
+        name: 'Asegurados',
+        component: Medisur.Asegurados
+      },
+      {
+        path: 'pagos',
+        name: 'Pagos',
+        component: Medisur.Pagos
+      },
+      {
+        path: 'visaciones',
+        name: 'Visaciones',
+        component: Medisur.Visaciones
+      },
+      {
+        path: 'planes',
+        name: 'Planes',
+        component: Medisur.Planes
+      }
+    ]
+  } */
 ]
 
 const router = new VueRouter({
