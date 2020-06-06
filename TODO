@@ -1,7 +1,9 @@
 # PENDIENTES
-- Lista con letras mas grandes en vista 'Pantalla'
 - Posibilidad de borrar los servicios del paciente
 - Restringir los accesos por usuarios
+- Optimizar cuota mensual, segun fecha de actualizacion
+- Validar en API que no esté repetida la factura al reportar pago
+- Chequear el orden de los items en la presentación
 
 # DONE
 - Permitir asignación de letras
@@ -11,3 +13,7 @@
 - Limitar a 48 horas los registros devueltos
 - Grabaciones para llamar al turno
 - Optimizar contador de turnos
+- Lista con letras mas grandes en vista 'Pantalla'
+
+db.createView('vMedisurPlanes', 'medisurPlanes',[{$facet: {prestaciones: [{$unwind: {path: '$prestaciones'}},{$lookup: {from: 'vProductos', localField: 'prestaciones.producto', foreignField: '_id', as: 'prestaciones.producto'}},{$unwind: {path: '$prestaciones.producto'}},{$replaceRoot: {newRoot: '$prestaciones'}}], tmpRoot: [{$project: {prestaciones: 0}}]}},{$project: {tmpRoot: {$mergeObjects: [{$arrayElemAt: ['$tmpRoot', 0]}, {prestaciones: '$prestaciones'}]}}},{$replaceRoot: {newRoot: '$tmpRoot'}}])
+db.vMedisurPlanes.aggregate([{$unwind: {path: '$prestaciones'}},{$project: {'prestaciones.producto.nombre': 1, 'prestaciones.disponibilidad': 1, 'prestaciones.cobertura': 1, _id:0}}])

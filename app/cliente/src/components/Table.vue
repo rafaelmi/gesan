@@ -3,8 +3,11 @@
     :headers="cHeaders"
     :items="cItems"
     :sort-by="sortBy"
+    :sort-desc="sortDesc"
     class="elevation-1"
+    items-per-page=8
     :footer-props="{
+      'items-per-page-options': [8, 8],
       'disable-items-per-page': true,
       'items-per-page-all-text': 'Todos',
       'items-per-page-text': 'Registros por página'
@@ -25,6 +28,9 @@
           hide-details
         ></v-text-field>
       </v-toolbar>
+    </template>
+    <template v-slot:item.link="{ item }">
+      <v-btn text :href="item.link" color="primary">VER</v-btn>
     </template>
     <template v-slot:no-data>
       <span class="error--text">NO HAY REGISTROS</span>
@@ -48,12 +54,17 @@ export default {
 
   props: {
     namespace: String,
+    modulo: String,
     headers: Array,
     externalItems: Array,
     apiUrl: String,
     newTitle: String,
     editTitle: String,
     sortBy: String,
+    sortDesc: {
+      type: Boolean,
+      default: false
+    },
     creable: {
       type: Boolean,
       default: true
@@ -131,6 +142,7 @@ export default {
           fields: this.fields,
           itemValues: this.editedItem,
           namespace: this.namespace,
+          modulo: this.modulo,
           api: {
             url: this.apiUrl,
             command: 'update'
@@ -144,6 +156,7 @@ export default {
               (acc, cur) => [...acc, ...cur.default ? [[cur.value, cur.default]] : []], []
             ))), */
           namespace: this.namespace,
+          modulo: this.modulo,
           api: {
             url: this.apiUrl,
             command: 'create'
@@ -209,6 +222,9 @@ export default {
             break
           case 'fecha':
             res[key] = this.toTimestamp(item[key])
+            break
+          case 'onlyFecha':
+            res[key] = this.toDate(item[key])
             break
           case 'nombre':
           case 'direccion':

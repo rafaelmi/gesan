@@ -3,7 +3,7 @@ import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
 import Login from '../views/Login.vue'
 import Seguro from '../views/Seguro.vue'
-// import Medisur from '../views/Medisur'
+import Medisur from '../views/Medisur'
 const Citas = {
   Index: () => import('../views/Citas/Index.vue'),
   Consulta: () => import('../views/Citas/Consulta.vue'),
@@ -90,7 +90,7 @@ const routes = [
         component: Citas.Pantalla
       } */
     ]
-  } /* ,
+  },
   {
     path: '/medisur',
     name: 'Medisur',
@@ -100,6 +100,11 @@ const routes = [
         path: 'contratos',
         name: 'Contratos',
         component: Medisur.Contratos
+      },
+      {
+        path: 'contrato/:contrato',
+        name: 'Contrato',
+        component: Medisur.Contrato
       },
       {
         path: 'asegurados',
@@ -112,17 +117,24 @@ const routes = [
         component: Medisur.Pagos
       },
       {
-        path: 'visaciones',
-        name: 'Visaciones',
-        component: Medisur.Visaciones
+        path: 'eventos',
+        name: 'Eventos',
+        component: Medisur.Eventos
       },
       {
         path: 'planes',
         name: 'Planes',
         component: Medisur.Planes
       }
+      /*
+      {
+        path: 'plan/:link',
+        name: 'Plan',
+        component: Medisur.Plan
+      }
+      */
     ]
-  } */
+  }
 ]
 
 const router = new VueRouter({

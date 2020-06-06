@@ -1,6 +1,6 @@
 const monk = require('monk');
-const db = monk('localhost/consultas');
-const response = require('../response').response;
+const db = monk('localhost/sanasur');
+const response = require('../response')
 
 const consultas = db.get('consultas');
 const counters = db.get('counters');
@@ -23,7 +23,7 @@ function create(args, session, io) {
         delete args.letra
         consultas.insert(args)
         .then(data => {
-          io.sockets.to('consultas').emit('consultas', [ data ])
+          io.sockets.to('consultas').emit('update', [ data ])
           resolve(response(200))
         })
       })
@@ -41,7 +41,7 @@ function update(args, session, io) {
         args.modificado = new Date();
         consultas.findOneAndUpdate({ _id: id }, { $set: args })
           .then(data => {
-            io.sockets.to('consultas').emit('consultas', [ data ])
+            io.sockets.to('consultas').emit('update', [ data ])
             resolve(response(200))
           })
     }
@@ -60,7 +60,7 @@ function addService(args, session, io) {
             $push: { servicios: args.servicio }
           })
           .then(data => {
-            io.sockets.to('consultas').emit('consultas', [ data ])
+            io.sockets.to('consultas').emit('update', [ data ])
             resolve(response(200))
           })
     }
@@ -76,7 +76,7 @@ function subscribe(args, socket, store) {
         socket.join('consultas')
         consultas.find()
           .then(data => {
-            socket.emit('consultas', data)
+            socket.emit('update', data)
             resolve(response(200))
           });
       }

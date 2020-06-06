@@ -1,8 +1,7 @@
-const monk = require('monk');
-const db = monk('localhost/seguro');
-const response = require('../response').response;
+const db = require('../connection');
+const response = require('../response')
 
-const planes = db.get('planes');
+const planes = db.get('vMedisurPlanes');
 
 function getAll(args, session) {
   if (!session.username) {
@@ -31,6 +30,6 @@ function update(args) {
 }
 
 module.exports = {
-    getAll,
-    update
+    getAll
+    // update
 };

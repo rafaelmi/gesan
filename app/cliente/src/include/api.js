@@ -1,10 +1,11 @@
 const API_URL = '/api'
 
 function command (args) {
-  const url = API_URL + args.url
+  let url = API_URL + args.url
+  url += args.modulo ? '/' + args.modulo : ''
   const command = {
     command: args.command,
-    args: args.args
+    args: args.args || {}
   }
   return fetch(url, {
     method: 'POST',

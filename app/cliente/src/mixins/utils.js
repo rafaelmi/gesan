@@ -19,7 +19,16 @@ export default {
     },
     toTimestamp (val) {
       const date = new Date(val)
-      return date.toLocaleDateString('es-PY') + ' ' + date.toLocaleTimeString('es-PY')
+      // return date.toLocaleDateString('es-PY') + ' ' + date.toLocaleTimeString('es-PY')
+      return this.toDate(date) + ' ' + date.toLocaleTimeString('es-PY')
+    },
+    toDate (val) {
+      const date = new Date(val)
+      return (
+        date.getUTCFullYear() + '-' +
+        (date.getUTCMonth() + 1).toString().padStart(2, '0') + '-' +
+        date.getUTCDate().toString().padStart(2, '0')
+      )
     }
   }
 }

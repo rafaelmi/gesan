@@ -20,7 +20,7 @@ const namespace = 'consultas'
 export default {
 
   components: {
-    cmpTable () { return import('@/components/Table.vue') }
+    cmpTable: () => import('@/components/Table.vue')
   },
 
   data: () => ({

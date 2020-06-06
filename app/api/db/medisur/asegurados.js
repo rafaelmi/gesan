@@ -1,23 +1,32 @@
-const monk = require('monk');
-const db = monk('localhost/seguro');
-const response = require('../response').response;
+const db = require('../connection');
+const response = require('../response')
 
-const contratos = db.get('contratos');
-const asegurados = db.get('asegurados');
+const contratos = db.get('medisurContratos');
 const viewAsegurados = db.get('viewAsegurados');
 
+function include (modules) {
+  io = modules.io
+  personas = modules.personas
+}
+
 function create(args, session) {
-  if (!session.username) {
-    return Promise.resolve(response(403));
-  }
-  return contratos.findOne(
-    {_id: args.contrato }, {castIds: false}
-  ).then((contrato) => {
-    return asegurados.insert(args)
-    .then(data => {
-      return response(200, data);
-    });
-  });
+  return new Promise((resolve, reject) => {
+    if (!session.username) {
+      resolve(403)
+    } else {
+      personas.update(args).then(val => {
+        contratos.findOneAndUpdate(
+          {_id: args.contrato},
+          {$push: {adherentes: val.data._id}},
+          {castIds: false}
+        ).then(data => {
+          io.of('/medisur').emit('contratos', [ data ])
+          // io.sockets.to('medisur').emit('contratos', [ data ])
+          resolve(response(200, data))
+        }).catch(reject)
+      }).catch(reject)
+    }
+  })
 }
 
 function get(args, session) {
@@ -65,6 +74,7 @@ function update(args) {
 }
 
 module.exports = {
+    include,
     create,
     getAll,
     update

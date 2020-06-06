@@ -1,6 +1,5 @@
-const monk = require('monk');
-const db = monk('localhost/seguro');
-const response = require('../response').response;
+const db = require('../connection');
+const response = require('../response')
 
 const viewContratos = db.get('viewContratos');
 const visaciones = db.get('visaciones');
