@@ -3,6 +3,7 @@ const modules = {
   asegurados: require('./asegurados'),
   pagos: require('./pagos'),
   eventos: require('./eventos'),
+  prestaciones: require('./prestaciones'),
   planes: require('./planes')
 }
 

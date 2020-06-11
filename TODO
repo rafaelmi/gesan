@@ -4,6 +4,10 @@
 - Optimizar cuota mensual, segun fecha de actualizacion
 - Validar en API que no esté repetida la factura al reportar pago
 - Chequear el orden de los items en la presentación
+- Corregir monto en algunos items del plan
+- ¿Que pasa si vienen dos personas del mismo seguro al mismo tiempo?
+  - Se precisa crear eventos por asegurado
+- Validar cobertura por eventos (medicamentos y descartables)
 
 # DONE
 - Permitir asignación de letras

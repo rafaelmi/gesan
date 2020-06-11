@@ -8,21 +8,25 @@
         <span class="title">{{ title }}</span>
       </v-card-title>
       <v-card-text>
-        <v-form>
+        <v-form ref="form">
           <v-select
             :items="items"
+            :rules="[(val => !!val || 'Este campo es obligatorio')]"
             label="Categoría"
             required
             v-model="categoria"
           />
           <v-select v-if="swProducto"
             :items="subitems"
+            :rules="[(val => !!val || 'Este campo es obligatorio')]"
             label="Producto"
             required
             v-model="producto"
           />
           <v-text-field v-if="swMonto"
             label="Monto"
+            :rules="[(val => !/\D/.test(val) || 'Ingrese sólo números'),
+              (val => !!val || 'Este campo es obligatorio')]"
             required
             v-model="monto"
           />
@@ -30,8 +34,8 @@
       </v-card-text>
       <v-card-actions>
         <v-spacer/>
-        <v-btn color="blue darken-1" text @click="dialog = false">CERRAR</v-btn>
-        <v-btn color="blue darken-1" text @click="$emit('success', selected); dialog = false">OK</v-btn>
+        <v-btn color="blue darken-1" text @click="close">CERRAR</v-btn>
+        <v-btn color="blue darken-1" text @click="save">OK</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
@@ -101,6 +105,30 @@ export default {
   },
 
   methods: {
+    save () {
+      if (this.$refs.form.validate()) {
+        const producto = (this.swProducto ? this.producto : this.categoria)
+        const monto = this.swMonto && this.monto
+        this.send({
+          modulo: 'prestaciones',
+          command: 'create',
+          args: {
+            contrato: this.contrato._id,
+            producto,
+            monto
+          }
+        }).then((result) => {
+          this.$store.commit('success', result, { root: true })
+        }).catch(() => {})
+        this.close()
+      }
+    },
+
+    close () {
+      this.$refs.form.resetValidation()
+      this.dialog = false
+    },
+
     ...mapActions(namespace, {
       send: 'send'
     })

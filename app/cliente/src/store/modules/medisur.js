@@ -46,6 +46,21 @@ const getters = {
   }).reduce((acc, el) => {
     el.forEach(el => acc.push(el))
     return acc
+  }, []),
+
+  eventos: (state, getters, rootState) => getters.contratos.map(contrato => {
+    return contrato.eventos
+      ? contrato.eventos.map(el => {
+        const adherente = Object.assign({}, rootState.personas.find(per => per._id === el.cedula))
+        adherente.cedula = adherente._id
+        delete adherente._id
+        delete adherente.modificado
+        return Object.assign({}, el, adherente)
+      })
+      : []
+  }).reduce((acc, el) => {
+    el.forEach(el => acc.push(el))
+    return acc
   }, [])
 }
 

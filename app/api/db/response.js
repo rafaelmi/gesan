@@ -1,7 +1,8 @@
 const codes = {
   200: {title: "OK", details: ""},
-  250: {title: "Transacción Aprobada", details: ""},
-  251: {title: "Venta Solicitada", details: "Esperando confirmación del cliente"},
+  250: {title: "Prestación Aprobada", details: ""},
+  251: {title: "Prestación Limitada", details: "Monto aprobado inferior al solicitado"},
+  // 251: {title: "Venta Solicitada", details: "Esperando confirmación del cliente"},
   252: {title: "Compra Aceptada", details: "Esperando aprobación"},
   253: {title: "Transacción Previamente Aprobada", details: "La transacción fue aprobada en una acción anterior"},
   254: {title: "Usuario Creado Exitosamente", details: ""},

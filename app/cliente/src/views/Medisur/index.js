@@ -4,7 +4,7 @@ export default {
   Contratos: () => import('./Contratos.vue'),
   Contrato: () => import('./Contrato.vue'),
   Pagos: () => import('./Pagos.vue'),
-  Planes: () => import('./Planes.vue'),
+  Planes: () => import('./Planes.vue')
   // Plan: () => import('./Plan.vue'),
-  Eventos: () => import('./Eventos.vue')
+  // Eventos: () => import('./Eventos.vue')
 }

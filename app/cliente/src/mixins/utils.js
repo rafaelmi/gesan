@@ -9,7 +9,8 @@ export default {
       return res
     },
     toMoney (val) {
-      return (this.toMilSeparator(val) + ' Gs.')
+      const res = this.toMilSeparator(val)
+      return (res ? res + ' Gs.' : null)
     },
     toFacturaId (val) {
       const num = Number(val).toString().padStart(13, '0')

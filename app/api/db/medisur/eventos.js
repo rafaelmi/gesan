@@ -5,36 +5,11 @@ const response = require('../response')
 const contratos = db.get('medisurContratos')
 const vContratos = db.get('vMedisurContratos')
 const planes = db.get('vMedisurPlanes')
-// const eventos = db.get('medisurEventos')
+const validaciones = require('./validaciones')
 
 function include (modules) {
   io = modules.io
   personas = modules.personas
-}
-
-function validarPago (args) {
-  return new Promise((resolve, reject) => {
-    vContratos.findOne(
-      { _id: args.contrato, adherentes: args.adherente },
-      { castIds: false }
-    ).then(contrato => {
-      if (!contrato) throw { stack: 'Contrato y/o adherente no se encuentra' }
-      const currentDate = new Date()
-      const fechaInicio = new Date(contrato.fechaInicio)
-      if (currentDate < fechaInicio) throw { stack: 'Fecha de inicio del contrato incorrecta' }
-      let months = currentDate.getUTCMonth() - fechaInicio.getUTCMonth()
-      months += (currentDate.getUTCFullYear() - fechaInicio.getUTCFullYear()) * 12
-      months += currentDate.getUTCDate() < fechaInicio.getUTCDate() ? 0 : 1 // +1 xq se paga mes adelantado
-
-      resolve(months - (contrato.cuotasPagas || 0)) // Retorna los meses de mora
-
-      /*
-      planes.findOne(_id: monk.id(contrato.plan)).then(plan => {
-        if (!Object.keys(plan).length) throw { stack: 'Plan no se encuentra' }
-      */
-
-    }).catch(reject)
-  })
 }
 
 function create(args, session) {
@@ -42,7 +17,7 @@ function create(args, session) {
     if (!session.username) {
       resolve(403)
     } else {
-      validarPago(args).then(mora => {
+      validaciones.pago(args).then(({ mora }) => {
         if (mora > 0) {
           resolve(response(451, { mora }))
         } else {
@@ -52,7 +27,7 @@ function create(args, session) {
             estado: 'ACTIVO'
           }
           contratos.findOneAndUpdate(
-            { _id: args.contrato },
+            { _id: args.contrato, adherentes: args.adherente },
             { $push: { eventos: props } },
             { castIds: false }
           ).then(data => {
@@ -110,16 +85,6 @@ function create(args, session) {
   });
 }
 */
-
-function get(args, session) {
-  if (!session.username) {
-    return Promise.resolve(response(403));
-  }
-  return ventas.findOne({_id: args._id, comercio: session.username},{castIds: false})
-  .then(data => {
-    return response(200, data);
-  });
-}
 
 function getAll(args, session) {
   if (!session.username) {

@@ -212,30 +212,32 @@
               </template>
             </formSelect>
           </v-subheader>
-          <v-list dense>
-            <v-list-group
+          <v-expansion-panels class="elevation-0 mx-0">
+            <v-expansion-panel
               v-for="evento in contrato.eventos"
               :key="evento.inicio"
             >
-              <template v-slot:activator>
-                <v-list-item-content>
-                  <v-list-item-title v-text="toTimestamp(evento.inicio)"/>
-                  <v-list-item-subtitle v-text="evento.estado"/>
-                </v-list-item-content>
-              </template>
-              <v-list-item two-line>
-                <v-list-item-avatar/>
-                <v-list-item-content>
-                  <v-list-item-title v-text="getAdhDetails(evento.adherente).nombre"/>
-                  <v-list-item-subtitle v-text="'C.I. ' + toMilSeparator(getAdhDetails(evento.adherente).cedula)"/>
-                </v-list-item-content>
-              </v-list-item>
-              <v-list-group sub-group>
-                <template v-slot:activator>
+              <v-expansion-panel-header>
+                <v-list-item dense>
                   <v-list-item-content>
-                    <v-list-item-title v-text="'PRESTACIONES'"/>
+                    <v-list-item-title v-text="toTimestamp(evento.inicio)"/>
+                    <v-list-item-subtitle v-text="evento.estado"/>
                   </v-list-item-content>
-                  <v-list-item-action>
+                </v-list-item>
+              </v-expansion-panel-header>
+              <v-expansion-panel-content>
+                <v-list dense>
+                  <v-subheader>ADHERENTE</v-subheader>
+                  <v-list-item two-line>
+                    <!--<v-list-item-avatar/>-->
+                    <v-list-item-content>
+                      <v-list-item-title v-text="getAdhDetails(evento.adherente).nombre"/>
+                      <v-list-item-subtitle v-text="'C.I. ' + toMilSeparator(getAdhDetails(evento.adherente).cedula)"/>
+                    </v-list-item-content>
+                  </v-list-item>
+                  <v-subheader>
+                    PRESTACIONES
+                    <v-spacer/>
                     <formPrestacion
                       v-model="swPrestacionForm"
                       v-bind="prestacionFormProps"
@@ -245,16 +247,34 @@
                         <v-btn
                           icon
                           v-on="on"
+                          :disabled="evento.estado !== 'ACTIVO'"
                         >
                           <v-icon v-text="'mdi-plus-circle'" color="green"/>
                         </v-btn>
                       </template>
                     </formPrestacion>
-                  </v-list-item-action>
-                </template>
-              </v-list-group>
-            </v-list-group>
-          </v-list>
+                  </v-subheader>
+                  <v-list-group
+                    v-for="prestacion in evento.prestaciones"
+                    :key="prestacion.fecha"
+                  >
+                    <template v-slot:activator>
+                      <v-list-item-content>
+                        <v-list-item-title v-text="prestacion.producto.nombre"/>
+                        <v-list-item-subtitle v-text="toTimestamp(prestacion.fecha)"/>
+                      </v-list-item-content>
+                    </template>
+                    <v-list-item two-line>
+                      <v-list-item-content>
+                        <v-list-item-title v-text="toMoney(prestacion.monto) || 'No aplica'"/>
+                        <v-list-item-subtitle v-text="'Monto'"/>
+                      </v-list-item-content>
+                    </v-list-item>
+                  </v-list-group>
+                </v-list>
+              </v-expansion-panel-content>
+            </v-expansion-panel>
+          </v-expansion-panels>
         </v-col>
       </v-row>
     </v-card>
