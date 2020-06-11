@@ -47,8 +47,8 @@ const routes = [
   {
     path: '/citas/pantalla',
     name: 'Pantalla',
-    component: Citas.Pantalla,
-    meta: { public: true }
+    component: Citas.Pantalla
+    // meta: { public: true }
   },
   {
     path: '/citas',

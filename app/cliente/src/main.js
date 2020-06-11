@@ -36,7 +36,10 @@ router.beforeEach((to, from, next) => {
             .then(() => next({ name: 'Init' }))
         } else next()
       } else {
-        if (['Login', 'Init'].indexOf(to.name) >= 0) {
+        if (to.name === 'Pantalla') {
+          store.dispatch('login', { username: 'pantalla', password: 'd9150fa0' })
+            .then(() => next())
+        } else if (['Login', 'Init'].indexOf(to.name) >= 0) {
           store.commit('setNextRoute', '/home')
           next()
         } else {

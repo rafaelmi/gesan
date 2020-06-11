@@ -24,7 +24,7 @@
             >
               <!--<v-card-text class="text-center display-1 font-weight-light blue--text text--darken-4">-->
               <v-card-title class="text-center white">
-                <v-img max-width="30%" :src="require('@/assets/logo-sanatorio-del-sur.jpg')"/>
+                <v-img max-width="28%" :src="require('@/assets/logo-sanatorio-del-sur.jpg')"/>
                 <v-list>
                   <v-list-item>
                     <v-list>

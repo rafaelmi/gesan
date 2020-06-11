@@ -54,22 +54,6 @@ export default new Vuex.Store({
       return new Promise((resolve, reject) => {
         if (state.started) resolve()
         else {
-          /*
-          const socket = this._vm.$socket
-          socket.open()
-            .on('connect', () => {
-              commit('setSocket', socket)
-              api.command({
-                url: API.USER,
-                command: 'setSocket',
-                args: { socketId: socket.id }
-              })
-                .then((result) => {
-                  if (result.result === 200) {
-                  }
-                })
-            })
-          */
           api.command({
             url: API.USER,
             command: 'info',
