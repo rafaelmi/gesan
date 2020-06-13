@@ -1,0 +1,50 @@
+[{$facet: {
+  prestaciones: [
+    {
+      $unwind: {
+        path: '$prestaciones'
+      }
+    },
+    {
+      $lookup: {
+        from: 'vProductos',
+        localField: 'prestaciones.producto',
+        foreignField: '_id',
+        as: 'prestaciones.producto'
+      }
+    },
+    {
+      $unwind: {
+        path: '$prestaciones.producto'
+      }
+    },
+    {
+      $replaceRoot: {
+        newRoot: '$prestaciones'
+      }
+    }
+  ],
+  tmpRoot: [
+    {
+      $project: {
+        prestaciones: 0
+      }
+    }
+  ]
+}}, {$project: {
+  tmpRoot: {
+    $mergeObjects: [
+      {
+        $arrayElemAt: [
+          '$tmpRoot',
+          0
+        ]
+      },
+      {
+        prestaciones: '$prestaciones'
+      }
+    ]
+  }
+}}, {$replaceRoot: {
+  newRoot: '$tmpRoot'
+}}]

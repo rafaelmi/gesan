@@ -16,10 +16,9 @@ const actions = {
   },
 
   update ({ state }, data) {
-    // state.consultas = [...state.consultas, ...data]
     state.consultas = [
-      ...data,
-      ...state.consultas.filter(oldel => !data.find(newel => oldel._id === newel._id))
+      ...state.consultas.filter(oldel => !data.find(newel => oldel._id === newel._id)),
+      ...data
     ]
   },
 

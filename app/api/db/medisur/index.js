@@ -7,10 +7,6 @@ const modules = {
   planes: require('./planes')
 }
 
-function getRoomData (room) {
-  return modules[room].getRoomData()
-}
-
 function include ( inc ){
   for (const key in modules){
     modules[key].include && modules[key].include(inc)
@@ -20,6 +16,7 @@ function include ( inc ){
 module.exports = {
   ...modules,
   include,
-  getRoomData,
+  subscribe: modules.contratos.subscribe,
+  // getRoomData,
   nsp: '/medisur'
 }

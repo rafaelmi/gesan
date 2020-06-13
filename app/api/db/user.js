@@ -48,11 +48,14 @@ function login(args, session) {
           resolve(response(401))
         } else {
           data.username = data._id;
+          data.usuario = data._id;
           delete data._id;
           delete data.password;
           session.username = data.username;
+          session.usuario = data.usuario
           session.nombre = data.nombre;
           session.tipo = data.tipo;
+          session.permisos = data.permisos
           session.allowedRooms = data.allowedRooms || []
           data.sid = session.id
           // registerRooms(session, io)
@@ -83,6 +86,7 @@ function info(args, session) {
             resolve(response(500))
           } else {
             data.username = data._id;
+            data.usuario = data._id;
             delete data._id;
             delete data.password;
             data.sid = session.id

@@ -5,6 +5,7 @@ const morgan = require('morgan')
 const session = require('express-session')
 const redis = require('redis')
 
+const response = require('./db/response')
 const personas = require('./db/personas')
 const admin = require('./db/admin')
 const user = require('./db/user')
@@ -117,27 +118,42 @@ app.post('/medisur/:modulo', (req, res) => {
 app.post('/consultas', (req, res) => {
   handle(req, res, consultas)
 })
-/*
-io.on('connection', (socket) => {
-  socket.on('subscribe', (args) => {
-    consultas['subscribe'](args, socket, store)
-      .then(() => {})
-      .catch((error) => {
-        console.log(error)
-      })
-  })
-})
-*/
+
 io.of('/consultas').on('connection', (socket) => {
   socket.on('subscribe', (args) => {
-    consultas.subscribe(args, socket, store)
-      .then(() => {})
-      .catch((error) => {
-        console.log(error)
-      })
+    store.get(args.sid, (error, session) => {
+      try {
+        if (
+          !session.username
+          || !session.permisos
+          || !session.permisos.consultas
+        ) throw response(403)
+        consultas.subscribe(args, socket, store)
+        .then(() => {})
+        .catch((error) => console.log(error))
+      } catch (error) {}
+    })
   })
 })
 
+io.of('/medisur').on('connection', (socket) => {
+  socket.on('subscribe', (args) => {
+    store.get(args.sid, (error, session) => {
+      try {
+        if (
+          !session.username
+          || !session.permisos
+          || !session.permisos.medisur
+        ) throw response(403)
+        medisur.subscribe(args, socket, store)
+        .then(() => {})
+        .catch((error) => console.log(error))
+      } catch (error) {}
+    })
+  })
+})
+
+/*
 io.of('/medisur').on('connection', (socket) => {
   socket.on('subscribe', (args) => {
     store.get(args.sid, (error, session) => {
@@ -155,6 +171,7 @@ io.of('/medisur').on('connection', (socket) => {
     })
   })
 })
+*/
 
 io.on('connection', (socket) => {
   socket.on('subscribe', (args) => {

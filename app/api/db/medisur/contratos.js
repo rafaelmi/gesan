@@ -7,7 +7,7 @@ const response = require('../response')
 // var io
 const contratos = db.get('medisurContratos')
 const planes = db.get('vMedisurPlanes')
-const viewContratos = db.get('vMedisurContratos')
+const vContratos = db.get('vMedisurContratos')
 const counters = db.get('counters')
 
 function include (modules) {
@@ -107,7 +107,7 @@ function getAll(args, session) {
   if (!session.username) {
     return Promise.resolve(response(403));
   }
-  return viewContratos.find()
+  return vContratos.find()
   .then(data => {
     const today = {
       day: new Date().getDay(),
@@ -146,7 +146,7 @@ function getAll(args, session) {
 }
 
 function getRoomData() {
-  return viewContratos.find()
+  return vContratos.find()
 }
 
 function update(args) {
@@ -177,6 +177,19 @@ function remove(args) {
 }
 
 function subscribe(args, socket, store) {
+  console.log('submodulo step')
+  return new Promise((resolve, reject) => {
+    store.get(args.sid, (error, session) => {
+      vContratos.find().then(data => {
+        socket.emit('contratos', data)
+        resolve(response(200))
+      }).catch(reject)
+    })
+  })
+}
+
+/*
+function subscribe(args, socket, store) {
   return new Promise((resolve, reject) => {
     store.get(args.sid, (error, session) => {
       if (!session.username) {
@@ -192,12 +205,13 @@ function subscribe(args, socket, store) {
     })
   })
 }
+*/
 
 module.exports = {
     include,
     create,
     // getAll,
-    getRoomData,
+    // getRoomData,
     // update,
     // remove,
     subscribe
