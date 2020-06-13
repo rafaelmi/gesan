@@ -17,7 +17,6 @@ const nsps = [
   'medisur'
 ]
 nsps.forEach(nsp => {
-  console.log(nsp)
   Vue.use(new VueSocketIO({
     debug: true,
     connection: window.location.host + '/' + nsp,
