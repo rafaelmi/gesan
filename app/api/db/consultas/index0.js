@@ -5,12 +5,7 @@ const response = require('../response')
 const consultas = db.get('consultas');
 const counters = db.get('counters');
 
-function include (modules) {
-  io = modules.io
-  personas = modules.personas
-}
-
-function create(args, session) {
+function create(args, session, io) {
   return new Promise((resolve, reject) => {
     if (!session.username) {
       resolve(response(403))
@@ -18,7 +13,7 @@ function create(args, session) {
       const operador = {}
       operador['turno.' + args.letra] = 1
       counters.findOneAndUpdate(
-        {collection: 'consultas'},
+        {collection: 'consultas' },
         {$inc: operador}
       ).then((counter) => {
         args.turno = args.letra + (counter.turno[args.letra] % 100).toString();
@@ -28,8 +23,7 @@ function create(args, session) {
         delete args.letra
         consultas.insert(args)
         .then(data => {
-          io.of('/consultas').emit('update', [ data ])
-          // io.sockets.to('consultas').emit('update', [ data ])
+          io.sockets.to('consultas').emit('update', [ data ])
           resolve(response(200))
         })
       })
@@ -37,7 +31,7 @@ function create(args, session) {
   })
 }
 
-function update(args, session) {
+function update(args, session, io) {
   return new Promise((resolve, reject) => {
     if (!session.username) {
       resolve(response(403));
@@ -47,15 +41,14 @@ function update(args, session) {
         args.modificado = new Date();
         consultas.findOneAndUpdate({ _id: id }, { $set: args })
           .then(data => {
-            io.of('/consultas').emit('update', [ data ])
-            // io.sockets.to('consultas').emit('update', [ data ])
+            io.sockets.to('consultas').emit('update', [ data ])
             resolve(response(200))
           })
     }
   })
 }
 
-function addService(args, session) {
+function addService(args, session, io) {
   return new Promise((resolve, reject) => {
     if (!session.username) {
       resolve(response(403));
@@ -67,8 +60,7 @@ function addService(args, session) {
             $push: { servicios: args.servicio }
           })
           .then(data => {
-            io.of('/consultas').emit('update', [ data ])
-            // io.sockets.to('consultas').emit('update', [ data ])
+            io.sockets.to('consultas').emit('update', [ data ])
             resolve(response(200))
           })
     }
@@ -78,11 +70,16 @@ function addService(args, session) {
 function subscribe(args, socket, store) {
   return new Promise((resolve, reject) => {
     store.get(args.sid, (error, session) => {
-      socket.join('consultas')
-      consultas.find().then(data => {
-        socket.emit('update', data)
-        resolve(response(200))
-      }).catch(reject)
+      if (!session.username) {
+        resolve(response(403))
+      } else {
+        socket.join('consultas')
+        consultas.find()
+          .then(data => {
+            socket.emit('update', data)
+            resolve(response(200))
+          });
+      }
     })
   })
 }

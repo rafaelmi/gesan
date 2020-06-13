@@ -141,6 +141,10 @@ export default {
 
   props: {
     namespace: String,
+    modulo: {
+      type: String,
+      default: null
+    },
     value: Boolean,
     swEditButton: {
       type: Boolean,
@@ -260,28 +264,33 @@ export default {
 
     send (opts) {
       if (this.namespace) {
-        this.$store.dispatch(this.namespace + '/send', { command: this.api.command, args: this.editedItem })
-          .then((result) => {
-            this.swModificar = false
-            if (this.api.command === 'create') {
-              this.$refs.form.resetValidation()
-              this.setDefault()
-            }
-            Object.assign(this.alert, {
-              msg: 'Operación exitosa.',
-              sw: true,
-              color: 'success'
-            })
-            this.$emit('success')
-            if (opts && opts.close) { this.dialog = false }
+        this.$store.dispatch(
+          this.namespace + '/send',
+          {
+            modulo: this.modulo,
+            command: this.api.command,
+            args: this.editedItem
+          }
+        ).then((result) => {
+          this.swModificar = false
+          if (this.api.command === 'create') {
+            this.$refs.form.resetValidation()
+            this.setDefault()
+          }
+          Object.assign(this.alert, {
+            msg: 'Operación exitosa.',
+            sw: true,
+            color: 'success'
           })
-          .catch(() => {
-            Object.assign(this.alert, {
-              msg: 'Operación rechazada.',
-              sw: true,
-              color: 'error'
-            })
+          this.$emit('success')
+          if (opts && opts.close) { this.dialog = false }
+        }).catch(() => {
+          Object.assign(this.alert, {
+            msg: 'Operación rechazada.',
+            sw: true,
+            color: 'error'
           })
+        })
       } else {
         this.apiCommand(Object.assign(
           {},

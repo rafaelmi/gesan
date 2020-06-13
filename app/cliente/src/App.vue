@@ -8,10 +8,10 @@
       <v-list dense>
         <v-list-item-group v-model="drawerItem">
           <template v-for="(item, i) in menuItems">
-            <v-list-item :disabled="!item.to" link :key="i" :to="item.to">
-              <v-list-item-action>
+            <v-list-item :disabled="!item.to" link :key="i" :to="item.to || ''">
+              <v-list-item-avatar>
                 <v-icon>{{item.icon}}</v-icon>
-              </v-list-item-action>
+              </v-list-item-avatar>
               <v-list-item-content>
                 <v-list-item-title>{{item.title}}</v-list-item-title>
               </v-list-item-content>
@@ -31,8 +31,21 @@
         @click.stop="drawer = !drawer"
       />
       <v-toolbar-title>{{ title }}</v-toolbar-title>
+
+      <v-snackbar v-model="alert.sw" :color="alert.color" top vertical>
+        <v-container>
+          <v-row>
+            <v-icon dark>{{alert.icon}}</v-icon>
+            <span class="title pl-1 font-weight-bold" :top="true" v-text="alert.title"/>
+          </v-row>
+          <v-row>
+            <span class="title" :top="true" v-text="alert.details"/>
+          </v-row>
+        </v-container>
+      </v-snackbar>
+
       <v-spacer></v-spacer>
-      <template v-if="$store.state.logged">
+      <template v-if="$store.getters.logged">
         <v-menu offset-y>
           <template v-slot:activator="{ on }">
             <v-btn
@@ -83,6 +96,8 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
+
 export default {
   name: 'App',
 
@@ -94,9 +109,9 @@ export default {
     drawerItem: 0,
     barColor: 'blue darken-3',
     menuItems: [
-      { title: 'Inicio', icon: 'mdi-home', to: '/' },
+      { title: 'Inicio', icon: 'mdi-home', to: '/home' },
       { title: 'Consulta Externa', icon: 'mdi-calendar', to: '/citas' },
-      { title: 'Seguro Médico', icon: 'mdi-shield-half-full', to: false }, // to: '/seguro' },
+      { title: 'Medisur', icon: 'mdi-shield-half-full', to: '/medisur/contratos' },
       { title: 'Farmacia', icon: 'mdi-pill', to: false },
       { title: 'Facturación', icon: 'mdi-receipt', to: false },
       { title: 'Tesorería', icon: 'mdi-cash-usd', to: false },
@@ -107,15 +122,23 @@ export default {
   }),
 
   computed: {
+
     disableApp () {
       return this.$route.name === 'Pantalla'
     },
+
     allowDrawer () {
       return true // this.$route.name !== 'Pantalla'
     },
+
     title () {
-      return this.menuItems[this.drawerItem].title
-    }
+      return this.menuItems[this.drawerItem || 0].title
+    },
+
+    ...mapState({
+      alert: state => state.alert
+    })
+
     /* time () {
        const date = new Date()
       return date.getHours() + ':' + date.getMinutes()

@@ -11,18 +11,14 @@ const mutations = {
 }
 
 const actions = {
-  setup ({ commit }, { socket, sid }) {
-    return new Promise((resolve, reject) => {
-      socket.emit('subscribe', { sid: sid })
-      resolve()
-    })
+  setup ({ state, commit }, callback) {
+    return callback(state)
   },
 
   update ({ state }, data) {
-    // state.consultas = [...state.consultas, ...data]
     state.consultas = [
-      ...data,
-      ...state.consultas.filter(oldel => !data.find(newel => oldel._id === newel._id))
+      ...state.consultas.filter(oldel => !data.find(newel => oldel._id === newel._id)),
+      ...data
     ]
   },
 
@@ -81,6 +77,13 @@ const actions = {
       '/citas/consultorio/' + consultorio + '/consulta/' +
       (consulta ? consulta._id : 'index')
     )
+  },
+
+  CONSULTAS_update ({ state, commit, dispatch }, data) {
+    state.consultas = [
+      ...data,
+      ...state.consultas.filter(oldel => !data.find(newel => oldel._id === newel._id))
+    ]
   }
 }
 

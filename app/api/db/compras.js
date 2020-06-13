@@ -1,6 +1,6 @@
 const monk = require('monk');
 const db = require('./connection');
-const response = require('./response').response;
+const response = require('./response')
 
 const compras = db.get('transacciones');
 const usuarios = db.get('usuarios');

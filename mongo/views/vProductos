@@ -1,0 +1,8 @@
+[{$lookup: {
+  from: 'productos',
+  localField: 'parent',
+  foreignField: '_id',
+  as: 'parent'
+}}, {$unwind: {
+  path: '$parent'
+}}]

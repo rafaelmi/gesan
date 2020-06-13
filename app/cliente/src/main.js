@@ -11,25 +11,54 @@ import '@mdi/font/css/materialdesignicons.css'
 Vue.config.productionTip = false
 
 // Vue.use(VueCookies)
+const nsps = [
+  '',
+  'consultas',
+  'medisur'
+]
+nsps.forEach(nsp => {
+  console.log(nsp)
+  Vue.use(new VueSocketIO({
+    debug: true,
+    connection: window.location.host + '/' + nsp,
+    vuex: {
+      store,
+      actionPrefix: (nsp.toUpperCase() || 'SOCKET') + '_',
+      mutationPrefix: (nsp.toUpperCase() || 'SOCKET') + '_',
+      options: {
+        useConnectionNamespace: true
+      }
+    },
+    options: {
+      // autoConnect: false
+    }
+  }))
+})
+/*
 Vue.use(new VueSocketIO({
   debug: true,
-  connection: window.location.host, // /* 'https://capensacursos.com', // */ 'http://192.168.0.3:8080',
+  connection: window.location.host, // *//* 'https://capensacursos.com', // *//* 'http://192.168.0.3:8080',
   vuex: {
     store,
     actionPrefix: 'SOCKET_',
-    mutationPrefix: 'SOCKET_'
+    mutationPrefix: 'SOCKET_',
+    options: {
+      useConnectionNamespace: true
+    }
   },
   options: {
+    useConnectionNamespace: true
     // autoConnect: false
     // path: '/api/socket.io'
   }
 }))
+*/
 
 router.beforeEach((to, from, next) => {
   store.dispatch('start').then(() => {
     if (to.meta && to.meta.public) next()
     else {
-      if (store.state.logged) {
+      if (store.getters.logged) {
         if (to.name === 'Login') next({ name: 'Home' })
         else if (to.name === 'Logout') {
           store.dispatch('logout')

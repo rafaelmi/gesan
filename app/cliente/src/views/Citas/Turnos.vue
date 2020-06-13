@@ -1,15 +1,5 @@
 <template>
-  <cmpTable v-bind="tableProps">
-    <template v-slot:top>
-      <v-btn
-        color="primary"
-        dark class="mb-2 mx-2"
-        @click="startPantalla"
-      >
-        PANTALLA
-      </v-btn>
-    </template>
-  </cmpTable>
+  <cmpTable v-bind="tableProps"/>
 </template>
 
 <script>
@@ -20,7 +10,7 @@ const namespace = 'consultas'
 export default {
 
   components: {
-    cmpTable () { return import('@/components/Table.vue') }
+    cmpTable: () => import('@/components/Table.vue')
   },
 
   data: () => ({
@@ -28,7 +18,6 @@ export default {
       // apiUrl: '/consultas',
       namespace: namespace,
       headers: [
-        // { value: 'turno', text: 'Turno', type: 'id', icon: 'mdi-counter', creable: false, editable: false },
         { value: 'nombre', text: 'Paciente', type: 'nombre', required: true, editable: false },
         { value: 'cedula', text: 'Cédula', type: 'cedula', required: true, editable: false },
         {
@@ -40,17 +29,6 @@ export default {
           required: true,
           editable: false
         },
-        /* {
-          value: 'letra',
-          text: 'Letra',
-          type: 'select',
-          icon: 'mdi-counter',
-          options: [...Array(26).keys()].map(i => String.fromCharCode(i + 65)),
-          default: 'A',
-          required: true,
-          editable: false,
-          inTable: false
-        }, */
         { value: 'estado', text: 'Estado', type: 'text', creable: false, editable: false },
         { value: 'fecha', text: 'Fecha/hora', type: 'fecha', creable: false, required: false, editable: false }
         // { value: 'valor', text: 'Valor de Consulta', type: 'dinero', creable: true, editable: true, required: false }
@@ -58,6 +36,7 @@ export default {
       newTitle: 'Nuevo Turno',
       editTitle: 'Detalles Turno',
       sortBy: 'fecha',
+      sortDesc: true,
       editable: false,
       borrable: false
     }

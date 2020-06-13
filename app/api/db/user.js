@@ -1,9 +1,9 @@
 const monk = require('monk');
 const db = monk('localhost/sanasur');
 const crypto = require('crypto');
-const response = require('./response').response;
+const response = require('./response')
 
-const users = db.get('usuarios');
+const users = db.get('authUsuarios');
 
 /*
 // Registra el socket en los rooms designados
@@ -48,12 +48,15 @@ function login(args, session) {
           resolve(response(401))
         } else {
           data.username = data._id;
+          data.usuario = data._id;
           delete data._id;
           delete data.password;
           session.username = data.username;
+          session.usuario = data.usuario
           session.nombre = data.nombre;
           session.tipo = data.tipo;
-          session.rooms = data.rooms || []
+          session.permisos = data.permisos
+          session.allowedRooms = data.allowedRooms || []
           data.sid = session.id
           // registerRooms(session, io)
           // io.sockets.connected[session.socketId]
@@ -83,6 +86,7 @@ function info(args, session) {
             resolve(response(500))
           } else {
             data.username = data._id;
+            data.usuario = data._id;
             delete data._id;
             delete data.password;
             data.sid = session.id
