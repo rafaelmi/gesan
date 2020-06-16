@@ -98,5 +98,5 @@ function getAll(args, session) {
 
 module.exports = {
     create,
-    getAll,
+    // getAll,
 };

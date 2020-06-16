@@ -177,7 +177,6 @@ function remove(args) {
 }
 
 function subscribe(args, socket, store) {
-  console.log('submodulo step')
   return new Promise((resolve, reject) => {
     store.get(args.sid, (error, session) => {
       vContratos.find().then(data => {

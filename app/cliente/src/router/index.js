@@ -2,7 +2,6 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
 import Login from '../views/Login.vue'
-import Seguro from '../views/Seguro.vue'
 import Medisur from '../views/Medisur'
 const Citas = {
   Index: () => import('../views/Citas/Index.vue'),
@@ -40,15 +39,9 @@ const routes = [
     name: 'Logout'
   },
   {
-    path: '/seguro',
-    name: 'Seguro',
-    component: Seguro
-  },
-  {
     path: '/citas/pantalla',
     name: 'Pantalla',
     component: Citas.Pantalla
-    // meta: { public: true }
   },
   {
     path: '/citas',
@@ -70,25 +63,13 @@ const routes = [
         name: 'Consultorio',
         component: Citas.Consultorio,
         children: [
-          /* {
-            path: ':consultorio',
-            name: 'setConsultorio',
-            component: Citas.Consultorio,
-            children: [ */
           {
             path: 'consulta/:consulta',
             name: 'innerConsulta',
             component: Citas.Consulta
           }
-          // ]
-          // }
         ]
       }
-      /* {
-        path: 'pantalla',
-        name: 'Pantalla',
-        component: Citas.Pantalla
-      } */
     ]
   },
   {
@@ -126,13 +107,6 @@ const routes = [
         name: 'Planes',
         component: Medisur.Planes
       }
-      /*
-      {
-        path: 'plan/:link',
-        name: 'Plan',
-        component: Medisur.Plan
-      }
-      */
     ]
   }
 ]

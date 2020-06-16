@@ -1,76 +1,57 @@
-const monk = require('monk');
-const db = monk('localhost/sanasur');
-const crypto = require('crypto');
+const monk = require('monk')
+const db = monk('localhost/sanasur')
+const crypto = require('crypto')
 const response = require('./response')
 
-const users = db.get('authUsuarios');
-
-/*
-// Registra el socket en los rooms designados
-function registerRooms(session, io){
-  if (session.socketId) {
-    const socket = io.sockets.connected[session.socketId]
-    const rooms = session.rooms || []
-    if (socket) {
-      rooms.map(room => {
-        console.log(room)
-        console.log(socket.rooms)
-        socket.join(room)
-        console.log(socket.rooms)
-      })
-    }
-  }
-}
-
-function setSocket(args, session, io) {
-  return new Promise((resolve, reject) => {
-    session.socketId = args.socketId // io.sockets.connected[args.socketId]
-    registerRooms(session, io)
-    resolve(response(200))
-  })
-}
-*/
+const users = db.get('vAuthUsuarios')
 
 function login(args, session) {
   return new Promise((resolve, reject) => {
-    if (session.username) {
-      resolve(response(452));
-      // return Promise.resolve(response(452));
-    } else {
-      args.password = crypto.createHash('sha256')
-                            .update(args.password)
-                            .digest('hex');
-      users.findOne({_id: args.username,
-                            password: args.password},
-                          {castIds: false})
-      .then(data => {
-        if (!data) {
-          resolve(response(401))
-        } else {
-          data.username = data._id;
-          data.usuario = data._id;
-          delete data._id;
-          delete data.password;
-          session.username = data.username;
-          session.usuario = data.usuario
-          session.nombre = data.nombre;
-          session.tipo = data.tipo;
-          session.permisos = data.permisos
-          session.allowedRooms = data.allowedRooms || []
-          data.sid = session.id
-          // registerRooms(session, io)
-          // io.sockets.connected[session.socketId]
-          // session.socket = io.sockets.connected[args.socketId]
-          /* crypto.randomBytes(32, (err, buf) => {
-            session.socketKey = buf.toString('hex')
-            data.sid = session.id
-            data.socketKey = session.socketKey
-            resolve(response(200, data))
-          }) */
-          resolve(response(200, data))
+    if (session.username) throw 452
+    args.password = crypto.createHash('sha256')
+                          .update(args.password)
+                          .digest('hex');
+    users.findOne({_id: args.username,
+                          password: args.password},
+                        {castIds: false})
+    .then(data => {
+      if (!data) throw 401
+      data.username = data._id;
+      data.usuario = data._id;
+      delete data._id;
+      delete data.password;
+      session.username = data.username;
+      session.usuario = data.usuario
+      session.nombre = data.nombre;
+      session.tipo = data.tipo;
+      session.allowedRooms = data.allowedRooms || []
+      data.sid = session.id
+
+      {
+        const callback = (acc, permisos) => {
+          Object.keys(permisos).forEach(key => {
+            if (typeof(acc[key]) === 'object'){
+              if (typeof(permisos[key]) === 'object'){
+                callback(acc[key], permisos[key])
+              }
+            } else {
+              acc[key] = permisos[key] || acc[key]
+            }
+          })
         }
-      })
-    }
+
+        let perfiles = []
+        const permisos = data.perfiles.reduce((acc, perfil) => {
+          perfiles.push(perfil._id)
+          callback(acc,perfil.permisos)
+          return acc
+        },{})
+
+        Object.assign(session, { perfiles }, { permisos })
+        Object.assign(data, { perfiles }, { permisos })
+      }
+      resolve(response(200, data))
+    }).catch(reject)
   })
 }
 
@@ -90,7 +71,6 @@ function info(args, session) {
             delete data._id;
             delete data.password;
             data.sid = session.id
-            /* data.socketKey = session.socketKey */
             resolve(response(200, data))
           }
         })
@@ -109,8 +89,7 @@ function logout(args, session) {
 
 
 module.exports = {
-    // setSocket,
     login,
     logout,
     info
-};
+}

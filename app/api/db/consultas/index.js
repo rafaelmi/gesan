@@ -68,7 +68,6 @@ function addService(args, session) {
           })
           .then(data => {
             io.of('/consultas').emit('update', [ data ])
-            // io.sockets.to('consultas').emit('update', [ data ])
             resolve(response(200))
           })
     }
@@ -135,10 +134,11 @@ function remove(args) {
 }
 */
 module.exports = {
+    include,
     create,
     subscribe,
     // get,
-    getAll,
+    // getAll,
     update,
     addService
     // remove

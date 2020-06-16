@@ -17,6 +17,5 @@ module.exports = {
   ...modules,
   include,
   subscribe: modules.contratos.subscribe,
-  // getRoomData,
   nsp: '/medisur'
 }

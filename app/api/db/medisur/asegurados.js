@@ -76,6 +76,6 @@ function update(args) {
 module.exports = {
     include,
     create,
-    getAll,
-    update
+    // getAll,
+    // update
 };

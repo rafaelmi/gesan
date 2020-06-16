@@ -14,7 +14,7 @@ export default {
 
   data: () => ({
     defaultProps: {
-      apiUrl: '/seguro/pagos',
+      // apiUrl: '/seguro/pagos',
       headers: [
         { value: '_id', text: 'Factura No.', type: 'factura', required: true },
         { value: 'contrato', text: 'Contrato', type: 'id', required: true },

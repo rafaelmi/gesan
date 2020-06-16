@@ -10,17 +10,6 @@ const personas = require('./db/personas')
 const admin = require('./db/admin')
 const user = require('./db/user')
 const medisur = require('./db/medisur')
-/*
-const seguro = {
-  contratos: require('./db/seguro/contratos'),
-  asegurados: require('./db/seguro/asegurados'),
-  pagos: require('./db/seguro/pagos'),
-  visaciones: require('./db/seguro/visaciones'),
-  planes: require('./db/seguro/planes')
-} */
-/* const consultas = {
-  turnos: require('./db/consultas/turnos'),
-} */
 const consultas = require('./db/consultas')
 
 const app = express();
@@ -29,12 +18,6 @@ const io = require('socket.io')(server)
 
 let RedisStore = require('connect-redis')(session)
 const store = new RedisStore({ client: redis.createClient() })
-
-//const sharedsession = require("express-socket.io-session");
-
-/*io.use(sharedsession(session, {
-    autoSave:true
-}));*/
 
 app.use(morgan('tiny'))
 app.use(cors())
@@ -46,66 +29,60 @@ app.use(session({
     saveUninitialized: true
   })
 )
-/*app.use(session({
-  secret: '6097c39f56b10b3415f0918f5a93111f',
-  resave: false,
-  saveUninitialized: true,
-}))*/
 
 // Init conditions
+consultas.include && consultas.include({ io, personas })
 medisur.include && medisur.include({ io, personas })
 personas.include && personas.include({ io })
 
+function checkPermission({url, body, session}) {
+  permisos = Object.assign({
+      user: {
+        login: true
+      }
+    },
+    session.permisos
+  )
+  let path = url.split('/')
+  path.shift()
+  body.command && path.push(body.command)
+  const res = path.reduce((acc, cur) => {
+    return ((typeof acc) === 'object') && acc[cur]
+  }, permisos)
+  return res
+}
+
 function handle(req, res, module) {
   // req.session.username = true // temporal, salta la autenticación
-  const func = req.params && req.params.modulo ?
-    module[req.params.modulo][req.body.command] :
-    module[req.body.command]
-  // module[req.body.command]
-  func(
-    req.body.args,
-    req.session,
-    io,
-    req.headers['x-forwarded-for']
-  ).then((result) => {
-    result.room && io.of(module.nsp).emit(result.room, [ result.data ])
-    delete result.room
-    res.json(result)
+  new Promise((resolve, reject) => {
+    if (!checkPermission(req)) throw 403
+    const func = req.params && req.params.modulo ?
+      module[req.params.modulo][req.body.command] :
+      module[req.body.command]
+    func(
+      req.body.args,
+      req.session,
+      io,
+      req.headers['x-forwarded-for']
+    ).then((result) => {
+      result.room && io.of(module.nsp).emit(result.room, [ result.data ])
+      delete result.room
+      res.json(result)
+    }).catch(reject)
   }).catch((error) => {
-    res.status(500);
-    res.json(require('./db/response')(500, error.stack))
+    const code = (typeof(error) === 'number') ? error : 500
+    res.status(code)
+    res.json(response(code, error.stack))
   })
 }
 
-app.post('/admin', function(req, res) {
+app.post('/admin', (req, res) => {
   handle(req, res, admin)
 })
 
 app.post('/user', (req, res) => {
-  // req.body.args.session = req.session;
   handle(req, res, user)
 })
-/*
-app.post('/seguro/contratos', (req, res) => {
-  handle(req, res, seguro.contratos)
-});
-
-app.post('/seguro/asegurados', (req, res) => {
-  handle(req, res, seguro.asegurados)
-});
-
-app.post('/seguro/pagos', (req, res) => {
-  handle(req, res, seguro.pagos)
-});
-
-app.post('/seguro/visaciones', (req, res) => {
-  handle(req, res, seguro.visaciones)
-});
-
-app.post('/seguro/planes', (req, res) => {
-  handle(req, res, seguro.planes)
-});
-*/
 
 app.post('/personas', (req, res) => {
   handle(req, res, personas)
@@ -119,6 +96,29 @@ app.post('/consultas', (req, res) => {
   handle(req, res, consultas)
 })
 
+{
+  const modulos = { consultas, medisur }
+  Object.keys(modulos).forEach(modulo => {
+    io.of('/'+modulo).on('connection', (socket) => {
+      socket.on('subscribe', (args) => {
+        store.get(args.sid, (error, session) => {
+          try {
+            if (
+              !session.username
+              || !session.permisos
+              || !session.permisos[modulo]
+            ) throw response(403)
+            modulos[modulo].subscribe(args, socket, store)
+            .then(() => {})
+            .catch((error) => console.log(error))
+          } catch (error) { console.log (error) }
+        })
+      })
+    })
+  })
+}
+
+/*
 io.of('/consultas').on('connection', (socket) => {
   socket.on('subscribe', (args) => {
     store.get(args.sid, (error, session) => {
@@ -149,25 +149,6 @@ io.of('/medisur').on('connection', (socket) => {
         .then(() => {})
         .catch((error) => console.log(error))
       } catch (error) {}
-    })
-  })
-})
-
-/*
-io.of('/medisur').on('connection', (socket) => {
-  socket.on('subscribe', (args) => {
-    store.get(args.sid, (error, session) => {
-      if (session.username) {
-        const allowedRooms = (session.allowedRooms && session.allowedRooms.medisur) || {}
-        Object.keys(allowedRooms).forEach(room => {
-          if (allowedRooms[room]) {
-            socket.join(room)
-            medisur.getRoomData(room).then(data => {
-              socket.emit(room, data)
-            }).catch(() => {})
-          }
-        })
-      }
     })
   })
 })
