@@ -228,13 +228,13 @@ export default {
         }
         switch (item.type) {
           case 'cedula':
-            item.messages = this.toMilSeparator(this.editedItem[item.value])
+            item.messages = this.toMilSeparator(this.editedItem[item.value]) || []
             break
           case 'factura':
-            item.messages = this.toFacturaId(this.editedItem[item.value])
+            item.messages = this.toFacturaId(this.editedItem[item.value]) || []
             break
           case 'dinero':
-            item.messages = this.toMoney(this.editedItem[item.value])
+            item.messages = this.toMoney(this.editedItem[item.value]) || []
             break
           default:
         }
