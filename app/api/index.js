@@ -11,6 +11,8 @@ const admin = require('./db/admin')
 const user = require('./db/user')
 const medisur = require('./db/medisur')
 const consultas = require('./db/consultas')
+const historial = require('./db/historial')
+const test = require('./db/test')
 
 const app = express();
 const server = require('http').Server(app)
@@ -76,6 +78,37 @@ function handle(req, res, module) {
   })
 }
 
+function permission({url, session}, res, next) {
+  const public = {
+    user: {
+      login: true
+    },
+    test: {
+      modtest: {
+        // sum: true,
+        mul: true
+      }
+    }
+  }
+  let path = url.split('/')
+  path.shift()
+  if (path.reduce((acc, cur) => {
+      return ((typeof acc) === 'object') && acc[cur]
+    }, Object.assign({}, public, session.permisos))
+  ) next()
+  else next(403)
+}
+
+function errorPhase(err, req, res, next) {
+  const code = (typeof(err) === 'number') ? err : 500
+  res.status(code)
+  res.json(response(code, err.stack))
+}
+
+app.use('/', permission)
+app.use('/test/modtest', test.modtest)
+app.use('/', errorPhase)
+
 app.post('/admin', (req, res) => {
   handle(req, res, admin)
 })
@@ -117,42 +150,6 @@ app.post('/consultas', (req, res) => {
     })
   })
 }
-
-/*
-io.of('/consultas').on('connection', (socket) => {
-  socket.on('subscribe', (args) => {
-    store.get(args.sid, (error, session) => {
-      try {
-        if (
-          !session.username
-          || !session.permisos
-          || !session.permisos.consultas
-        ) throw response(403)
-        consultas.subscribe(args, socket, store)
-        .then(() => {})
-        .catch((error) => console.log(error))
-      } catch (error) {}
-    })
-  })
-})
-
-io.of('/medisur').on('connection', (socket) => {
-  socket.on('subscribe', (args) => {
-    store.get(args.sid, (error, session) => {
-      try {
-        if (
-          !session.username
-          || !session.permisos
-          || !session.permisos.medisur
-        ) throw response(403)
-        medisur.subscribe(args, socket, store)
-        .then(() => {})
-        .catch((error) => console.log(error))
-      } catch (error) {}
-    })
-  })
-})
-*/
 
 io.on('connection', (socket) => {
   socket.on('subscribe', (args) => {

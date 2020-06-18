@@ -3,6 +3,7 @@ import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
 import Login from '../views/Login.vue'
 import Medisur from '../views/Medisur'
+import Historial from '../views/Historial'
 const Citas = {
   Index: () => import('../views/Citas/Index.vue'),
   Consulta: () => import('../views/Citas/Consulta.vue'),
@@ -106,6 +107,18 @@ const routes = [
         path: 'planes',
         name: 'Planes',
         component: Medisur.Planes
+      }
+    ]
+  },
+  {
+    path: '/historial',
+    name: 'Historial',
+    component: Historial.Index,
+    children: [
+      {
+        path: 'pacientes',
+        name: 'Pacientes',
+        component: Historial.Pacientes
       }
     ]
   }

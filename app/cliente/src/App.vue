@@ -111,11 +111,11 @@ export default {
     menuItems: [
       { title: 'Inicio', icon: 'mdi-home', to: '/home' },
       { title: 'Consulta Externa', icon: 'mdi-calendar', to: '/citas' },
+      { title: 'Historial Médico', icon: 'mdi-account-details', to: '/historial' },
       { title: 'Medisur', icon: 'mdi-shield-half-full', to: '/medisur/contratos' },
       { title: 'Farmacia', icon: 'mdi-pill', to: false },
       { title: 'Facturación', icon: 'mdi-receipt', to: false },
-      { title: 'Tesorería', icon: 'mdi-cash-usd', to: false },
-      { title: 'Historial Médico', icon: 'mdi-account-details', to: false }
+      { title: 'Tesorería', icon: 'mdi-cash-usd', to: false }
     ],
     time: null,
     timerItervalId: null

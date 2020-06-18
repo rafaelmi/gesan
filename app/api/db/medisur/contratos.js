@@ -1,10 +1,6 @@
 const monk = require('monk');
 const db = require('../connection')
-//const db = monk('localhost/seguro');
 const response = require('../response')
-
-// var personas // = require('../personas')
-// var io
 const contratos = db.get('medisurContratos')
 const planes = db.get('vMedisurPlanes')
 const vContratos = db.get('vMedisurContratos')
