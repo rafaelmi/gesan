@@ -96,7 +96,7 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapState, mapGetters } from 'vuex'
 
 export default {
   name: 'App',
@@ -108,20 +108,24 @@ export default {
     drawer: null,
     drawerItem: 0,
     barColor: 'blue darken-3',
-    menuItems: [
-      { title: 'Inicio', icon: 'mdi-home', to: '/home' },
-      { title: 'Consulta Externa', icon: 'mdi-calendar', to: '/citas' },
-      { title: 'Historial Médico', icon: 'mdi-account-details', to: '/historial' },
-      { title: 'Medisur', icon: 'mdi-shield-half-full', to: '/medisur/contratos' },
-      { title: 'Farmacia', icon: 'mdi-pill', to: false },
-      { title: 'Facturación', icon: 'mdi-receipt', to: false },
-      { title: 'Tesorería', icon: 'mdi-cash-usd', to: false }
-    ],
     time: null,
     timerItervalId: null
   }),
 
   computed: {
+
+    menuItems () {
+      const permisos = this.permisos
+      return [
+        { title: 'Inicio', icon: 'mdi-home', to: '/home' },
+        { title: 'Consulta Externa', icon: 'mdi-calendar', to: permisos && permisos.consultas && '/citas' },
+        { title: 'Historial Médico', icon: 'mdi-account-details', to: permisos && permisos.historial && '/historial' },
+        { title: 'Medisur', icon: 'mdi-shield-half-full', to: permisos && permisos.medisur && '/medisur/contratos' },
+        { title: 'Farmacia', icon: 'mdi-pill', to: false },
+        { title: 'Facturación', icon: 'mdi-receipt', to: false },
+        { title: 'Tesorería', icon: 'mdi-cash-usd', to: false }
+      ]
+    },
 
     disableApp () {
       return this.$route.name === 'Pantalla'
@@ -137,7 +141,11 @@ export default {
 
     ...mapState({
       alert: state => state.alert
-    })
+    }),
+
+    ...mapGetters([
+      'permisos'
+    ])
 
     /* time () {
        const date = new Date()

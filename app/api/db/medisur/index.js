@@ -1,4 +1,4 @@
-const modules = {
+module.exports = {
   contratos: require('./contratos'),
   asegurados: require('./asegurados'),
   pagos: require('./pagos'),
@@ -6,7 +6,7 @@ const modules = {
   prestaciones: require('./prestaciones'),
   planes: require('./planes')
 }
-
+/*
 function include ( inc ){
   for (const key in modules){
     modules[key].include && modules[key].include(inc)
@@ -19,3 +19,4 @@ module.exports = {
   subscribe: modules.contratos.subscribe,
   nsp: '/medisur'
 }
+*/

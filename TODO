@@ -9,6 +9,7 @@
   - Se precisa crear eventos por asegurado
 - Validar cobertura por eventos (medicamentos y descartables)
 - *** CHEQUEAR LA VISTA 'vMedisurPlanes' EN MONGO (SE PUEDE REDUCIR EL ARRAY)
+- Bloquear acceso a vistas en router, según permisos
 
 
 # DONE

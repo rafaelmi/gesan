@@ -4,31 +4,24 @@ const response = require('../response')
 const contratos = db.get('medisurContratos');
 const viewAsegurados = db.get('viewAsegurados');
 
-function include (modules) {
-  io = modules.io
-  personas = modules.personas
-}
+module.exports = ({ io }) => {
+  const router = require('express').Router()
 
-function create(args, session) {
-  return new Promise((resolve, reject) => {
-    if (!session.username) {
-      resolve(403)
-    } else {
-      personas.update(args).then(val => {
-        contratos.findOneAndUpdate(
-          {_id: args.contrato},
-          {$push: {adherentes: val.data._id}},
-          {castIds: false}
-        ).then(data => {
-          io.of('/medisur').emit('contratos', [ data ])
-          // io.sockets.to('medisur').emit('contratos', [ data ])
-          resolve(response(200, data))
-        }).catch(reject)
-      }).catch(reject)
-    }
+  router.post('/create', ({ body }, res, next) => {
+    let args = Object.assign({}, body)
+    contratos.findOneAndUpdate(
+      {_id: args.contrato},
+      {$push: {adherentes: args.cedula}},
+      {castIds: false}
+    ).then(data => {
+      io.of('/medisur').emit('contratos', [ data ])
+      res.json(response(200))
+    }).catch(next)
   })
-}
 
+  return router
+}
+/*
 function get(args, session) {
   if (!session.username) {
     return Promise.resolve(response(403));
@@ -79,3 +72,4 @@ module.exports = {
     // getAll,
     // update
 };
+*/

@@ -1,0 +1,35 @@
+{ "_id" : ObjectId("5ecfe1cd40f644e44015a0ab"), "nombre" : "CONSULTA EXTERNA", "parent" : ObjectId("5ed05c3b1816f3f7f1f473f7") }
+{ "_id" : ObjectId("5ecfe1cd40f644e44015a0ac"), "nombre" : "INTERNACIÓN", "parent" : ObjectId("5ed05c3b1816f3f7f1f473f7") }
+{ "_id" : ObjectId("5ecfe1cd40f644e44015a0ad"), "nombre" : "INTERCONSULTA", "parent" : ObjectId("5ed05c3b1816f3f7f1f473f7") }
+{ "_id" : ObjectId("5ecfe1cd40f644e44015a0ae"), "nombre" : "ESTUDIOS AUXILIARES DE DIAGNÓSTICO", "parent" : ObjectId("5ed05c3b1816f3f7f1f473f7") }
+{ "_id" : ObjectId("5ecfe1cd40f644e44015a0af"), "nombre" : "ESTUDIOS LABORATORIALES", "parent" : ObjectId("5ed05c3b1816f3f7f1f473f7") }
+{ "_id" : ObjectId("5ecfe1cd40f644e44015a0b0"), "nombre" : "MEDICAMENTOS, INSUMOS Y DESCARTABLES", "parent" : ObjectId("5ed05c3b1816f3f7f1f473f7") }
+{ "_id" : ObjectId("5ecfe1cd40f644e44015a0b1"), "nombre" : "CONSULTA DE URGENCIA", "parent" : ObjectId("5ed05c3b1816f3f7f1f473f7") }
+{ "_id" : ObjectId("5ecfe1cd40f644e44015a0b2"), "nombre" : "PROCEDIMIENTO MÉDICO DE URGENCIA", "parent" : ObjectId("5ed05c3b1816f3f7f1f473f7") }
+{ "_id" : ObjectId("5ecfe1cd40f644e44015a0b3"), "nombre" : "PROCEDIMIENTO DE ENFERMERÍA", "parent" : ObjectId("5ed05c3b1816f3f7f1f473f7") }
+{ "_id" : ObjectId("5ecfe1cd40f644e44015a0b4"), "nombre" : "CIRUGÍA MENOR", "parent" : ObjectId("5ed05c3b1816f3f7f1f473f7") }
+{ "_id" : ObjectId("5ed018a140f644e44015a0b5"), "nombre" : "CONSULTA GENERAL", "parent" : ObjectId("5ecfe1cd40f644e44015a0ab") }
+{ "_id" : ObjectId("5ed018a140f644e44015a0b6"), "nombre" : "PENSIÓN SANATORIAL (DÍAS)", "parent" : ObjectId("5ecfe1cd40f644e44015a0ac") }
+{ "_id" : ObjectId("5ed018a140f644e44015a0b7"), "nombre" : "CONSULTA CON MÉDICO DE GUARDIA", "parent" : ObjectId("5ecfe1cd40f644e44015a0b1") }
+{ "_id" : ObjectId("5ed018a140f644e44015a0b8"), "nombre" : "MÉDICO DE GUARDIA", "parent" : ObjectId("5ecfe1cd40f644e44015a0b2") }
+{ "_id" : ObjectId("5ed018a140f644e44015a0b9"), "nombre" : "EXTRACCIÓN DE CUERPO EXTRAÑO", "parent" : ObjectId("5ecfe1cd40f644e44015a0b2") }
+{ "_id" : ObjectId("5ed018a140f644e44015a0ba"), "nombre" : "FÉRULA", "parent" : ObjectId("5ecfe1cd40f644e44015a0b2") }
+{ "_id" : ObjectId("5ed018a140f644e44015a0bb"), "nombre" : "ENYESADO", "parent" : ObjectId("5ecfe1cd40f644e44015a0b2") }
+{ "_id" : ObjectId("5ed018a140f644e44015a0bc"), "nombre" : "LAVADO GÁSTRICO", "parent" : ObjectId("5ecfe1cd40f644e44015a0b2") }
+{ "_id" : ObjectId("5ed018a140f644e44015a0bd"), "nombre" : "TAPONAMIENTO NASAL", "parent" : ObjectId("5ecfe1cd40f644e44015a0b2") }
+{ "_id" : ObjectId("5ed018a140f644e44015a0be"), "nombre" : "TRAQUEOTOMÍA", "parent" : ObjectId("5ecfe1cd40f644e44015a0b2") }
+{ "_id" : ObjectId("5ed018a140f644e44015a0bf"), "nombre" : "SONDAJE VESICAL", "parent" : ObjectId("5ecfe1cd40f644e44015a0b2") }
+{ "_id" : ObjectId("5ed018a140f644e44015a0c0"), "nombre" : "DESCUBIERTA VENOSA Y/O VÍA VENOSA CENTRAL Y/O VÍA ARTERIAL.", "parent" : ObjectId("5ecfe1cd40f644e44015a0b2") }
+{ "_id" : ObjectId("5ed018a140f644e44015a0c1"), "nombre" : "SONDAJE NASOGÁSTRICO", "parent" : ObjectId("5ecfe1cd40f644e44015a0b2") }
+{ "_id" : ObjectId("5ed018a140f644e44015a0c2"), "nombre" : "DRENAJE DE ABSCESO, HEMATOMAS", "parent" : ObjectId("5ecfe1cd40f644e44015a0b2") }
+{ "_id" : ObjectId("5ed018a140f644e44015a0c3"), "nombre" : "CURACIÓN", "parent" : ObjectId("5ecfe1cd40f644e44015a0b2") }
+{ "_id" : ObjectId("5ed018a140f644e44015a0c4"), "nombre" : "SUTURAS", "parent" : ObjectId("5ecfe1cd40f644e44015a0b2") }
+{ "_id" : ObjectId("5ed018a140f644e44015a0c5"), "nombre" : "EXTRACCIÓN DE UÑA ENCARNADA", "parent" : ObjectId("5ecfe1cd40f644e44015a0b2") }
+{ "_id" : ObjectId("5ed018a140f644e44015a0c6"), "nombre" : "APLICACIONES DE INYECCIÓN", "parent" : ObjectId("5ecfe1cd40f644e44015a0b3") }
+{ "_id" : ObjectId("5ed018a140f644e44015a0c7"), "nombre" : "NEBULIZACIONES", "parent" : ObjectId("5ecfe1cd40f644e44015a0b3") }
+{ "_id" : ObjectId("5ed018a140f644e44015a0c8"), "nombre" : "CURACIÓN SIMPLE", "parent" : ObjectId("5ecfe1cd40f644e44015a0b3") }
+{ "_id" : ObjectId("5ed018a140f644e44015a0c9"), "nombre" : "TOMA DE PRESIÓN ARTERIAL", "parent" : ObjectId("5ecfe1cd40f644e44015a0b3") }
+{ "_id" : ObjectId("5ed018a140f644e44015a0ca"), "nombre" : "ENEMA EVACUADOR", "parent" : ObjectId("5ecfe1cd40f644e44015a0b3") }
+{ "_id" : ObjectId("5ed018a140f644e44015a0cb"), "nombre" : "HONORARIOS MÉDICOS", "parent" : ObjectId("5ecfe1cd40f644e44015a0b4") }
+{ "_id" : ObjectId("5ed018a140f644e44015a0cc"), "nombre" : "DERECHO OPERATORIO", "parent" : ObjectId("5ecfe1cd40f644e44015a0b4") }
+{ "_id" : ObjectId("5ed05c3b1816f3f7f1f473f7"), "nombre" : "root" }

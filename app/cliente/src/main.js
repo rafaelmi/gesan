@@ -29,7 +29,7 @@ nsps.forEach(nsp => {
       }
     },
     options: {
-      // autoConnect: false
+      autoConnect: false
     }
   }))
 })

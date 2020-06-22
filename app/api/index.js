@@ -32,55 +32,13 @@ app.use(session({
   })
 )
 
-// Init conditions
-consultas.include && consultas.include({ io, personas })
-medisur.include && medisur.include({ io, personas })
-personas.include && personas.include({ io })
+// req.headers['x-forwarded-for']
 
-function checkPermission({url, body, session}) {
-  permisos = Object.assign({
-      user: {
-        login: true
-      }
-    },
-    session.permisos
-  )
-  let path = url.split('/')
-  path.shift()
-  body.command && path.push(body.command)
-  const res = path.reduce((acc, cur) => {
-    return ((typeof acc) === 'object') && acc[cur]
-  }, permisos)
-  return res
-}
-
-function handle(req, res, module) {
-  // req.session.username = true // temporal, salta la autenticación
-  new Promise((resolve, reject) => {
-    if (!checkPermission(req)) throw 403
-    const func = req.params && req.params.modulo ?
-      module[req.params.modulo][req.body.command] :
-      module[req.body.command]
-    func(
-      req.body.args,
-      req.session,
-      io,
-      req.headers['x-forwarded-for']
-    ).then((result) => {
-      result.room && io.of(module.nsp).emit(result.room, [ result.data ])
-      delete result.room
-      res.json(result)
-    }).catch(reject)
-  }).catch((error) => {
-    const code = (typeof(error) === 'number') ? error : 500
-    res.status(code)
-    res.json(response(code, error.stack))
-  })
-}
-
-function permission({url, session}, res, next) {
+function checkPermission({url, session}, res, next) {
   const public = {
     user: {
+      info: true,
+      logout: true,
       login: true
     },
     test: {
@@ -102,75 +60,32 @@ function permission({url, session}, res, next) {
 function errorPhase(err, req, res, next) {
   const code = (typeof(err) === 'number') ? err : 500
   res.status(code)
-  res.json(response(code, err.stack))
+  res.json(response(code, err, err.stack))
 }
 
-app.use('/', permission)
-app.use('/test/modtest', test.modtest)
+app.use('/', checkPermission)
+app.use('/', personas({ io }))
+
+app.use('/admin', admin)
+
+app.use('/user', user)
+
+app.use('/personas', personas({ io }))
+
+app.use('/consultas', consultas({ io }))
+
+app.use('/medisur/planes', medisur.planes)
+app.use('/medisur/contratos', medisur.contratos({ io }))
+app.use('/medisur/asegurados', medisur.asegurados({ io }))
+app.use('/medisur/pagos', medisur.pagos({ io }))
+app.use('/medisur/eventos', medisur.eventos({ io }))
+app.use('/medisur/prestaciones', medisur.prestaciones({ io }))
+
 app.use('/', errorPhase)
 
-app.post('/admin', (req, res) => {
-  handle(req, res, admin)
-})
-
-app.post('/user', (req, res) => {
-  handle(req, res, user)
-})
-
-app.post('/personas', (req, res) => {
-  handle(req, res, personas)
-})
-
-app.post('/medisur/:modulo', (req, res) => {
-  handle(req, res, medisur)
-})
-
-app.post('/consultas', (req, res) => {
-  handle(req, res, consultas)
-})
-
-{
-  const modulos = { consultas, medisur }
-  Object.keys(modulos).forEach(modulo => {
-    io.of('/'+modulo).on('connection', (socket) => {
-      socket.on('subscribe', (args) => {
-        store.get(args.sid, (error, session) => {
-          try {
-            if (
-              !session.username
-              || !session.permisos
-              || !session.permisos[modulo]
-            ) throw response(403)
-            modulos[modulo].subscribe(args, socket, store)
-            .then(() => {})
-            .catch((error) => console.log(error))
-          } catch (error) { console.log (error) }
-        })
-      })
-    })
-  })
-}
-
-io.on('connection', (socket) => {
-  socket.on('subscribe', (args) => {
-    store.get(args.sid, (error, session) => {
-      if (session.username) {
-        const allowedRooms = session.allowedRooms || {}
-        Object.keys(allowedRooms).forEach(room => {
-          if (allowedRooms[room]) {
-            const mod = { personas }[room]
-            if (mod) {
-              socket.join(room)
-              mod.getAll().then(data => {
-                socket.emit(room, data)
-              }).catch(error => { console.log(error) })
-            }
-          }
-        })
-      }
-    })
-  })
-})
+io.on('connection', (socket) => {})
+io.of('/consultas').on('connection', (socket) => { /* console.log('/consultas') */ })
+io.of('/medisur').on('connection', (socket) => { /*console.log('/medisur')*/ })
 
 const port = process.env.PORT || 3000
 server.listen(port, () => {

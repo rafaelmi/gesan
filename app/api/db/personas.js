@@ -1,8 +1,7 @@
-const Joi = require('@hapi/joi');
-const db = require('./connection');
+const Joi = require('@hapi/joi')
+const db = require('./connection')
 const response = require('./response')
 const personas = db.get('personas')
-var io
 
 const schema = Joi.object({
   nombre: Joi.string()
@@ -30,31 +29,7 @@ const schema = Joi.object({
     .required()
 })
 
-function include (modules) {
-  io = modules.io
-}
-
-function update(args) {
-  return new Promise((resolve, reject) => {
-    props = Object.create(args) // OJO: Object.create() garantiza discriminar propiedades
-    props.nacimiento && (props.nacimiento = new Date(props.nacimiento).getTime())
-    props.modificado = Date.now()
-    schema.validateAsync(props).then(val => {
-      val._id = val.cedula
-      delete val.cedula
-      personas.findOneAndUpdate(
-        {_id: val._id},
-        {$set: Object.assign({},val)}, // OJO: Object.assign() garantiza discriminar propiedades
-        {castIds: false, upsert: true}
-      ).then(data => {
-        io.of('/').emit('personas', [ data ])
-        // io.sockets.to('/').emit('personas', [ data ])
-        resolve(response(200, data))
-      }).catch(reject)
-    }).catch(reject) // TODO: Establecer error de validación
-  })
-}
-
+/*
 function get(args) {
   return new Promise((resolve, reject) => {
     personas.findOne({_id: args._id},{castIds: false})
@@ -72,10 +47,50 @@ function getAll() {
     }).catch(reject)
   })
 }
+*/
+module.exports = ({ io }) => {
+  const router = require('express').Router()
 
+  function update({ body }, res, next) {
+    let args = Object.assign({}, body)
+    props = Object.create(args) // OJO: Object.create() garantiza discriminar propiedades
+    props.nacimiento && (props.nacimiento = new Date(props.nacimiento).getTime())
+    props.modificado = Date.now()
+    schema.validateAsync(props).then(val => {
+      val._id = val.cedula
+      delete val.cedula
+      personas.findOneAndUpdate(
+        {_id: val._id},
+        {$set: Object.assign({},val)}, // OJO: Object.assign() garantiza discriminar propiedades
+        {castIds: false, upsert: true}
+      ).then(data => {
+        io.of('/').emit('personas', [ data ])
+        body.cedula = data._id
+        next()
+      }).catch(next) // TODO: Establecer error de validación
+    }).catch(next)
+  }
+
+  router.post('/get', ({ body, session }, res, next) => {
+    let args = Object.assign({}, body)
+    personas.find(args, {castIds: false})
+    .then(data => {
+      io.to(session.sid).emit('personas', data)
+      res.json(response(200))
+    }).catch(next)
+  })
+
+  router.post('/medisur/contratos/create', update)
+  router.post('/medisur/asegurados/create', update)
+  router.all('/', (req, res, next) => next())
+
+  return router
+}
+/*
 module.exports = {
   include,
   update,
   get,
   getAll
 }
+*/
