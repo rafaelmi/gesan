@@ -10,18 +10,9 @@ const personas = require('./db/personas')
 const admin = require('./db/admin')
 const user = require('./db/user')
 const medisur = require('./db/medisur')
-/*
-const seguro = {
-  contratos: require('./db/seguro/contratos'),
-  asegurados: require('./db/seguro/asegurados'),
-  pagos: require('./db/seguro/pagos'),
-  visaciones: require('./db/seguro/visaciones'),
-  planes: require('./db/seguro/planes')
-} */
-/* const consultas = {
-  turnos: require('./db/consultas/turnos'),
-} */
 const consultas = require('./db/consultas')
+const historial = require('./db/historial')
+const test = require('./db/test')
 
 const app = express();
 const server = require('http').Server(app)
@@ -29,12 +20,6 @@ const io = require('socket.io')(server)
 
 let RedisStore = require('connect-redis')(session)
 const store = new RedisStore({ client: redis.createClient() })
-
-//const sharedsession = require("express-socket.io-session");
-
-/*io.use(sharedsession(session, {
-    autoSave:true
-}));*/
 
 app.use(morgan('tiny'))
 app.use(cors())
@@ -46,153 +31,61 @@ app.use(session({
     saveUninitialized: true
   })
 )
-/*app.use(session({
-  secret: '6097c39f56b10b3415f0918f5a93111f',
-  resave: false,
-  saveUninitialized: true,
-}))*/
 
-// Init conditions
-medisur.include && medisur.include({ io, personas })
-personas.include && personas.include({ io })
+// req.headers['x-forwarded-for']
 
-function handle(req, res, module) {
-  // req.session.username = true // temporal, salta la autenticación
-  const func = req.params && req.params.modulo ?
-    module[req.params.modulo][req.body.command] :
-    module[req.body.command]
-  // module[req.body.command]
-  func(
-    req.body.args,
-    req.session,
-    io,
-    req.headers['x-forwarded-for']
-  ).then((result) => {
-    result.room && io.of(module.nsp).emit(result.room, [ result.data ])
-    delete result.room
-    res.json(result)
-  }).catch((error) => {
-    res.status(500);
-    res.json(require('./db/response')(500, error.stack))
-  })
+function checkPermission({url, session}, res, next) {
+  const public = {
+    user: {
+      info: true,
+      logout: true,
+      login: true
+    },
+    test: {
+      modtest: {
+        // sum: true,
+        mul: true
+      }
+    }
+  }
+  let path = url.split('/')
+  path.shift()
+  if (path.reduce((acc, cur) => {
+      return ((typeof acc) === 'object') && acc[cur]
+    }, Object.assign({}, public, session.permisos))
+  ) next()
+  else next(403)
 }
 
-app.post('/admin', function(req, res) {
-  handle(req, res, admin)
-})
+function errorPhase(err, req, res, next) {
+  const code = (typeof(err) === 'number') ? err : 500
+  res.status(code)
+  res.json(response(code, err, err.stack))
+}
 
-app.post('/user', (req, res) => {
-  // req.body.args.session = req.session;
-  handle(req, res, user)
-})
-/*
-app.post('/seguro/contratos', (req, res) => {
-  handle(req, res, seguro.contratos)
-});
+app.use('/', checkPermission)
+app.use('/', personas({ io }))
 
-app.post('/seguro/asegurados', (req, res) => {
-  handle(req, res, seguro.asegurados)
-});
+app.use('/admin', admin)
 
-app.post('/seguro/pagos', (req, res) => {
-  handle(req, res, seguro.pagos)
-});
+app.use('/user', user)
 
-app.post('/seguro/visaciones', (req, res) => {
-  handle(req, res, seguro.visaciones)
-});
+app.use('/personas', personas({ io }))
 
-app.post('/seguro/planes', (req, res) => {
-  handle(req, res, seguro.planes)
-});
-*/
+app.use('/consultas', consultas({ io }))
 
-app.post('/personas', (req, res) => {
-  handle(req, res, personas)
-})
+app.use('/medisur/planes', medisur.planes)
+app.use('/medisur/contratos', medisur.contratos({ io }))
+app.use('/medisur/asegurados', medisur.asegurados({ io }))
+app.use('/medisur/pagos', medisur.pagos({ io }))
+app.use('/medisur/eventos', medisur.eventos({ io }))
+app.use('/medisur/prestaciones', medisur.prestaciones({ io }))
 
-app.post('/medisur/:modulo', (req, res) => {
-  handle(req, res, medisur)
-})
+app.use('/', errorPhase)
 
-app.post('/consultas', (req, res) => {
-  handle(req, res, consultas)
-})
-
-io.of('/consultas').on('connection', (socket) => {
-  socket.on('subscribe', (args) => {
-    store.get(args.sid, (error, session) => {
-      try {
-        if (
-          !session.username
-          || !session.permisos
-          || !session.permisos.consultas
-        ) throw response(403)
-        consultas.subscribe(args, socket, store)
-        .then(() => {})
-        .catch((error) => console.log(error))
-      } catch (error) {}
-    })
-  })
-})
-
-io.of('/medisur').on('connection', (socket) => {
-  socket.on('subscribe', (args) => {
-    store.get(args.sid, (error, session) => {
-      try {
-        if (
-          !session.username
-          || !session.permisos
-          || !session.permisos.medisur
-        ) throw response(403)
-        medisur.subscribe(args, socket, store)
-        .then(() => {})
-        .catch((error) => console.log(error))
-      } catch (error) {}
-    })
-  })
-})
-
-/*
-io.of('/medisur').on('connection', (socket) => {
-  socket.on('subscribe', (args) => {
-    store.get(args.sid, (error, session) => {
-      if (session.username) {
-        const allowedRooms = (session.allowedRooms && session.allowedRooms.medisur) || {}
-        Object.keys(allowedRooms).forEach(room => {
-          if (allowedRooms[room]) {
-            socket.join(room)
-            medisur.getRoomData(room).then(data => {
-              socket.emit(room, data)
-            }).catch(() => {})
-          }
-        })
-      }
-    })
-  })
-})
-*/
-
-io.on('connection', (socket) => {
-  socket.on('subscribe', (args) => {
-    store.get(args.sid, (error, session) => {
-      if (session.username) {
-        const allowedRooms = session.allowedRooms || {}
-        Object.keys(allowedRooms).forEach(room => {
-          if (allowedRooms[room]) {
-            const mod = { personas }[room]
-            if (mod) {
-              socket.join(room)
-              mod.getAll().then(data => {
-                socket.emit(room, data)
-              }).catch(error => { console.log(error) })
-            }
-          }
-        })
-      }
-    })
-  })
-})
+io.on('connection', (socket) => {})
+io.of('/consultas').on('connection', (socket) => { /* console.log('/consultas') */ })
+io.of('/medisur').on('connection', (socket) => { /*console.log('/medisur')*/ })
 
 const port = process.env.PORT || 3000
 server.listen(port, () => {

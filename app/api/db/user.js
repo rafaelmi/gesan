@@ -1,116 +1,86 @@
-const monk = require('monk');
-const db = monk('localhost/sanasur');
-const crypto = require('crypto');
+const monk = require('monk')
+const db = monk('localhost/sanasur')
+const crypto = require('crypto')
 const response = require('./response')
+const router = require('express').Router()
 
-const users = db.get('authUsuarios');
+const users = db.get('vAuthUsuarios')
 
-/*
-// Registra el socket en los rooms designados
-function registerRooms(session, io){
-  if (session.socketId) {
-    const socket = io.sockets.connected[session.socketId]
-    const rooms = session.rooms || []
-    if (socket) {
-      rooms.map(room => {
-        console.log(room)
-        console.log(socket.rooms)
-        socket.join(room)
-        console.log(socket.rooms)
-      })
-    }
-  }
-}
-
-function setSocket(args, session, io) {
-  return new Promise((resolve, reject) => {
-    session.socketId = args.socketId // io.sockets.connected[args.socketId]
-    registerRooms(session, io)
-    resolve(response(200))
-  })
-}
-*/
-
-function login(args, session) {
-  return new Promise((resolve, reject) => {
-    if (session.username) {
-      resolve(response(452));
-      // return Promise.resolve(response(452));
-    } else {
-      args.password = crypto.createHash('sha256')
-                            .update(args.password)
-                            .digest('hex');
-      users.findOne({_id: args.username,
-                            password: args.password},
-                          {castIds: false})
-      .then(data => {
-        if (!data) {
-          resolve(response(401))
-        } else {
-          data.username = data._id;
-          data.usuario = data._id;
-          delete data._id;
-          delete data.password;
-          session.username = data.username;
-          session.usuario = data.usuario
-          session.nombre = data.nombre;
-          session.tipo = data.tipo;
-          session.permisos = data.permisos
-          session.allowedRooms = data.allowedRooms || []
-          data.sid = session.id
-          // registerRooms(session, io)
-          // io.sockets.connected[session.socketId]
-          // session.socket = io.sockets.connected[args.socketId]
-          /* crypto.randomBytes(32, (err, buf) => {
-            session.socketKey = buf.toString('hex')
-            data.sid = session.id
-            data.socketKey = session.socketKey
-            resolve(response(200, data))
-          }) */
-          resolve(response(200, data))
+function setPermisos(data) {
+  const callback = (acc, permisos) => {
+    Object.keys(permisos).forEach(key => {
+      if (typeof(acc[key]) === 'object'){
+        if (typeof(permisos[key]) === 'object'){
+          callback(acc[key], permisos[key])
         }
-      })
-    }
-  })
-}
-
-function info(args, session) {
-  return new Promise((resolve, reject) => {
-    if (!session.username) {
-      resolve(response(403));
-    } else {
-      users.findOne({_id: session.username},
-                          {castIds: false})
-        .then(data => {
-          if (!data) {
-            resolve(response(500))
-          } else {
-            data.username = data._id;
-            data.usuario = data._id;
-            delete data._id;
-            delete data.password;
-            data.sid = session.id
-            /* data.socketKey = session.socketKey */
-            resolve(response(200, data))
-          }
-        })
-    }
-  })
-}
-
-
-function logout(args, session) {
-  if (!session.username) {
-    return Promise.resolve(response(453));
+      } else {
+        acc[key] = permisos[key] || acc[key]
+      }
+    })
   }
-  session.destroy();
-  return Promise.resolve(response(200));
+
+  let perfiles = []
+  const permisos = data.perfiles.reduce((acc, perfil) => {
+    perfiles.push(perfil._id)
+    callback(acc,perfil.permisos)
+    return acc
+  },{})
+
+  Object.assign(data, { perfiles }, { permisos })
 }
 
+router.post('/login', ({ body, session }, res, next) => {
+  let args = Object.create(body)
+  if (session.username) throw 452
+  args.password = crypto.createHash('sha256')
+                        .update(args.password)
+                        .digest('hex');
+  users.findOne({_id: args.username,
+                        password: args.password},
+                      {castIds: false})
+  .then(data => {
+    if (!data) throw 401
+    data.username = data._id
+    data.usuario = data._id
+    delete data._id
+    delete data.password
+    session.username = data.username
+    session.usuario = data.usuario
+    session.nombre = data.nombre
+    session.tipo = data.tipo
+    // session.allowedRooms = data.allowedRooms || []
+    // data.sid = session.id
 
-module.exports = {
-    // setSocket,
-    login,
-    logout,
-    info
-};
+    setPermisos(data)
+    Object.assign(session, { perfiles: data.perfiles }, { permisos: data.permisos })
+    res.json(response(200, data))
+  }).catch(next)
+})
+
+router.post('/info', ({ body, session }, res, next) => {
+  let args = Object.create(body)
+  session.sid = args.sid
+  if (!session.username) throw 403
+  users.findOne({_id: session.username},
+                      {castIds: false})
+  .then(data => {
+    if (!data) throw 500
+    data.username = data._id;
+    data.usuario = data._id;
+    delete data._id;
+    delete data.password;
+    // data.sid = session.id
+    setPermisos(data)
+    res.json(response(200, data))
+  }).catch(next)
+})
+
+
+router.post('/logout', ({ body, session }, res, next) => {
+  let args = Object.create(body)
+  if (!session.username) throw 453
+  session.destroy();
+  res.json(response(200))
+})
+
+module.exports = router

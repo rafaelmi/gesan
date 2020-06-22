@@ -10,7 +10,7 @@ export default {
 
   data: () => ({
     tableProps: {
-      apiUrl: '/seguro/visaciones',
+      // apiUrl: '/seguro/visaciones',
       headers: [
         { value: '_id', text: 'Ingreso No.', type: 'id', creable: false },
         { value: 'contrato', text: 'Contrato', type: 'id', required: true },

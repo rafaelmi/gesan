@@ -35,26 +35,18 @@ export default new Vuex.Store({
 
   getters: {
     started: state => state.state !== 'INIT',
-    logged: state => state.state !== 'INIT' && state.state !== 'STARTED'
+    logged: state => state.state !== 'INIT' && state.state !== 'STARTED',
+    permisos: state => (state.user && state.user.permisos) || {}
   },
 
   mutations: {
     start (state) {
-      // state.defaultState = Object.assign({}, state)
       const socket = this._vm.$socket
       state.socket = socket.io.nsps['/']
-      nsps.forEach(nsp => {
+      nsps.forEach(nsp => { // ### LIMPIEZA ###
         state[nsp].socket = socket.io.nsps['/' + nsp]
-        /*
-        state[nsp] = Object.assign(
-          {},
-          state[nsp],
-          { socket: socket.io.nsps['/' + nsp] }
-        )
-        */
       })
       state.state = 'STARTED'
-      // state.defaultState = Object.assign({}, state)
     },
 
     login (state, user) {
@@ -118,29 +110,27 @@ export default new Vuex.Store({
       return new Promise((resolve, reject) => {
         if (getters.started) resolve()
         else {
-          api.command({
-            url: API.USER,
-            command: 'info',
-            args: {}
+          const nsps = this._vm.$socket.io.nsps
+          Object.values(nsps).forEach(socket => {
+            if (socket.nsp === '/') {
+              socket.on('connect', () => { // info()) // Revisar performance del API y db
+                api.command({
+                  url: API.USER,
+                  command: 'info',
+                  args: { sid: socket.id }
+                }).then((res) => {
+                  if (!getters.started) {
+                    commit('start')
+                    resolve()
+                    if (res.result === 200) {
+                      dispatch('setup', res.data)
+                    }
+                  }
+                }).catch(reject)
+              })
+            }
+            socket.open()
           })
-            .then((result) => {
-              /*
-              const socket = this._vm.$socket
-              const callback = (state, nsp) => {
-                state.defaultState = Object.assign({}, state)
-                state.socket = nsp
-                  ? socket.io.nsps[nsp]
-                  : socket
-                state.state = 'STARTED'
-              } */
-              commit('start')
-              // commit('consultas/start', callback)
-              // commit('seguro/start', callback)
-              resolve()
-              if (result.result === 200) {
-                dispatch('setup', result.data)
-              }
-            })
         }
       })
     },
@@ -157,12 +147,12 @@ export default new Vuex.Store({
               { username: credentials.username.toLowerCase() }
             )
           })
-            .then((result) => {
-              if (result.result === 200) {
-                dispatch('setup', result.data)
+            .then((res) => {
+              if (res.result === 200) {
+                dispatch('setup', res.data)
                   .then(() => resolve())
               } else {
-                reject(new Error(result.details))
+                reject(new Error(res.details))
               }
             })
         } catch (error) {
@@ -174,20 +164,13 @@ export default new Vuex.Store({
     setup ({ commit, state, dispatch }, data) {
       return new Promise((resolve, reject) => {
         commit('login', data)
-        const sid = state.user.sid
-        const callback = (state, commit) => {
-          return new Promise((resolve, reject) => {
-            // state.socket.open().on('connect', () => {
-            //  commit && commit('reload')
-            state.socket.emit('subscribe', { sid: sid })
-            resolve()
-            // })
-          })
-        }
         Promise.all([
-          callback(state),
-          dispatch('consultas/setup', callback),
-          dispatch('medisur/setup', callback)
+          dispatch('send', {
+            url: '/personas',
+            command: 'get'
+          }),
+          dispatch('consultas/setup'),
+          dispatch('medisur/setup')
         ]).then(() => {
           commit('establish', data)
           resolve()

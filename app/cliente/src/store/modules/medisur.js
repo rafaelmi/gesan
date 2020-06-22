@@ -61,7 +61,11 @@ const getters = {
   }).reduce((acc, el) => {
     el.forEach(el => acc.push(el))
     return acc
-  }, [])
+  }, []),
+
+  permisos: (state, getters, rootState, rootGetters) => {
+    return rootGetters.permisos.medisur || null
+  }
 }
 
 const mutations = {
@@ -71,19 +75,28 @@ const mutations = {
 }
 
 const actions = {
-  setup ({ state, commit, dispatch }, callback) {
-    dispatch('send', Object.assign(
-      {
-        modulo: 'planes',
-        command: 'getAll',
-        url: API
-      }), { root: true }
-    ).then(res => {
-      state.planes = res.data
-    }).catch(err => {
-      commit('error', err)
+  setup ({ state, getters, commit, dispatch }, callback) {
+    return getters.permisos && new Promise((resolve, reject) => {
+      Promise.all([
+        dispatch('send',
+          {
+            modulo: 'planes',
+            command: 'get'
+          }
+        ).then(res => {
+          state.planes = res.data
+        }).catch(err => {
+          commit('error', err)
+          throw err
+        }),
+        dispatch('send',
+          {
+            modulo: 'contratos',
+            command: 'get'
+          }
+        )
+      ]).then(resolve).catch(reject)
     })
-    return callback(state)
   },
 
   send ({ dispatch, state }, props) {

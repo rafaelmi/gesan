@@ -3,18 +3,15 @@ const API_URL = '/api'
 function command (args) {
   let url = API_URL + args.url
   url += args.modulo ? '/' + args.modulo : ''
-  const command = {
-    command: args.command,
-    args: args.args || {}
-  }
+  url += '/' + args.command
   return fetch(url, {
     method: 'POST',
-    body: JSON.stringify(command),
+    body: JSON.stringify(args.args),
     headers: {
       'content-type': 'application/json'
     }
   })
-    .then(response => response.json())
+    .then(res => res.json())
 }
 
 export default {

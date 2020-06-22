@@ -41,6 +41,9 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
+
+// const namespace = 'consultas'
 
 export default {
   components: {
@@ -48,18 +51,40 @@ export default {
 
   data: () => ({
     barColor: 'blue darken-3',
-    tab: null,
-    tabs: [
-      { title: 'CONSULTORIO', to: 'consultorio/index' },
-      { title: 'TURNOS', to: 'turnos' }
-      // { title: 'PANTALLA', to: 'pantalla' } // , color: 'primary' }
-    ]
+    tab: null
   }),
 
   computed: {
+    tabs () {
+      const perfiles = this.user.perfiles || []
+      const res = []
+      if (
+        perfiles.filter(el => [
+          'medico',
+          'master',
+          'admin',
+          'supervisor'
+        ].find(el2 => el2 === el)).length
+      ) res.push({ title: 'CONSULTORIO', to: 'consultorio/index' })
+      if (
+        perfiles.filter(el => [
+          'recepcion',
+          'master',
+          'admin',
+          'supervisor'
+        ].find(el2 => el2 === el)).length
+      ) res.push({ title: 'TURNOS', to: 'turnos' })
+      return res
+    },
+
     showTabs () {
       return this.$route.name !== 'Pantalla'
-    }
+    },
+
+    ...mapState([
+      'user'
+    ])
+
   },
 
   created () {

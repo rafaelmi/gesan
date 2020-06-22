@@ -3,10 +3,6 @@ db.createCollection("authPerfiles")
 db.createCollection("authUsuarios")
 db.createCollection("consultas")
 db.createCollection("counters")
-db.counter.insert(
-  { collection: "consultas", turno: {D: 1, A: 28, B: 2, E: 1, "undefined": 6 }},
-  { collection: "medisurContratos", lastId: 81 }
-)
 db.createCollection("facturas")
 db.createCollection("medisurContratos")
 db.createCollection("medisurEventos")

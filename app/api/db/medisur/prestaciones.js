@@ -9,52 +9,41 @@ const planes = db.get('vMedisurPlanes')
 const validaciones = require('./validaciones')
 const eventos = require('./eventos')
 
-function include (modules) {
-  io = modules.io
-  personas = modules.personas
-}
+module.exports = ({ io }) => {
+  const router = require('express').Router()
 
-function create(args, session) {
-  return new Promise((resolve, reject) => {
-    if (!session.username) {
-      resolve(403)
-    } else {
-      validaciones.cobertura(args).then(({ mora, aprobado, producto }) => {
-        if (mora > 0) resolve(response(451, { mora }))
-        else if (!aprobado) resolve(response(450))
-        else {
-          const props = {
-            fecha: Date.now(),
-            producto: producto._id,
-            monto: aprobado
-            // estado: 'ACTIVO'
-          }
-          let command = { $push: { 'eventos.$[evento].prestaciones': props } }
-          if (producto.nombre === 'CONSULTA GENERAL'){
-            command.$set = { 'eventos.$[evento].estado': 'CERRADO' }
-          }
-          contratos.findOneAndUpdate(
-            { _id: args.contrato },
-            command,
-            {
-              castIds: false,
-              arrayFilters: [{'evento.estado': {$eq: 'ACTIVO'}}]
-            }
-          ).then(data => {
-            resolve(response((aprobado < args.monto ? 251 : 250), data))
-            vContratos.findOne(
-              {_id: args.contrato},
-              {castIds: false}
-            ).then((data) => {
-              io.of('/medisur').emit('contratos', [ data ])
-            }).catch(reject)
-          }).catch(reject)
+  router.post('/create', ({ body }, res, next) => {
+    validaciones.cobertura(args).then(({ mora, aprobado, producto }) => {
+      if (mora > 0) throw 451
+      else if (!aprobado) throw 450
+      const props = {
+        fecha: Date.now(),
+        producto: producto._id,
+        monto: aprobado
+        // estado: 'ACTIVO'
+      }
+      let command = { $push: { 'eventos.$[evento].prestaciones': props } }
+      if (producto.nombre === 'CONSULTA GENERAL'){
+        command.$set = { 'eventos.$[evento].estado': 'CERRADO' }
+      }
+      contratos.findOneAndUpdate(
+        { _id: args.contrato },
+        command,
+        {
+          castIds: false,
+          arrayFilters: [{'evento.estado': {$eq: 'ACTIVO'}}]
         }
-      }).catch(reject)
-    }
+      ).then(data => {
+        res.json(response((aprobado < args.monto ? 251 : 250), data))
+        vContratos.findOne(
+          {_id: args.contrato},
+          {castIds: false}
+        ).then((data) => {
+          io.of('/medisur').emit('contratos', [ data ])
+        }).catch(next)
+      }).catch(next)
+    }).catch(next)
   })
-}
 
-module.exports = {
-    create
-};
+  return router
+}

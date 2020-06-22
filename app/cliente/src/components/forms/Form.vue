@@ -145,6 +145,7 @@ export default {
       type: String,
       default: null
     },
+    command: String,
     value: Boolean,
     swEditButton: {
       type: Boolean,
@@ -264,16 +265,17 @@ export default {
 
     send (opts) {
       if (this.namespace) {
+        const command = this.command || this.api.command
         this.$store.dispatch(
           this.namespace + '/send',
           {
             modulo: this.modulo,
-            command: this.api.command,
+            command,
             args: this.editedItem
           }
         ).then((result) => {
           this.swModificar = false
-          if (this.api.command === 'create') {
+          if (command === 'create') {
             this.$refs.form.resetValidation()
             this.setDefault()
           }

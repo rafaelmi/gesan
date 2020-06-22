@@ -8,6 +8,9 @@
 - ¿Que pasa si vienen dos personas del mismo seguro al mismo tiempo?
   - Se precisa crear eventos por asegurado
 - Validar cobertura por eventos (medicamentos y descartables)
+- *** CHEQUEAR LA VISTA 'vMedisurPlanes' EN MONGO (SE PUEDE REDUCIR EL ARRAY)
+- Bloquear acceso a vistas en router, según permisos
+
 
 # DONE
 - Permitir asignación de letras

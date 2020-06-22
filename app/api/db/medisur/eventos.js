@@ -7,42 +7,36 @@ const vContratos = db.get('vMedisurContratos')
 const planes = db.get('vMedisurPlanes')
 const validaciones = require('./validaciones')
 
-function include (modules) {
-  io = modules.io
-  personas = modules.personas
-}
+module.exports = ({ io }) => {
+  const router = require('express').Router()
 
-function create(args, session) {
-  return new Promise((resolve, reject) => {
-    if (!session.username) {
-      resolve(403)
-    } else {
-      validaciones.pago(args).then(({ mora }) => {
-        if (mora > 0) {
-          resolve(response(451, { mora }))
-        } else {
-          const props = {
-            adherente: args.adherente,
-            inicio: Date.now(),
-            estado: 'ACTIVO'
-          }
-          contratos.findOneAndUpdate(
-            { _id: args.contrato, adherentes: args.adherente },
-            { $push: { eventos: props } },
-            { castIds: false }
-          ).then(data => {
-            resolve(response(200, data))
-            vContratos.findOne(
-              {_id: args.contrato},
-              {castIds: false}
-            ).then((data) => {
-              io.of('/medisur').emit('contratos', [ data ])
-            }).catch(reject)
-          }).catch(reject)
-        }
-      }).catch(reject)
-    }
+  router.post('/create', ({ body }, res, next) => {
+    let args = Object.assign({}, body)
+
+    validaciones.pago(args).then(({ mora }) => {
+      if (mora > 0) throw 451
+      const props = {
+        adherente: args.adherente,
+        inicio: Date.now(),
+        estado: 'ACTIVO'
+      }
+      contratos.findOneAndUpdate(
+        { _id: args.contrato, adherentes: args.adherente },
+        { $push: { eventos: props } },
+        { castIds: false }
+      ).then(data => {
+        res.json(response(200))
+        vContratos.findOne(
+          {_id: args.contrato},
+          {castIds: false}
+        ).then((data) => {
+          io.of('/medisur').emit('contratos', [ data ])
+        }).catch(next)
+      }).catch(next)
+    }).catch(next)
   })
+
+  return router
 }
 
 /*
@@ -85,7 +79,7 @@ function create(args, session) {
   });
 }
 */
-
+/*
 function getAll(args, session) {
   if (!session.username) {
     return Promise.resolve(response(403));
@@ -98,5 +92,6 @@ function getAll(args, session) {
 
 module.exports = {
     create,
-    getAll,
+    // getAll,
 };
+*/

@@ -5,14 +5,19 @@ const state = () => ({
 })
 
 const getters = {
+  permisos: (state, getters, rootState, rootGetters) => {
+    return rootGetters.permisos.consultas || null
+  }
 }
 
 const mutations = {
 }
 
 const actions = {
-  setup ({ state, commit }, callback) {
-    return callback(state)
+  setup ({ state, getters, dispatch }) {
+    return getters.permisos && dispatch('send', {
+      command: 'get'
+    })
   },
 
   update ({ state }, data) {

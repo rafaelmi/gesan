@@ -22,14 +22,14 @@ const codes = {
   500: {title: "Error Interno del Servidor", details: ""},
 }
 
-function response(code, data=null, room=null) {
+function response(code, data=null, stack=null) {
   return Object.assign(
     { result: code },
     { title, details } = codes[code],
     code === 500
       ? { details: data || '' }
       : { data: data },
-    { room }
+    { stack }
   )
 }
 
