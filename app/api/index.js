@@ -7,6 +7,7 @@ const redis = require('redis')
 
 const response = require('./db/response')
 const personas = require('./db/personas')
+const broadcast = require('./db/broadcast')
 const admin = require('./db/admin')
 const user = require('./db/user')
 const medisur = require('./db/medisur')
@@ -40,19 +41,13 @@ function checkPermission({url, session}, res, next) {
       info: true,
       logout: true,
       login: true
-    },
-    test: {
-      modtest: {
-        // sum: true,
-        mul: true
-      }
     }
   }
   let path = url.split('/')
   path.shift()
   if (path.reduce((acc, cur) => {
       return ((typeof acc) === 'object') && acc[cur]
-    }, Object.assign({}, public, session.permisos))
+    }, Object.assign({}, session.permisos, public))
   ) next()
   else next(403)
 }
@@ -81,11 +76,20 @@ app.use('/medisur/pagos', medisur.pagos({ io }))
 app.use('/medisur/eventos', medisur.eventos({ io }))
 app.use('/medisur/prestaciones', medisur.prestaciones({ io }))
 
+app.use('/historial/pacientes', historial.pacientes)
+
+app.use('/', (req, res, next) => {
+  res.json(response(200))
+  next()
+})
+
+app.use('/', broadcast({ io }))
 app.use('/', errorPhase)
 
 io.on('connection', (socket) => {})
 io.of('/consultas').on('connection', (socket) => { /* console.log('/consultas') */ })
 io.of('/medisur').on('connection', (socket) => { /*console.log('/medisur')*/ })
+io.of('/historial').on('connection', () => {})
 
 const port = process.env.PORT || 3000
 server.listen(port, () => {

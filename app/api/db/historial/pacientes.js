@@ -1,30 +1,30 @@
-const monk = require('monk');
+const monk = require('monk')
 const db = require('../connection')
 const response = require('../response')
 const table = db.get('pacientes')
 const view = db.get('vPacientes')
 var router = require('express').Router()
 
-router.post('/mul', (req, res, next) => {
-  res.json({"x*2": req.body.x*2, "x*3":req.body.x*3})
+router.post('/create', ({ body }, res, next) => {
+  let args = Object.assign({}, body)
+  args._id = args.cedula
+  delete args.cedula
+  args.fecha = Date.now()
+  args.modificado = args.fecha
+  table.insert(args, {castIds: false})
+  .then(data => {
+    Object.assign(body, data)
+    next()
+  }).catch(next)
 })
 
-router.post('/sum', (req, res, next) => {
-  res.json({"x+2": req.body.x+2, "x+3":req.body.x+3})
+router.post('/get', (req, res, next) => {
+  let args = Object.assign({}, req.body)
+  table.find(args, {castIds: false})
+  .then(data => {
+    req.body = data
+    next()
+  }).catch(next)
 })
-
-function create(args, session) {
-  return new Promise((resolve, reject) => {
-    Promise.all([
-      counters.findOneAndUpdate(
-        {collection: 'medisurContratos' },
-        {$inc:{lastId:1}}
-      ),
-      planes.findOne({nombre: args.plan}),
-      personas.update(args)
-    ]).then (values => {
-    })
-  })
-}
 
 module.exports = router

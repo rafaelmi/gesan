@@ -14,7 +14,8 @@ Vue.config.productionTip = false
 const nsps = [
   '',
   'consultas',
-  'medisur'
+  'medisur',
+  'historial'
 ]
 nsps.forEach(nsp => {
   Vue.use(new VueSocketIO({

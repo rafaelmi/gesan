@@ -1,5 +1,5 @@
 <template>
-  <cmpTable v-bind="tableProps"/>
+  <c-table v-bind="tableProps"/>
 </template>
 
 <script>
@@ -10,7 +10,7 @@ const namespace = 'consultas'
 export default {
 
   components: {
-    cmpTable: () => import('@/components/Table.vue')
+    'c-table': () => import('@/components/Table.vue')
   },
 
   data: () => ({
@@ -37,6 +37,7 @@ export default {
       editTitle: 'Detalles Turno',
       sortBy: 'fecha',
       sortDesc: true,
+      creable: false,
       editable: false,
       borrable: false
     }

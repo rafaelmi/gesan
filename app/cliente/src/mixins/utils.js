@@ -30,6 +30,19 @@ export default {
         (date.getUTCMonth() + 1).toString().padStart(2, '0') + '-' +
         date.getUTCDate().toString().padStart(2, '0')
       )
+    },
+    toEdad (val) {
+      const date = new Date(val)
+      const now = new Date()
+      let years = now.getUTCFullYear() - date.getUTCFullYear()
+      let months = now.getUTCMonth() - date.getUTCMonth()
+      const days = now.getUTCDate() - date.getUTCDate()
+
+      if (days < 0) months--
+      if (months < 0) years--
+      months += years * 12 + (months < 0 && 12)
+
+      return years < 2 ? months + ' Meses' : years + ' Años'
     }
   }
 }

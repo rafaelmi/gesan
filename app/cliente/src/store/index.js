@@ -3,12 +3,14 @@ import Vuex from 'vuex'
 import api from '@/include/api'
 import consultas from './modules/consultas'
 import medisur from './modules/medisur'
+import historial from './modules/historial'
 
 Vue.use(Vuex)
 
 const modules = {
   consultas,
-  medisur
+  medisur,
+  historial
 }
 const nsps = Object.keys(modules)
 
@@ -170,7 +172,8 @@ export default new Vuex.Store({
             command: 'get'
           }),
           dispatch('consultas/setup'),
-          dispatch('medisur/setup')
+          dispatch('medisur/setup'),
+          dispatch('historial/setup')
         ]).then(() => {
           commit('establish', data)
           resolve()
