@@ -10,7 +10,8 @@
 - Validar cobertura por eventos (medicamentos y descartables)
 - *** CHEQUEAR LA VISTA 'vMedisurPlanes' EN MONGO (SE PUEDE REDUCIR EL ARRAY)
 - Bloquear acceso a vistas en router, según permisos
-
+- Hacer consultorio reactivo al momento de registrar nuevo paciente
+- Mejorar mensaje de error, sobretodo en formularios
 
 # DONE
 - Permitir asignación de letras

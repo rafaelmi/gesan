@@ -1,54 +1,95 @@
 <template>
-  <cmpTable v-bind="tableProps"/>
+  <c-ficha v-if="paciente._id"
+    :titulo="paciente.nombre"
+  >
+    <c-ficha-paciente :paciente="paciente"/>
+    <c-ficha-card
+      titulo="ACCIONES"
+    >
+    <v-list shaped>
+      <v-list-item-group color="primary">
+        <v-list-item v-for="(accion, i) in acciones"
+          :key="i"
+          :disabled="accion.disabled"
+          @click="accion.click"
+        >
+          <v-list-item-avatar>
+            <v-icon v-text="accion.icon"/>
+          </v-list-item-avatar>
+          <v-list-item-content>
+            <v-list-item-title v-text="accion.titulo"/>
+          </v-list-item-content>
+        </v-list-item>
+      </v-list-item-group>
+    </v-list>
+    <c-form-consultas-nuevo
+      v-model="swFormConsultasNew"
+      :paciente="paciente"
+    />
+  </c-ficha-card>
+  </c-ficha>
+  <c-ficha v-else
+    titulo="No ha seleccionado ningún paciente"
+  />
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
+import mixUtils from '@/mixins/utils'
 
 const namespace = 'historial'
-// const modulo = 'asegurados'
 
 export default {
   components: {
-    cmpTable () { return import('@/components/Table.vue') }
+    'c-ficha': () => import('@/components/ficha/Ficha.vue'),
+    'c-ficha-card': () => import('@/components/ficha/FichaCard.vue'),
+    'c-ficha-paciente': () => import('@/components/ficha/FichaPaciente.vue'),
+    'c-form-consultas-nuevo': () => import('@/components/forms/citas/NuevoTurno.vue')
   },
 
+  mixins: [
+    mixUtils
+  ],
+
   data: () => ({
-    defaultProps: {
-      headers: [
-        { value: 'cedula', text: 'Cédula', type: 'cedula', required: true, editable: false },
-        { value: 'nombre', text: 'Nombre', type: 'nombre', required: true, editable: false },
-        { value: 'nacimiento', text: 'Fecha de Nacimiento', type: 'fecha', required: true, editable: false, inTable: false },
-        { value: 'direccion', text: 'Dirección', type: 'direccion', icon: 'mdi-map-marker', inTable: false },
-        { value: 'telefono', text: 'Teléfono', type: 'telefono', icon: 'mdi-phone', inTable: false },
-        { value: 'ciudad', text: 'Ciudad', type: 'ciudad', icon: 'mdi-home-city', inTable: false },
-        { value: 'departamento', text: 'Departamento', type: 'departamento', icon: 'mdi-city-variant', inTable: false }
-      ],
-      items: [],
-      creable: true,
-      // editTitle: 'Detalles Asegurado',
-      sortBy: 'nombre'
-    }
+    swFormConsultasNew: false
   }),
 
   computed: {
-    tableProps () {
-      return Object.assign(
-        {},
-        this.defaultProps,
-        {
-          externalItems: this.externalItems,
-          onClickRow: (item) => this.$router.push('/medisur/contrato/' + item.contrato)
-        }
-      )
+    acciones () {
+      const disabled = true
+      return [
+        { titulo: 'NUEVA CONSULTA', icon: 'mdi-stethoscope', click: this.nuevoTurno },
+        { titulo: 'NUEVO ESTUDIO', icon: 'mdi-microscope', disabled },
+        { titulo: 'NUEVO INGRESO', icon: 'mdi-bed', disabled },
+        { titulo: 'NUEVO PROCEDIMIENTO', icon: 'mdi-box-cutter', disabled }
+      ]
     },
 
-    ...mapGetters(namespace, {
-      externalItems: 'asegurados'
-    })
+    ...mapGetters(namespace, [
+      'pacientes',
+      'paciente'
+    ])
+  },
+
+  created () {
+    const paciente = this.$route.params.paciente
+    paciente && this.selectPaciente(paciente)
+    /*
+    if (this.$route.path === '/historial/ficha') {
+      this.$router.replace(this.paciente._id)
+    }
+    */
   },
 
   methods: {
+    nuevoTurno () {
+      this.swFormConsultasNew = true
+    },
+
+    ...mapActions(namespace, [
+      'selectPaciente'
+    ])
   }
 }
 </script>

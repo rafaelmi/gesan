@@ -18,6 +18,10 @@ const schema = Joi.object({
     .integer()
     .positive(),
 
+  sexo: Joi.string()
+    .min(1)
+    .max(1),
+
   direccion: Joi.string().max(100),
   telefono: Joi.string().max(30),
   ciudad: Joi.string().max(50),
@@ -52,7 +56,7 @@ module.exports = ({ io }) => {
   const router = require('express').Router()
 
   function update({ body }, res, next) {
-    let args = Object.assign({}, body)
+    let args = Object.assign({}, body.persona || body)
     props = Object.create(args) // OJO: Object.create() garantiza discriminar propiedades
     props.nacimiento && (props.nacimiento = new Date(props.nacimiento).getTime())
     props.modificado = Date.now()
@@ -66,6 +70,7 @@ module.exports = ({ io }) => {
       ).then(data => {
         io.of('/').emit('personas', [ data ])
         body.cedula = data._id
+        delete body.persona
         next()
       }).catch(next) // TODO: Establecer error de validación
     }).catch(next)
@@ -82,7 +87,13 @@ module.exports = ({ io }) => {
 
   router.post('/medisur/contratos/create', update)
   router.post('/medisur/asegurados/create', update)
-  router.all('/', (req, res, next) => next())
+  
+  router.post('/historial/pacientes/create', update)
+
+  router.use('/', (req, res, next) => {
+    if ( req.body.persona ) update(req, res, next)
+    else next()
+  })
 
   return router
 }

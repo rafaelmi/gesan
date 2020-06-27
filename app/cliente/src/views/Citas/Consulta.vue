@@ -1,129 +1,138 @@
 <template>
-  <div>
-    <v-card
-      class="mx-auto"
-      max-width="900"
-      color="green lighten-5"
+  <c-ficha titulo="Consulta Médica">
+    <c-ficha-paciente :paciente="consulta"/>
+    <c-ficha-card
+      titulo="DETALLES"
     >
-      <!--<v-card-text class="text-center display-1 font-weight-light blue--text text--darken-4">-->
-      <v-row class="text-center headline blue--text text--darken-4">
-        <v-col cols="7" class="text-right my-auto">
-          Consulta Médica
-        </v-col>
-      </v-row>
-    </v-card>
-    <v-card
-      class="mx-auto"
-      max-width="900"
-      color="green lighten-5"
-    >
-      <v-list shaped>
-        <v-subheader>PACIENTE</v-subheader>
-        <v-list-item two-line>
-          <v-list-item-icon>
-            <v-icon v-text="'mdi-account'"/>
-          </v-list-item-icon>
-          <v-list-item-content>
-            <v-list-item-title v-text="consulta.nombre.toUpperCase()"/>
-            <v-list-item-subtitle v-text="'C.I. ' + toMilSeparator(consulta.cedula)"/>
-          </v-list-item-content>
-        </v-list-item>
-        <v-list-item two-line>
-          <v-list-item-icon>
-            <v-icon v-text="'mdi-door-closed'"/>
-          </v-list-item-icon>
-          <v-list-item-content>
-            <v-list-item-title v-text="'Consultorio ' + consulta.consultorio"/>
-            <v-list-item-subtitle v-text="consulta.estado"/>
-          </v-list-item-content>
-        </v-list-item>
-        <v-list-item two-line>
-          <v-list-item-icon>
-            <v-icon v-text="'mdi-calendar'"/>
-          </v-list-item-icon>
-          <v-list-item-content>
-            <v-list-item-title v-text="toTimestamp(consulta.fecha)"/>
-            <v-list-item-subtitle v-text="'FECHA'"/>
-          </v-list-item-content>
-        </v-list-item>
-        <v-divider/>
-        <v-subheader>SERVICIOS Y MEDICAMENTOS</v-subheader>
-          <div
-            v-for="(servicio, i) in servicios"
-            :key="i"
-          >
-            <v-list-item>
-              <v-list-item-icon>
-                {{i + 1 + '.'}}
-              </v-list-item-icon>
+      <v-row no-gutters>
+        <v-col cols="6">
+          <v-list dense>
+            <v-list-item two-line>
               <v-list-item-content>
-                <v-list-item-title v-text="servicio"></v-list-item-title>
+                <v-list-item-title v-text="consulta.estado"/>
+                <v-list-item-subtitle v-text="'Estado'"/>
               </v-list-item-content>
             </v-list-item>
-            <v-divider inset/>
-          </div>
-          <v-list-item
-            :disabled="disable.add"
-          >
-            <v-list-item-content>
-              <v-list-item-title>
-                <v-text-field
-                  v-model="newService"
-                  :disabled="sending"
-                  :loading="sending"
-                  :error-messages="newServiceError"
-                  label="AGREGAR"
-                  prepend-icon="mdi-plus"
-                  :append-outer-icon="newService.length && 'mdi-send'"
-                  clearable
-                  @click:append-outer="onAdd"
-                  @keyup.enter="onAdd"
-                />
-              </v-list-item-title>
-            </v-list-item-content>
-          </v-list-item>
-        <v-divider/>
-        <v-subheader>ACCIONES</v-subheader>
-        <!--<v-list-item-group color="primary">-->
-          <v-list-item
-            :disabled="disable.llamar"
-            @click="onCall"
-          >
-            <v-list-item-icon>
-              <v-icon v-text="'mdi-bell-ring'" color="red"/>
-            </v-list-item-icon>
-            <v-list-item-content>
-              <v-list-item-title v-text="'LLAMAR PACIENTE'"/>
-            </v-list-item-content>
-          </v-list-item>
-          <v-list-item
-            :disabled="disable.terminar"
-            @click="onTerminar"
-          >
-            <v-list-item-icon>
-              <!--<v-icon v-text="'mdi-check-bold'" color="green"/>-->
-              <!--<v-icon v-text="'mdi-exit-run'"/>-->
-              <v-icon v-text="'mdi-stop-circle-outline'" color="red"/>
-            </v-list-item-icon>
-            <v-list-item-content>
-              <v-list-item-title v-text="'TERMINAR CONSULTA'"/>
-            </v-list-item-content>
-          </v-list-item>
-          <v-list-item
-            :disabled="disable.siguiente"
-            @click="onSiguiente"
-          >
-            <v-list-item-icon>
-              <v-icon v-text="'mdi-account-arrow-right'"/>
-            </v-list-item-icon>
-            <v-list-item-content>
-              <v-list-item-title v-text="'SIGUIENTE PACIENTE'"/>
-            </v-list-item-content>
-          </v-list-item>
-        <!--</v-list-item-group>-->
+            <v-list-item two-line>
+              <v-list-item-content>
+                <v-list-item-title v-text="toTimestamp(consulta.fecha)"/>
+                <v-list-item-subtitle v-text="'Fecha'"/>
+              </v-list-item-content>
+            </v-list-item>
+          </v-list>
+        </v-col>
+        <v-col cols="6">
+          <v-list dense>
+            <v-list-item two-line>
+              <v-list-item-content>
+                <v-list-item-title v-text="consulta.consultorio"/>
+                <v-list-item-subtitle v-text="'Consultorio'"/>
+              </v-list-item-content>
+            </v-list-item>
+          </v-list>
+        </v-col>
+      </v-row>
+      <v-list dense>
+        <v-list-item two-line>
+          <v-list-item-content>
+            <v-list-item-title v-text="consulta.medico"/>
+            <v-list-item-subtitle v-text="'Médico'"/>
+          </v-list-item-content>
+        </v-list-item>
+        <v-list-item two-line>
+          <v-list-item-content>
+            <v-list-item-title v-text="consulta.seguro"/>
+            <v-list-item-subtitle v-text="'Seguro Médico'"/>
+          </v-list-item-content>
+        </v-list-item>
       </v-list>
-    </v-card>
-  </div>
+    </c-ficha-card>
+    <v-divider/>
+    <c-ficha-card
+      titulo="SERVICIOS Y MEDICAMENTOS"
+      sm="12"
+    >
+      <v-list shaped>
+        <div
+          v-for="(servicio, i) in servicios"
+          :key="i"
+        >
+          <v-list-item>
+            <v-list-item-icon>
+              {{i + 1 + '.'}}
+            </v-list-item-icon>
+            <v-list-item-content>
+              <v-list-item-title v-text="servicio"></v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+          <v-divider inset/>
+        </div>
+        <v-list-item
+          :disabled="disable.add"
+        >
+          <v-list-item-content>
+            <v-list-item-title>
+              <v-text-field
+                v-model="newService"
+                :disabled="sending"
+                :loading="sending"
+                :error-messages="newServiceError"
+                label="AGREGAR"
+                prepend-icon="mdi-plus"
+                :append-outer-icon="newService.length && 'mdi-send'"
+                clearable
+                @click:append-outer="onAdd"
+                @keyup.enter="onAdd"
+              />
+            </v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+      </v-list>
+    </c-ficha-card>
+    <v-divider/>
+    <c-ficha-card
+      titulo="ACCIONES"
+      sm="12"
+    >
+      <v-list shaped>
+        <v-list-item
+          :disabled="disable.llamar"
+          @click="onCall"
+        >
+          <v-list-item-icon>
+            <v-icon v-text="'mdi-bell-ring'" color="red"/>
+          </v-list-item-icon>
+          <v-list-item-content>
+            <v-list-item-title v-text="'LLAMAR PACIENTE'"/>
+          </v-list-item-content>
+        </v-list-item>
+        <v-list-item
+          :disabled="disable.terminar"
+          @click="onTerminar"
+        >
+          <v-list-item-icon>
+            <!--<v-icon v-text="'mdi-check-bold'" color="green"/>-->
+            <!--<v-icon v-text="'mdi-exit-run'"/>-->
+            <v-icon v-text="'mdi-stop-circle-outline'" color="red"/>
+          </v-list-item-icon>
+          <v-list-item-content>
+            <v-list-item-title v-text="'TERMINAR CONSULTA'"/>
+          </v-list-item-content>
+        </v-list-item>
+        <v-list-item
+          :disabled="disable.siguiente"
+          @click="onSiguiente"
+        >
+          <v-list-item-icon>
+            <v-icon v-text="'mdi-account-arrow-right'"/>
+          </v-list-item-icon>
+          <v-list-item-content>
+            <v-list-item-title v-text="'SIGUIENTE PACIENTE'"/>
+          </v-list-item-content>
+        </v-list-item>
+      </v-list>
+    </c-ficha-card>
+  </c-ficha>
 </template>
 <script>
 import mixUtils from '@/mixins/utils'
@@ -133,7 +142,9 @@ const namespace = 'consultas'
 
 export default {
   components: {
-    // cmpForm () { return import('@/components/forms/Form.vue') }
+    'c-ficha': () => import('@/components/ficha/Ficha.vue'),
+    'c-ficha-card': () => import('@/components/ficha/FichaCard.vue'),
+    'c-ficha-paciente': () => import('@/components/ficha/FichaPaciente.vue')
   },
 
   mixins: [

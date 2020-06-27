@@ -118,7 +118,7 @@ export default {
       const permisos = this.permisos
       return [
         { title: 'Inicio', icon: 'mdi-home', to: '/home' },
-        { title: 'Consulta Externa', icon: 'mdi-calendar', to: permisos && permisos.consultas && '/citas' },
+        { title: 'Consulta Externa', icon: 'mdi-stethoscope', to: permisos && permisos.consultas && '/citas' },
         { title: 'Historial Médico', icon: 'mdi-account-details', to: permisos && permisos.historial && '/historial' },
         { title: 'Medisur', icon: 'mdi-shield-half-full', to: permisos && permisos.medisur && '/medisur/contratos' },
         { title: 'Farmacia', icon: 'mdi-pill', to: false },
