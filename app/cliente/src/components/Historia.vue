@@ -68,7 +68,7 @@ export default {
           aea: { titulo: 'A.E.A.', type: 'textarea', rows: 1 },
           efisico: { titulo: 'EXAMEN FÍSICO', type: 'textarea' },
           dxpresuntivo: { titulo: 'Dx. PRESUNTIVO', type: 'textarea', rows: 1 },
-          tratamiento: { titulo: 'Dx. PRESUNTIVO', type: 'textfarea', rows: 1 },
+          tratamiento: { titulo: 'TRATAMIENTO', type: 'textarea', rows: 1 },
           observaciones: { titulo: 'OBSERVACIONES', type: 'textarea' }
         }
       },
