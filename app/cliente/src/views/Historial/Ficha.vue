@@ -6,27 +6,60 @@
     <c-ficha-card
       titulo="ACCIONES"
     >
-    <v-list shaped>
-      <v-list-item-group color="primary">
-        <v-list-item v-for="(accion, i) in acciones"
+      <v-list shaped>
+        <v-list-item-group color="primary">
+          <v-list-item v-for="(accion, i) in acciones"
+            :key="i"
+            :disabled="accion.disabled"
+            @click="accion.click"
+          >
+            <v-list-item-avatar>
+              <v-icon v-text="accion.icon"/>
+            </v-list-item-avatar>
+            <v-list-item-content>
+              <v-list-item-title v-text="accion.titulo"/>
+            </v-list-item-content>
+          </v-list-item>
+        </v-list-item-group>
+      </v-list>
+      <c-form-consultas-nuevo
+        v-model="swFormConsultasNew"
+        :paciente="paciente"
+      />
+    </c-ficha-card>
+    <c-ficha-card
+      titulo="HISTORIAL"
+      sm="12"
+    >
+      <v-expansion-panels>
+        <v-expansion-panel
+          v-for="(historial, i) in paciente.historial"
           :key="i"
-          :disabled="accion.disabled"
-          @click="accion.click"
         >
-          <v-list-item-avatar>
-            <v-icon v-text="accion.icon"/>
-          </v-list-item-avatar>
-          <v-list-item-content>
-            <v-list-item-title v-text="accion.titulo"/>
-          </v-list-item-content>
-        </v-list-item>
-      </v-list-item-group>
-    </v-list>
-    <c-form-consultas-nuevo
-      v-model="swFormConsultasNew"
-      :paciente="paciente"
-    />
-  </c-ficha-card>
+          <v-expansion-panel-header>
+            <v-list dense>
+              <v-list-item two-line>
+                <v-list-item-content>
+                  <v-list-item-title v-text="toTimestamp(historial.fecha)"/>
+                  <v-list-item-subtitle v-text="'CONSULTA'"/>
+                </v-list-item-content>
+              </v-list-item>
+            </v-list>
+          </v-expansion-panel-header>
+          <v-expansion-panel-content v-if="historial.estado === 'FINALIZADO'">
+            <v-list dense>
+              <v-list-item two-line>
+                <v-list-item-content>
+                  <v-list-item-title v-text="historial.medico"/>
+                  <v-list-item-subtitle v-text="'MÉDICO'"/>
+                </v-list-item-content>
+              </v-list-item>
+            </v-list>
+            <c-historia :consulta="historial"/>
+          </v-expansion-panel-content>
+        </v-expansion-panel>
+      </v-expansion-panels>
+    </c-ficha-card>
   </c-ficha>
   <c-ficha v-else
     titulo="No ha seleccionado ningún paciente"
@@ -44,7 +77,8 @@ export default {
     'c-ficha': () => import('@/components/ficha/Ficha.vue'),
     'c-ficha-card': () => import('@/components/ficha/FichaCard.vue'),
     'c-ficha-paciente': () => import('@/components/ficha/FichaPaciente.vue'),
-    'c-form-consultas-nuevo': () => import('@/components/forms/citas/NuevoTurno.vue')
+    'c-form-consultas-nuevo': () => import('@/components/forms/citas/NuevoTurno.vue'),
+    'c-historia': () => import('@/components/Historia.vue')
   },
 
   mixins: [
@@ -59,7 +93,12 @@ export default {
     acciones () {
       const disabled = true
       return [
-        { titulo: 'NUEVA CONSULTA', icon: 'mdi-stethoscope', click: this.nuevoTurno },
+        {
+          titulo: 'NUEVA CONSULTA',
+          icon: 'mdi-stethoscope',
+          click: this.nuevoTurno
+          // disabled: this.paciente.historial[0] && this.paciente.historial[0].estado !== 'FINALIZADO'
+        },
         { titulo: 'NUEVO ESTUDIO', icon: 'mdi-microscope', disabled },
         { titulo: 'NUEVO INGRESO', icon: 'mdi-bed', disabled },
         { titulo: 'NUEVO PROCEDIMIENTO', icon: 'mdi-box-cutter', disabled }

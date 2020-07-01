@@ -90,6 +90,7 @@ export default {
         }
       )
       delete res._id
+      delete res.historial
       return res
     }
   },
