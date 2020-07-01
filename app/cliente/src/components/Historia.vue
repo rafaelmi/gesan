@@ -64,10 +64,11 @@ export default {
       historia: {
         titulo: 'HISTORIA CLÍNICA',
         children: {
-          motivo: { titulo: 'MOTIVO DE CONSULTA', type: 'textfield', rows: 1 },
-          aea: { titulo: 'A.E.A.', type: 'textfield', rows: 1 },
+          motivo: { titulo: 'MOTIVO DE CONSULTA', type: 'textarea', rows: 1 },
+          aea: { titulo: 'A.E.A.', type: 'textarea', rows: 1 },
           efisico: { titulo: 'EXAMEN FÍSICO', type: 'textarea' },
-          dxpresuntivo: { titulo: 'Dx. PRESUNTIVO', type: 'textfield', rows: 1 },
+          dxpresuntivo: { titulo: 'Dx. PRESUNTIVO', type: 'textarea', rows: 1 },
+          tratamiento: { titulo: 'TRATAMIENTO', type: 'textarea', rows: 1 },
           observaciones: { titulo: 'OBSERVACIONES', type: 'textarea' }
         }
       },
