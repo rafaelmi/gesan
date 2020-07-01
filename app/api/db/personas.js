@@ -15,8 +15,7 @@ const schema = Joi.object({
     .required(),
 
   nacimiento: Joi.number()
-    .integer()
-    .positive(),
+    .integer(),
 
   sexo: Joi.string()
     .min(1)
@@ -87,7 +86,7 @@ module.exports = ({ io }) => {
 
   router.post('/medisur/contratos/create', update)
   router.post('/medisur/asegurados/create', update)
-  
+
   router.post('/historial/pacientes/create', update)
 
   router.use('/', (req, res, next) => {

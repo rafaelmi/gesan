@@ -15,7 +15,11 @@ const getters = {
     return paciente
   }),
 
-  paciente: (state, getters, rootState) => getters.pacientes.find(el => el._id === state.paciente) || {},
+  paciente: (state, getters, rootState) => {
+    const paciente = getters.pacientes.find(el => el._id === state.paciente) || {}
+    paciente.historial && paciente.historial.sort((el1, el2) => el2.fecha - el1.fecha)
+    return paciente
+  },
 
   permisos: (state, getters, rootState, rootGetters) => {
     return rootGetters.permisos.historial || null

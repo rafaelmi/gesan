@@ -119,7 +119,15 @@ export default {
       return [
         { title: 'Inicio', icon: 'mdi-home', to: '/home' },
         { title: 'Consulta Externa', icon: 'mdi-stethoscope', to: permisos && permisos.consultas && '/citas' },
-        { title: 'Historial Médico', icon: 'mdi-account-details', to: permisos && permisos.historial && '/historial' },
+        {
+          title: 'Historial Médico',
+          icon: 'mdi-account-details',
+          to: this.user &&
+            !this.user.perfiles.find(el => el === 'medico') &&
+            permisos &&
+            permisos.historial &&
+            '/historial'
+        },
         { title: 'Medisur', icon: 'mdi-shield-half-full', to: permisos && permisos.medisur && '/medisur/contratos' },
         { title: 'Farmacia', icon: 'mdi-pill', to: false },
         { title: 'Facturación', icon: 'mdi-receipt', to: false },
@@ -139,12 +147,15 @@ export default {
       return this.menuItems[this.drawerItem || 0].title
     },
 
-    ...mapState({
-      alert: state => state.alert
-    }),
+    ...mapState([
+      // alert: state => state.alert
+      'alert',
+      'user'
+    ]),
 
     ...mapGetters([
-      'permisos'
+      'permisos',
+      'perfiles'
     ])
 
     /* time () {

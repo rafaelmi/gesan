@@ -50,7 +50,7 @@
     <v-divider/>
     <c-ficha-card
       titulo="SERVICIOS Y MEDICAMENTOS"
-      sm="12"
+      sm="8"
     >
       <v-list shaped>
         <div
@@ -92,9 +92,9 @@
     <v-divider/>
     <c-ficha-card
       titulo="ACCIONES"
-      sm="12"
+      sm="4"
     >
-      <v-list shaped>
+      <v-list shaped dense>
         <v-list-item
           :disabled="disable.llamar"
           @click="onCall"
@@ -104,6 +104,16 @@
           </v-list-item-icon>
           <v-list-item-content>
             <v-list-item-title v-text="'LLAMAR PACIENTE'"/>
+          </v-list-item-content>
+        </v-list-item>
+        <v-list-item
+          @click="$router.push('/historial/ficha/' + consulta.cedula)"
+        >
+          <v-list-item-icon>
+            <v-icon v-text="'mdi-history'"/>
+          </v-list-item-icon>
+          <v-list-item-content>
+            <v-list-item-title v-text="'VER HISTORIAL'"/>
           </v-list-item-content>
         </v-list-item>
         <v-list-item
@@ -132,6 +142,7 @@
         </v-list-item>
       </v-list>
     </c-ficha-card>
+    <c-historia :consulta="consulta"/>
   </c-ficha>
 </template>
 <script>
@@ -144,7 +155,8 @@ export default {
   components: {
     'c-ficha': () => import('@/components/ficha/Ficha.vue'),
     'c-ficha-card': () => import('@/components/ficha/FichaCard.vue'),
-    'c-ficha-paciente': () => import('@/components/ficha/FichaPaciente.vue')
+    'c-ficha-paciente': () => import('@/components/ficha/FichaPaciente.vue'),
+    'c-historia': () => import('@/components/Historia.vue')
   },
 
   mixins: [
@@ -152,16 +164,51 @@ export default {
   ],
 
   data: () => ({
-    // consultorio: null,
+    checkLab: false,
     accion: null,
     items: [],
-    editedItem: null,
     sending: false,
     newService: '',
-    newServiceError: null
+    newServiceError: null,
+    editedHeaders: {
+      historia: {
+        titulo: 'HISTORIA CLÍNICA',
+        children: {
+          motivo: { titulo: 'MOTIVO DE CONSULTA', type: 'textfield', rows: 1 },
+          aea: { titulo: 'A.E.A.', type: 'textfield', rows: 1 },
+          efisico: { titulo: 'EXAMEN FÍSICO', type: 'textarea' },
+          dxpresuntivo: { titulo: 'Dx. PRESUNTIVO', type: 'textfield', rows: 1 },
+          observaciones: { titulo: 'OBSERVACIONES', type: 'textarea' }
+        }
+      },
+      estudios: {
+        titulo: 'ESTUDIOS',
+        children: {
+          laboratorios: { titulo: 'LABORATORIOS', type: 'textarea', rows: 1, checkbox: true },
+          ecografias: { titulo: 'ECOGRAFÍAS', type: 'textarea', rows: 1, checkbox: true },
+          rayosx: { titulo: 'RAYOS X', type: 'textarea', rows: 1, checkbox: true },
+          tac: { titulo: 'T.A.C.', type: 'textarea', rows: 1, checkbox: true },
+          otros: { titulo: 'OTROS', type: 'textarea', rows: 1, checkbox: true },
+          observaciones: { titulo: 'OBSERVACIONES', type: 'textarea' }
+        }
+      }
+    }
   }),
 
   computed: {
+    editedItem () {
+      const res = {}
+      for (const [key, val] of Object.entries(this.editedHeaders)) {
+        const children = Object.keys(val.children)
+        res[key] = Object.assign(
+          Object.fromEntries(children.map(el => [el, null])),
+          { realizado: Object.fromEntries(children.filter(el => val.children[el].checkbox).map(el => [el, null])) },
+          this.consulta[key]
+        )
+      }
+      return Object.assign(res, { _id: this.consulta._id })
+    },
+
     consulta () {
       return this.consultas.find(el => el._id === this.$route.params.consulta)
     },
@@ -173,7 +220,8 @@ export default {
     disable () {
       return {
         terminar: this.consulta.estado !== 'CONSULTANDO',
-        add: this.consulta.estado !== 'CONSULTANDO', // || this.sending,
+        add: this.consulta.estado !== 'CONSULTANDO',
+        editar: this.consulta.estado !== 'CONSULTANDO',
         llamar: this.consulta.estado === 'FINALIZADO',
         siguiente: this.consulta.estado !== 'FINALIZADO' || this.$route.name === 'Consulta'
       }
@@ -208,19 +256,31 @@ export default {
     },
 
     onTerminar () {
-      this.finishConsulta(this.consulta)
+      this.save().then(() => {
+        this.finishConsulta(this.consulta)
+      })
     },
 
     onSiguiente () {
       this.nextConsulta({ consultorio: this.consulta.consultorio, router: this.$router })
     },
 
-    ...mapActions(namespace, {
-      addService: 'addService',
-      callPaciente: 'callPaciente',
-      finishConsulta: 'finishConsulta',
-      nextConsulta: 'nextConsulta'
-    })
+    save () {
+      if (!this.disable.editar) {
+        return this.send({
+          command: 'update',
+          args: this.editedItem
+        })
+      }
+    },
+
+    ...mapActions(namespace, [
+      'send',
+      'addService',
+      'callPaciente',
+      'finishConsulta',
+      'nextConsulta'
+    ])
   }
 }
 </script>

@@ -2,18 +2,17 @@
   <div>
     <v-card
       class="mx-auto"
-      max-width="900"
+      max-width="700"
       color="green lighten-5"
     >
-      <!--<v-card-text class="text-center display-1 font-weight-light blue--text text--darken-4">-->
-      <v-row class="text-center headline blue--text text--darken-4">
-        <v-col cols="7" class="text-right my-auto">
-          Seleccione consultorio:
+      <v-row class="text-center title blue--text text--darken-4">
+        <v-col cols="6" class="text-right my-auto">
+          Consultorio:
         </v-col>
-        <v-col cols="1" class="text-left">
+        <v-col cols="3" sm="2" class="text-left">
           <v-select
             :items="items"
-            value="consultorio"
+            :value="consultorio"
             @input="setConsultorio"
           />
         </v-col>
@@ -22,7 +21,7 @@
     <v-card
       v-if="$route.params.consultorio !== 'index' && $route.params.consulta === 'index'"
       class="mx-auto text-center red--text"
-      max-width="900"
+      max-width="700"
     >
       NO HAY PACIENTES EN ESPERA
     </v-card>
@@ -40,14 +39,14 @@ export default {
 
   data: () => ({
     // consultorio: null,
-    items: [...Array(5).keys()].map(x => x + 1),
+    items: [...Array(3).keys()].map(x => x + 1),
     servicios: []
   }),
 
   computed: {
     consultorio () {
       const consultorio = this.$route.params.consultorio || null
-      return consultorio === 'index' ? null : consultorio
+      return consultorio === 'index' ? null : parseInt(consultorio, 10)
     },
 
     ...mapState(namespace, {
@@ -56,10 +55,11 @@ export default {
   },
 
   created () {
+    /*
     if (this.$route.name === 'innerConsulta') {
-      // this.tab = '/citas/' + this.tabs[0].to
       this.$router.replace({ name: 'Consultorio', params: { consultorio: 'index' } })
     }
+    */
   },
 
   methods: {

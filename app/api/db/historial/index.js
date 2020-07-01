@@ -1,3 +1,4 @@
 module.exports = {
-  pacientes: require('./pacientes')
+  pacientes: require('./pacientes'),
+  consultas: require('./consultas')
 }

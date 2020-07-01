@@ -20,7 +20,7 @@ router.post('/create', ({ body }, res, next) => {
 
 router.post('/get', (req, res, next) => {
   let args = Object.assign({}, req.body)
-  table.find(args, {castIds: false})
+  view.find(args, {castIds: false})
   .then(data => {
     req.body = data
     next()

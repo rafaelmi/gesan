@@ -17,23 +17,40 @@ export default {
 
   computed: {
     tabs () {
+      const perfiles = this.user.perfiles || []
+      const res = []
+      if (
+        perfiles.filter(el => [
+          'recepcion',
+          'master',
+          'admin',
+          'supervisor'
+        ].find(el2 => el2 === el)).length
+      ) res.push({ title: 'PACIENTES', to: '/historial/pacientes' })
+      if (
+        perfiles.filter(el => [
+          'medico',
+          'master',
+          'admin',
+          'supervisor'
+        ].find(el2 => el2 === el)).length
+      ) res.push({ title: 'FICHA MÉDICA', to: '/historial/ficha' + (this.paciente ? '/' + this.paciente : '') })
+      return res
+    },
+    /*
+    tabs () {
       return [
         { title: 'PACIENTES', to: '/historial/pacientes' },
         { title: 'FICHA MÉDICA', to: '/historial/ficha' + (this.paciente ? '/' + this.paciente : '') }
-        /* { title: 'EVOLUCIÓN', to: '/historial/evolucion' },
-        { title: 'INDICACIONES', to: '/historial/indicaciones' },
-        { title: 'REGISTRO ENFERMERÍA', to: '/historial/enfermeria' } */
       ]
-      /*
-      ].map(el => {
-        if (this.paciente) el.to += '/' + this.paciente
-        return el
-      })
-      */
     },
-
+    */
     ...mapState(namespace, [
       'paciente'
+    ]),
+
+    ...mapState([
+      'user'
     ])
 
   }

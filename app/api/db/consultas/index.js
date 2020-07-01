@@ -10,13 +10,15 @@ module.exports = ({ io }) => {
 
   router.post('/create', ({ body }, res, next) => {
     let args = Object.assign({}, body)
-    args.fecha = new Date()
+    args.fecha = Date.now() // Devolver si es el caso (new Date())
     args.modificado = args.fecha
     args.estado = "EN ESPERA"
     consultas.insert(args)
     .then(data => {
+      Object.assign(body, data)
       io.of('/consultas').emit('update', [ data ])
-      res.json(response(200))
+      // res.json(response(200))
+      next()
     }).catch(next)
   })
 
@@ -25,7 +27,8 @@ module.exports = ({ io }) => {
     consultas.find(args)
     .then(data => {
       io.of('/consultas').to('/consultas#' + session.sid).emit('update', data)
-      res.json(response(200))
+      next()
+      // res.json(response(200))
     })
   })
 
@@ -37,7 +40,8 @@ module.exports = ({ io }) => {
     consultas.findOneAndUpdate({ _id: id }, { $set: args })
     .then(data => {
       io.of('/consultas').emit('update', [ data ])
-      res.json(response(200))
+      next()
+      // res.json(response(200))
     })
   })
 
@@ -51,7 +55,8 @@ module.exports = ({ io }) => {
       }
     ).then(data => {
       io.of('/consultas').emit('update', [ data ])
-      res.json(response(200))
+      next()
+      // res.json(response(200))
     })
   })
 

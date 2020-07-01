@@ -1,5 +1,5 @@
 <template>
-  <v-col cols="12" :sm="sm" class="mb-1">
+  <v-col cols="12" :sm="sm" class="mb-1 mx-0">
     <v-card elevation="1" height="100%">
       <v-subheader v-text="titulo"/>
       <slot/>

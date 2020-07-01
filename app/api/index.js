@@ -69,14 +69,15 @@ app.use('/personas', personas({ io }))
 
 app.use('/consultas', consultas({ io }))
 
+app.use('/consultas', historial.consultas)
+app.use('/historial/pacientes', historial.pacientes)
+
 app.use('/medisur/planes', medisur.planes)
 app.use('/medisur/contratos', medisur.contratos({ io }))
 app.use('/medisur/asegurados', medisur.asegurados({ io }))
 app.use('/medisur/pagos', medisur.pagos({ io }))
 app.use('/medisur/eventos', medisur.eventos({ io }))
 app.use('/medisur/prestaciones', medisur.prestaciones({ io }))
-
-app.use('/historial/pacientes', historial.pacientes)
 
 app.use('/', (req, res, next) => {
   res.json(response(200))
