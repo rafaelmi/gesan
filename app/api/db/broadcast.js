@@ -14,5 +14,9 @@ module.exports = ({ io }) => {
     io.of('/historial').to('/historial#' + session.sid).emit('pacientes', body)
   })
 
+  router.post('/medicos/get', ({ body, session }) => {
+    io.to(session.sid).emit('medicos', body)
+  })
+
   return router
 }

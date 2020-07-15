@@ -2,7 +2,7 @@
   <c-ficha v-if="paciente._id"
     :titulo="paciente.nombre"
   >
-    <c-ficha-paciente :paciente="paciente"/>
+    <c-ficha-persona :persona="paciente"/>
     <c-ficha-card
       titulo="ACCIONES"
     >
@@ -76,7 +76,7 @@ export default {
   components: {
     'c-ficha': () => import('@/components/ficha/Ficha.vue'),
     'c-ficha-card': () => import('@/components/ficha/FichaCard.vue'),
-    'c-ficha-paciente': () => import('@/components/ficha/FichaPaciente.vue'),
+    'c-ficha-persona': () => import('@/components/ficha/FichaPersona.vue'),
     'c-form-consultas-nuevo': () => import('@/components/forms/citas/NuevoTurno.vue'),
     'c-historia': () => import('@/components/Historia.vue')
   },

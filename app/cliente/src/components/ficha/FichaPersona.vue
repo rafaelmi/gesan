@@ -6,7 +6,7 @@
     <v-list dense>
       <v-list-item two-line>
         <v-list-item-content>
-          <v-list-item-title v-text="paciente.nombre && paciente.nombre.toUpperCase()"/>
+          <v-list-item-title v-text="persona.nombre && persona.nombre.toUpperCase()"/>
           <v-list-item-subtitle v-text="'Nombre'"/>
         </v-list-item-content>
       </v-list-item>
@@ -16,13 +16,13 @@
           <v-list dense>
             <v-list-item two-line>
               <v-list-item-content>
-                <v-list-item-title v-text="toMilSeparator(paciente.cedula)"/>
+                <v-list-item-title v-text="toMilSeparator(persona.cedula)"/>
                 <v-list-item-subtitle v-text="'C.I.'"/>
               </v-list-item-content>
             </v-list-item>
             <v-list-item two-line>
               <v-list-item-content>
-                <v-list-item-title v-text="toDate(paciente.nacimiento)"/>
+                <v-list-item-title v-text="toDate(persona.nacimiento)"/>
                 <v-list-item-subtitle v-text="'Fecha de Nacimiento'"/>
               </v-list-item-content>
             </v-list-item>
@@ -32,13 +32,13 @@
           <v-list dense>
             <v-list-item two-line>
               <v-list-item-content>
-                <v-list-item-title v-text="paciente.sexo"/>
+                <v-list-item-title v-text="persona.sexo"/>
                 <v-list-item-subtitle v-text="'Sexo'"/>
               </v-list-item-content>
             </v-list-item>
             <v-list-item two-line>
               <v-list-item-content>
-                <v-list-item-title v-text="toEdad(paciente.nacimiento)"/>
+                <v-list-item-title v-text="toEdad(persona.nacimiento)"/>
                 <v-list-item-subtitle v-text="'Edad'"/>
               </v-list-item-content>
             </v-list-item>
@@ -55,25 +55,25 @@
         </template>
         <v-list-item two-line>
           <v-list-item-content>
-            <v-list-item-title v-text="paciente.telefono"/>
+            <v-list-item-title v-text="persona.telefono"/>
             <v-list-item-subtitle v-text="'Teléfono'"/>
           </v-list-item-content>
         </v-list-item>
         <v-list-item two-line>
           <v-list-item-content>
-            <v-list-item-title v-text="paciente.direccion && paciente.direccion.toUpperCase()"/>
+            <v-list-item-title v-text="persona.direccion && persona.direccion.toUpperCase()"/>
             <v-list-item-subtitle v-text="'Dirección'"/>
           </v-list-item-content>
         </v-list-item>
         <v-list-item two-line>
           <v-list-item-content>
-            <v-list-item-title v-text="paciente.ciudad && paciente.ciudad.toUpperCase()"/>
+            <v-list-item-title v-text="persona.ciudad && persona.ciudad.toUpperCase()"/>
             <v-list-item-subtitle v-text="'Ciudad'"/>
           </v-list-item-content>
         </v-list-item>
         <v-list-item two-line>
           <v-list-item-content>
-            <v-list-item-title v-text="paciente.departamento && paciente.departamento.toUpperCase()"/>
+            <v-list-item-title v-text="persona.departamento && persona.departamento.toUpperCase()"/>
             <v-list-item-subtitle v-text="'Departamento'"/>
           </v-list-item-content>
         </v-list-item>
@@ -98,7 +98,7 @@ export default {
       type: String,
       default: '6'
     },
-    paciente: Object
+    persona: Object
   },
 
   data: () => ({

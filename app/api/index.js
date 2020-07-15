@@ -13,6 +13,7 @@ const user = require('./db/user')
 const medisur = require('./db/medisur')
 const consultas = require('./db/consultas')
 const historial = require('./db/historial')
+const medicos = require('./db/medicos')
 const test = require('./db/test')
 
 const app = express();
@@ -79,6 +80,8 @@ app.use('/medisur/pagos', medisur.pagos({ io }))
 app.use('/medisur/eventos', medisur.eventos({ io }))
 app.use('/medisur/prestaciones', medisur.prestaciones({ io }))
 
+app.use('/medicos', medicos)
+
 app.use('/', (req, res, next) => {
   res.json(response(200))
   next()
@@ -91,6 +94,7 @@ io.on('connection', (socket) => {})
 io.of('/consultas').on('connection', (socket) => { /* console.log('/consultas') */ })
 io.of('/medisur').on('connection', (socket) => { /*console.log('/medisur')*/ })
 io.of('/historial').on('connection', () => {})
+// io.of('/reportes').on('connection', () => {})
 
 const port = process.env.PORT || 3000
 server.listen(port, () => {

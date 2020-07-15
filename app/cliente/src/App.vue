@@ -131,7 +131,8 @@ export default {
         { title: 'Medisur', icon: 'mdi-shield-half-full', to: permisos && permisos.medisur && '/medisur/contratos' },
         { title: 'Farmacia', icon: 'mdi-pill', to: false },
         { title: 'Facturación', icon: 'mdi-receipt', to: false },
-        { title: 'Tesorería', icon: 'mdi-cash-usd', to: false }
+        { title: 'Tesorería', icon: 'mdi-cash-usd', to: false },
+        { title: 'Reportes', icon: 'mdi-file-chart', to: permisos && permisos.reportes && '/reportes' }
       ]
     },
 

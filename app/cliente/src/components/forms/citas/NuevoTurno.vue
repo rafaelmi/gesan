@@ -17,8 +17,9 @@
             :messages="toMilSeparator(args.cedula)"
             disabled
           />
-          <v-text-field
+          <v-select
             label="Médico"
+            :items="medicos.map(el => el.nombre)"
             :rules="[(val => !!val || 'Este campo es obligatorio')]"
             required
             v-model="medico"
@@ -48,7 +49,7 @@
 </template>
 <script>
 import mixUtils from '@/mixins/utils'
-import { mapActions } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 
 const namespace = 'consultas'
 
@@ -63,7 +64,7 @@ export default {
   ],
 
   data: () => ({
-    medico: 'Justo Melgarejo',
+    medico: '', // 'Justo Melgarejo',
     consultorio: 1,
     seguro: 'PARTICULAR',
     title: 'Nueva Consulta'
@@ -82,9 +83,10 @@ export default {
     },
 
     args () {
+      const medico = this.medicos.find(el => el.nombre === this.medico)
       const res = Object.assign({}, this.paciente,
         {
-          medico: this.medico,
+          medico: medico && medico._id,
           consultorio: this.consultorio,
           seguro: this.seguro
         }
@@ -92,7 +94,11 @@ export default {
       delete res._id
       delete res.historial
       return res
-    }
+    },
+
+    ...mapGetters([
+      'medicos'
+    ])
   },
 
   methods: {

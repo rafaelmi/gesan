@@ -36,7 +36,7 @@ const actions = {
       command: 'update',
       args: {
         _id: consulta._id,
-        estado: 'CONSULTANDO',
+        estado: (consulta.estado === 'EN ESPERA' && 'CONSULTANDO') || undefined,
         llamar: true
       }
     })

@@ -35,8 +35,18 @@ module.exports = ({ io }) => {
   router.post('/update', ({ body, session }, res, next) => {
     let args = Object.assign({}, body)
     const id = monk.id(args._id)
+    const current = Date.now()
     delete args._id
-    args.modificado = new Date();
+    args.modificado = current
+    switch (args.estado) {
+      case 'CONSULTANDO':
+        args.fechaInicio = current
+        break
+      case 'FINALIZADO':
+        args.fechaFin = current
+        break
+      default:
+    }
     consultas.findOneAndUpdate({ _id: id }, { $set: args })
     .then(data => {
       io.of('/consultas').emit('update', [ data ])

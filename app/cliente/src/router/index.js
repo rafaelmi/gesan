@@ -5,6 +5,7 @@ import Login from '../views/Login.vue'
 import Medisur from '../views/Medisur'
 import historial from './historial'
 import citas from './citas'
+import reportes from './reportes'
 
 Vue.use(VueRouter)
 
@@ -72,7 +73,8 @@ const routes = [
   },
 
   ...citas,
-  ...historial
+  ...historial,
+  ...reportes
 ]
 
 const router = new VueRouter({

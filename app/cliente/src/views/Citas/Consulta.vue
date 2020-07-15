@@ -1,6 +1,6 @@
 <template>
   <c-ficha titulo="Consulta Médica">
-    <c-ficha-paciente :paciente="consulta"/>
+    <c-ficha-persona :persona="consulta"/>
     <c-ficha-card
       titulo="DETALLES"
     >
@@ -35,7 +35,7 @@
       <v-list dense>
         <v-list-item two-line>
           <v-list-item-content>
-            <v-list-item-title v-text="consulta.medico"/>
+            <v-list-item-title v-text="((medico && medico.nombre) || consulta.medico).toUpperCase()"/>
             <v-list-item-subtitle v-text="'Médico'"/>
           </v-list-item-content>
         </v-list-item>
@@ -155,7 +155,7 @@ export default {
   components: {
     'c-ficha': () => import('@/components/ficha/Ficha.vue'),
     'c-ficha-card': () => import('@/components/ficha/FichaCard.vue'),
-    'c-ficha-paciente': () => import('@/components/ficha/FichaPaciente.vue'),
+    'c-ficha-persona': () => import('@/components/ficha/FichaPersona.vue'),
     'c-historia': () => import('@/components/Historia.vue')
   },
 
@@ -213,6 +213,10 @@ export default {
       return this.consultas.find(el => el._id === this.$route.params.consulta)
     },
 
+    medico () {
+      return this.medicos.find(el => el._id === this.consulta.medico)
+    },
+
     servicios () {
       return this.consulta.servicios || []
     },
@@ -229,7 +233,11 @@ export default {
 
     ...mapState(namespace, {
       consultas: 'consultas'
-    })
+    }),
+
+    ...mapState([
+      'medicos'
+    ])
   },
 
   methods: {

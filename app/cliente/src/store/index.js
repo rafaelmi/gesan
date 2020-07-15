@@ -4,13 +4,15 @@ import api from '@/include/api'
 import consultas from './modules/consultas'
 import medisur from './modules/medisur'
 import historial from './modules/historial'
+import reportes from './modules/reportes'
 
 Vue.use(Vuex)
 
 const modules = {
   consultas,
   medisur,
-  historial
+  historial,
+  reportes
 }
 const nsps = Object.keys(modules)
 
@@ -25,6 +27,7 @@ export default new Vuex.Store({
     socket: null,
     nextRoute: '/home',
     personas: [],
+    medicos: [],
     alert: {
       sw: false,
       title: '',
@@ -32,13 +35,13 @@ export default new Vuex.Store({
       color: '',
       icon: ''
     }
-    // defaultState: null
   },
 
   getters: {
     started: state => state.state !== 'INIT',
     logged: state => state.state !== 'INIT' && state.state !== 'STARTED',
-    permisos: state => (state.user && state.user.permisos) || {}
+    permisos: state => (state.user && state.user.permisos) || {},
+    medicos: (state, getters, rootState) => state.medicos
   },
 
   mutations: {
@@ -163,7 +166,7 @@ export default new Vuex.Store({
       })
     },
 
-    setup ({ commit, state, dispatch }, data) {
+    setup ({ commit, state, getters, dispatch }, data) {
       return new Promise((resolve, reject) => {
         commit('login', data)
         Promise.all([
@@ -171,9 +174,14 @@ export default new Vuex.Store({
             url: '/personas',
             command: 'get'
           }),
+          getters.permisos.medicos && dispatch('send', {
+            url: '/medicos',
+            command: 'get'
+          }),
           dispatch('consultas/setup'),
           dispatch('medisur/setup'),
-          dispatch('historial/setup')
+          dispatch('historial/setup'),
+          dispatch('reportes/setup')
         ]).then(() => {
           commit('establish', data)
           resolve()
@@ -225,6 +233,13 @@ export default new Vuex.Store({
       state.personas = [
         ...data,
         ...state.personas.filter(oldel => !data.find(newel => oldel._id === newel._id))
+      ]
+    },
+
+    SOCKET_medicos ({ state }, data) {
+      state.medicos = [
+        ...data,
+        ...state.medicos.filter(oldel => !data.find(newel => oldel._id === newel._id))
       ]
     }
   },
