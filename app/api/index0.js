@@ -36,7 +36,10 @@ app.use(session({
   })
 )
 
+// req.headers['x-forwarded-for']
+
 function checkOrigin({headers, session}, res, next) {
+  console.log(headers['x-forwarded-for'])
   if (
     !session.username ||
     (session.flags && session.flags.everywhere) ||
@@ -76,6 +79,7 @@ app.use('/', checkPermission)
 app.use('/user', user)
 
 app.use('/', checkOrigin)
+
 app.use('/', personas({ io }))
 
 app.use('/admin', admin)
@@ -97,7 +101,7 @@ app.use('/medisur/prestaciones', medisur.prestaciones({ io }))
 app.use('/medicos', medicos)
 
 app.use('/', (req, res, next) => {
-  res.json(response(200, res.locals.data))
+  res.json(response(200))
   next()
 })
 

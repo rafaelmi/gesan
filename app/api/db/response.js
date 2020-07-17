@@ -12,7 +12,7 @@ const codes = {
   403: {title: "Petición No Autorizada", details: "No tiene permisos para ejecutar esta acción"},
   404: {title: "Transacción Invalida", details: "Esta compra no existe"},
   450: {title: "Petición Rechazada", details: "El asegurado no cuenta con suficiente cobertura"},
-  451: {title: "Petición Rechazada", details: "El contrato se encuentra en mora"},
+  451: {title: "Petición No Autorizada", details: "No tiene permitido acceder desde su ubicación actual"},
   // 450: {title: "Transacción Rechazada", details: "Fondos insuficientes"},
   //451: {title: "Transacción Cancelada", details: ""},
   452: {title: "Usuario Conectado", details: "El usuario ya inició sesión con anterioridad"},
