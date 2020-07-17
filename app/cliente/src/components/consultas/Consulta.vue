@@ -227,7 +227,7 @@ export default {
         add: this.consulta.estado !== 'CONSULTANDO',
         editar: this.consulta.estado !== 'CONSULTANDO',
         llamar: this.consulta.estado === 'FINALIZADO',
-        siguiente: this.consulta.estado !== 'FINALIZADO' || this.$route.name === 'Consulta'
+        siguiente: this.consulta.estado !== 'FINALIZADO' || !this.$route.params.consultorio // this.$route.name === 'Consulta'
       }
     },
 

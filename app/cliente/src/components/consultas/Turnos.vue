@@ -57,7 +57,10 @@ export default {
         this.defaultProps,
         {
           externalItems: this.externalItems,
-          onClickRow: (item) => this.$router.push('/citas/consulta/' + item._id)
+          onClickRow: (item) => {
+            const modulo = (this.type === 'urgencias') ? 'urgencias' : 'citas'
+            this.$router.push('/' + modulo + '/consulta/' + item._id)
+          }
         }
       )
     },
