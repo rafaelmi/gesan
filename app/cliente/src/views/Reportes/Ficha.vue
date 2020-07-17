@@ -26,24 +26,29 @@
       sm="12"
     >
       <v-data-table
-        :headers="headers.diario"
+        :headers="cheaders.diario"
         :items="diario"
         sort-by="fecha"
         sort-desc
         class="elevation-1"
-      ></v-data-table>
-    </c-ficha-card>
-    <c-ficha-card
-      titulo="DETALLE CONSULTAS"
-      sm="12"
-    >
-      <v-data-table
-        :headers="headers.consultas"
-        :items="consultas"
-        sort-by="fechaInicio"
-        sort-desc
-        class="elevation-1"
-      ></v-data-table>
+        show-expand
+        single-expand
+      >
+      <template v-slot:expanded-item="{ headers, item }">
+        <td :colspan="headers.length">
+          <v-data-table
+            :headers="cheaders.consultas"
+            :items="item.consultas"
+            @click:row="onClickRow"
+            sort-by="fechaInicio"
+            sort-desc
+            class="elevation-1"
+            hide-default-footer
+            dense
+          ></v-data-table>
+        </td>
+      </template>
+      </v-data-table>
     </c-ficha-card>
   </c-ficha>
   <c-ficha v-else
@@ -77,7 +82,7 @@ export default {
       return this.medicos.find(el => el._id === this.$route.params.userid) || {}
     },
 
-    headers () {
+    cheaders () {
       return {
         consultas: [
           { text: 'Paciente', value: 'nombre' },
@@ -88,6 +93,7 @@ export default {
         diario: [
           { text: 'Fecha', value: 'fecha' },
           { text: 'Consultas', value: 'cantidad', align: 'right' }
+          // { text: 'Detalles', value: 'data-table-expand' }
         ]
       }
     },
@@ -103,9 +109,11 @@ export default {
     diario () {
       return Object.entries(this.consultas.reduce((acc, cur) => {
         const fecha = this.toDate(cur.fechaFin)
-        acc[fecha] = acc[fecha] + 1 || 1
+        // acc[fecha] = acc[fecha] + 1 || 1
+        if (!acc[fecha]) acc[fecha] = []
+        acc[fecha].push(cur)
         return acc
-      }, {})).map(([fecha, cantidad]) => Object.assign({ fecha, cantidad }))
+      }, {})).map(([fecha, consultas]) => Object.assign({ fecha, consultas, cantidad: consultas.length }))
     },
 
     ...mapGetters([
@@ -118,6 +126,10 @@ export default {
   },
 
   methods: {
+    onClickRow (item) {
+      const modulo = (item.tipo === 'urgencia') ? 'urgencias' : 'citas'
+      this.$router.push('/' + modulo + '/consulta/' + item._id)
+    }
   }
 }
 </script>

@@ -9,6 +9,8 @@ const getters = {
   consultas: (state, getters, rootState, rootGetters) => {
     return rootState.consultas.consultas.map(el => {
       return {
+        _id: el._id,
+        tipo: el.tipo,
         medico: el.medico,
         nombre: el.nombre,
         fechaInicio: utils.methods.toTimestamp(el.fechaInicio),
