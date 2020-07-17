@@ -17,7 +17,7 @@
             :messages="toMilSeparator(args.cedula)"
             disabled
           />
-          <v-select
+          <v-select v-if="type === 'consulta'"
             label="Médico"
             :items="medicos.map(el => el.nombre)"
             :rules="[(val => !!val || 'Este campo es obligatorio')]"
@@ -30,7 +30,7 @@
             required
             v-model="seguro"
           />
-          <v-select
+          <v-select v-if="type === 'consulta'"
             :items="[ 1, 2, 3 ]"
             :rules="[(val => !!val || 'Este campo es obligatorio')]"
             label="Consultorio"
@@ -56,7 +56,11 @@ const namespace = 'consultas'
 export default {
   props: {
     value: Boolean,
-    paciente: Object
+    paciente: Object,
+    type: {
+      type: String,
+      default: 'consulta'
+    }
   },
 
   mixins: [
@@ -86,8 +90,9 @@ export default {
       const medico = this.medicos.find(el => el.nombre === this.medico)
       const res = Object.assign({}, this.paciente,
         {
-          medico: medico && medico._id,
-          consultorio: this.consultorio,
+          tipo: this.type,
+          medico: medico ? medico._id : 'urgencias', // medico && medico._id,
+          consultorio: this.type === 'urgencia' ? 'URGENCIAS' : this.consultorio,
           seguro: this.seguro
         }
       )

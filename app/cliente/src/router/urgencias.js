@@ -1,23 +1,20 @@
-import Index from '../views/Citas/Index.vue'
-import Consulta from '../views/Citas/Consulta.vue'
-import Turnos from '../views/Citas/Turnos.vue'
-import Consultorio from '../views/Citas/Consultorio.vue'
-import Pantalla from '../views/Citas/Pantalla.vue'
+import Index from '../views/Urgencias/Index.vue'
+import Consulta from '../views/Urgencias/Consulta.vue'
+import Turnos from '../views/Urgencias/Turnos.vue'
+import Consultorio from '../views/Urgencias/Consultorio.vue'
 
 export default [
   {
-    path: '/citas/pantalla',
-    name: 'Pantalla',
-    component: Pantalla
+    path: '/urgencias',
+    redirect: '/urgencias/consultorio'
   },
   {
-    path: '/citas',
-    name: 'Citas',
+    path: '/urgencias',
+    name: 'Urgencias',
     component: Index,
     children: [
       {
         path: 'turnos',
-        name: 'Turnos',
         component: Turnos
       },
       {
@@ -26,17 +23,18 @@ export default [
       },
       {
         path: 'consulta/:consulta',
-        name: 'Consulta',
         component: Consulta
       },
       {
+        path: 'consultorio',
+        redirect: '/urgencias/consultorio/index'
+      },
+      {
         path: 'consultorio/:consultorio',
-        name: 'Consultorio',
         component: Consultorio,
         children: [
           {
             path: 'consulta/:consulta',
-            // name: 'innerConsulta',
             component: Consulta
           }
         ]

@@ -25,6 +25,7 @@
       <c-form-consultas-nuevo
         v-model="swFormConsultasNew"
         :paciente="paciente"
+        :type="formConsultasNewType"
       />
     </c-ficha-card>
     <c-ficha-card
@@ -86,7 +87,8 @@ export default {
   ],
 
   data: () => ({
-    swFormConsultasNew: false
+    swFormConsultasNew: false,
+    formConsultasNewType: null
   }),
 
   computed: {
@@ -96,8 +98,14 @@ export default {
         {
           titulo: 'NUEVA CONSULTA',
           icon: 'mdi-stethoscope',
-          click: this.nuevoTurno
-          // disabled: this.paciente.historial[0] && this.paciente.historial[0].estado !== 'FINALIZADO'
+          click: this.nuevoTurno,
+          disabled: !(this.permisos.consultas && this.permisos.consultas.create)
+        },
+        {
+          titulo: 'NUEVA URGENCIA',
+          icon: 'mdi-ambulance',
+          click: this.nuevaUrgencia,
+          disabled: !(this.permisos.urgencias && this.permisos.urgencias.create)
         },
         { titulo: 'NUEVO ESTUDIO', icon: 'mdi-microscope', disabled },
         { titulo: 'NUEVO INGRESO', icon: 'mdi-bed', disabled },
@@ -108,6 +116,10 @@ export default {
     ...mapGetters(namespace, [
       'pacientes',
       'paciente'
+    ]),
+
+    ...mapGetters([
+      'permisos'
     ])
   },
 
@@ -123,6 +135,12 @@ export default {
 
   methods: {
     nuevoTurno () {
+      this.formConsultasNewType = 'consulta'
+      this.swFormConsultasNew = true
+    },
+
+    nuevaUrgencia () {
+      this.formConsultasNewType = 'urgencia'
       this.swFormConsultasNew = true
     },
 

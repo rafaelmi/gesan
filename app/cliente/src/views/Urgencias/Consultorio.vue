@@ -1,11 +1,10 @@
 <template>
-  <c-consulta/>
+  <c-consultorio type="urgencias"/>
 </template>
 <script>
-
 export default {
   components: {
-    'c-consulta': () => import('@/components/consultas/Consulta.vue')
+    'c-consultorio': () => import('@/components/consultas/Consultorio.vue')
   },
 
   data: () => ({

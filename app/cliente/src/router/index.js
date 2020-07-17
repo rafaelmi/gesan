@@ -4,6 +4,7 @@ import Home from '../views/Home.vue'
 import Login from '../views/Login.vue'
 import Medisur from '../views/Medisur'
 import historial from './historial'
+import urgencias from './urgencias'
 import citas from './citas'
 import reportes from './reportes'
 
@@ -72,6 +73,7 @@ const routes = [
     ]
   },
 
+  ...urgencias,
   ...citas,
   ...historial,
   ...reportes

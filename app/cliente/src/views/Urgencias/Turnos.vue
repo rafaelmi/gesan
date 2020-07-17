@@ -1,11 +1,12 @@
 <template>
-  <c-consulta/>
+  <c-turnos type="urgencias"/>
 </template>
-<script>
 
+<script>
 export default {
+
   components: {
-    'c-consulta': () => import('@/components/consultas/Consulta.vue')
+    'c-turnos': () => import('@/components/consultas/Turnos.vue')
   },
 
   data: () => ({

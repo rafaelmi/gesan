@@ -58,6 +58,7 @@ export default {
     tabs () {
       const perfiles = this.user.perfiles || []
       const res = []
+      /*
       if (
         perfiles.filter(el => [
           'medico',
@@ -66,6 +67,7 @@ export default {
           'supervisor'
         ].find(el2 => el2 === el)).length
       ) res.push({ title: 'CONSULTORIO', to: 'consultorio/index' })
+      */
       if (
         perfiles.filter(el => [
           'recepcion',
@@ -73,7 +75,7 @@ export default {
           'admin',
           'supervisor'
         ].find(el2 => el2 === el)).length
-      ) res.push({ title: 'RECEPCIÓN', to: 'turnos' })
+      ) res.push({ title: 'TURNOS', to: 'turnos' })
       return res
     },
 
@@ -88,11 +90,13 @@ export default {
   },
 
   created () {
+    /*
     if (this.$route.name === 'Citas') {
       // this.tab = '/citas/' + this.tabs[0].to
       this.$router.replace('/citas/' + this.tabs[0].to)
       // this.$router.replace(this.tabs[0].to)
     }
+    */
   }
 
 }

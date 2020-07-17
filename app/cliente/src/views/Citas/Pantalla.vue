@@ -134,7 +134,7 @@
                         <v-card>
                           <v-row>
                             <v-col class="text-center display-4 font-weight-bold">
-                              {{call.consultorio}}
+                              {{call.consultorio.toString().substr(0,3)}}
                             </v-col>
                           </v-row>
                           <v-row>
