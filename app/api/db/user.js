@@ -54,6 +54,11 @@ router.post('/login', ({ body, session }, res, next) => {
 
     setPermisos(data)
     Object.assign(session, { perfiles: data.perfiles }, { permisos: data.permisos })
+    /*
+    session.timeout = setTimeout((sess) => {
+      sess && sess.username && sess.destroy()
+    }, 1000 * 60 * 1, session).unref()
+    */
     res.locals.data = data
     next()
     // res.json(response(200, data))

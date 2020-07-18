@@ -169,6 +169,17 @@ export default new Vuex.Store({
     setup ({ commit, state, getters, dispatch }, data) {
       return new Promise((resolve, reject) => {
         commit('login', data)
+        setInterval(() => {
+          const timeout = setTimeout(function () {
+            location.reload()
+          }, 10000)
+          dispatch('send', {
+            url: '/config',
+            command: 'keepAlive'
+          }).then(() => {
+            clearTimeout(timeout)
+          })
+        }, 1000 * 60 * 5)
         Promise.all([
           dispatch('send', {
             url: '/personas',
