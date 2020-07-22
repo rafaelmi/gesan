@@ -17,6 +17,13 @@
             :messages="toMilSeparator(args.cedula)"
             disabled
           />
+          <v-select
+            :items="[ 'PROGRAMADA', 'ESPONTÁNEA']"
+            :rules="[(val => !!val || 'Este campo es obligatorio')]"
+            label="Tipo de Consulta"
+            required
+            v-model="tipo"
+          />
           <v-select v-if="type === 'consulta'"
             label="Médico"
             :items="medicos.map(el => el.nombre)"
@@ -75,6 +82,7 @@ export default {
   ],
 
   data: () => ({
+    tipo: 'PROGRAMADA',
     medico: '', // 'Justo Melgarejo',
     consultorio: 1,
     seguro: 'PARTICULAR',
@@ -97,7 +105,7 @@ export default {
       const medico = this.medicos.find(el => el.nombre === this.medico)
       const res = Object.assign({}, this.paciente,
         {
-          tipo: this.type,
+          tipoConsulta: this.tipo,
           medico: medico ? medico._id : 'urgencias', // medico && medico._id,
           consultorio: this.type === 'urgencia' ? 'URGENCIAS' : this.consultorio,
           seguro: this.seguro

@@ -1,12 +1,12 @@
 module.exports = ({ io }) => {
   const router = require('express').Router()
-
+  /*
   const historial = {
     update: (req, { locals }, next) => {
       io.of('/historial').emit('pacientes', locals.data)
     }
   }
-
+  */
   const urgencias = {
     update: (req, { locals }, next) => {
       io.of('/urgencias').emit('update', locals.data)
@@ -20,17 +20,17 @@ module.exports = ({ io }) => {
     next()
   })
 
-  router.post('/consultas/create', historial.update)
+  // router.post('/consultas/create', historial.update)
 
-  router.post('/urgencias/create', urgencias.update, historial.update)
-  router.post('/urgencias/update', urgencias.update, historial.update)
-  router.post('/urgencias/addService', urgencias.update, historial.update)
-  
+  router.post('/urgencias/create', urgencias.update /*, historial.update*/)
+  router.post('/urgencias/update', urgencias.update /*, historial.update*/)
+  router.post('/urgencias/addService', urgencias.update /*, historial.update*/)
+
   router.post('/urgencias/get', ({ session }, { locals }) => {
     io.of('/urgencias').to('/urgencias#' + session.sid).emit('update', locals.data)
   })
 
-  router.post('/historial/pacientes/create', historial.update)
+  // router.post('/historial/pacientes/create', historial.update)
 
   /*
   // ### IMPORTANTE: sólo aplica para historial, queda pendiente broadcast de consulta
@@ -45,6 +45,10 @@ module.exports = ({ io }) => {
 
   router.post('/historial/pacientes/get', ({ session }, { locals }) => {
     io.of('/historial').to('/historial#' + session.sid).emit('pacientes', locals.data)
+  })
+
+  router.post('/historial/get', ({ session }, { locals }) => {
+    io.of('/historial').to('/historial#' + session.sid).emit('historial', locals.data)
   })
 
   router.post('/medicos/get', ({ session }, { locals }) => {

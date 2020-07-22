@@ -29,6 +29,12 @@
                 <v-list-item-subtitle v-text="'Consultorio'"/>
               </v-list-item-content>
             </v-list-item>
+            <v-list-item two-line>
+              <v-list-item-content>
+                <v-list-item-title v-text="consulta.tipoConsulta || 'PROGRAMADA'"/>
+                <v-list-item-subtitle v-text="'Tipo de Consulta'"/>
+              </v-list-item-content>
+            </v-list-item>
           </v-list>
         </v-col>
       </v-row>

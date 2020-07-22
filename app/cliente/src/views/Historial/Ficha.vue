@@ -46,12 +46,12 @@
               <v-list-item two-line>
                 <v-list-item-content>
                   <v-list-item-title v-text="toTimestamp(historial.fecha)"/>
-                  <v-list-item-subtitle v-text="'CONSULTA'"/>
+                  <v-list-item-subtitle v-text="historial.tipo"/>
                 </v-list-item-content>
               </v-list-item>
             </v-list>
           </v-expansion-panel-header>
-          <v-expansion-panel-content v-if="historial.estado === 'FINALIZADO'">
+          <v-expansion-panel-content>
             <v-list dense>
               <v-list-item two-line>
                 <v-list-item-content>
@@ -60,7 +60,8 @@
                 </v-list-item-content>
               </v-list-item>
             </v-list>
-            <c-historia :consulta="historial"/>
+            <c-consulta-historia v-if="historial.tipo === 'CONSULTA'" :consulta="historial"/>
+            <c-urgencia-historia v-else-if="historial.tipo === 'URGENCIA'" :consulta="historial"/>
           </v-expansion-panel-content>
         </v-expansion-panel>
       </v-expansion-panels>
@@ -84,7 +85,8 @@ export default {
     'c-ficha-persona': () => import('@/components/ficha/FichaPersona.vue'),
     'c-form-consultas-nuevo': () => import('@/components/forms/citas/NuevoTurno.vue'),
     'c-form-urgencias-nuevo': () => import('@/components/forms/urgencias/NuevoTurno.vue'),
-    'c-historia': () => import('@/components/Historia.vue')
+    'c-consulta-historia': () => import('@/components/Historia.vue'),
+    'c-urgencia-historia': () => import('@/views/Urgencias/Atencion/Cama/Historia.vue')
   },
 
   mixins: [
@@ -131,6 +133,13 @@ export default {
 
   created () {
     const paciente = this.$route.params.paciente
+    this.send({
+      command: 'get',
+      args: {
+        _id: paciente
+      }
+    })
+
     paciente && this.selectPaciente(paciente)
     /*
     if (this.$route.path === '/historial/ficha') {
@@ -150,7 +159,8 @@ export default {
     },
 
     ...mapActions(namespace, [
-      'selectPaciente'
+      'selectPaciente',
+      'send'
     ])
   }
 }

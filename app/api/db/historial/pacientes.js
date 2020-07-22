@@ -2,7 +2,7 @@ const monk = require('monk')
 const db = require('../connection')
 const response = require('../response')
 const table = db.get('pacientes')
-const view = db.get('vPacientes')
+const view = db.get('pacientes')
 var router = require('express').Router()
 
 router.post('/create', ({ body }, { locals }, next) => {

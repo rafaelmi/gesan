@@ -103,8 +103,9 @@ app.use('/personas', personas({ io }))
 app.use('/urgencias', urgencias)
 app.use('/consultas', consultas({ io }))
 
-app.use('/consultas', historial.consultas)
+// app.use('/consultas', historial.consultas)
 app.use('/historial/pacientes', historial.pacientes)
+app.use('/historial', historial.router)
 
 app.use('/medisur/planes', medisur.planes)
 app.use('/medisur/contratos', medisur.contratos({ io }))
