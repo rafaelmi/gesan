@@ -118,7 +118,7 @@ export default {
       const permisos = this.permisos
       return [
         { title: 'Inicio', icon: 'mdi-home', to: '/home' },
-        { title: 'Urgencias', icon: 'mdi-ambulance', to: permisos && permisos.urgencias && '/urgencias' },
+        { title: 'Urgencias', icon: 'mdi-bandage', to: permisos && permisos.urgencias && '/urgencias' },
         { title: 'Consulta Externa', icon: 'mdi-stethoscope', to: permisos && permisos.consultas && '/citas' },
         {
           title: 'Historial Médico',

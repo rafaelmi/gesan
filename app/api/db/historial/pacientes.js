@@ -5,7 +5,7 @@ const table = db.get('pacientes')
 const view = db.get('vPacientes')
 var router = require('express').Router()
 
-router.post('/create', ({ body }, res, next) => {
+router.post('/create', ({ body }, { locals }, next) => {
   let args = Object.assign({}, body)
   args._id = args.cedula
   delete args.cedula
@@ -13,16 +13,16 @@ router.post('/create', ({ body }, res, next) => {
   args.modificado = args.fecha
   table.insert(args, {castIds: false})
   .then(data => {
-    Object.assign(body, data)
+    Object.assign(locals, { data })
     next()
   }).catch(next)
 })
 
-router.post('/get', (req, res, next) => {
+router.post('/get', (req, { locals }, next) => {
   let args = Object.assign({}, req.body)
   view.find(args, {castIds: false})
   .then(data => {
-    req.body = data
+    Object.assign(locals, { data })
     next()
   }).catch(next)
 })

@@ -9,7 +9,9 @@
         class="mb-1"
         elevation="1"
       >
-        <v-card-title class="text-center blue--text text--darken-4">
+        <v-card-title v-if="titulo"
+          class="text-center blue--text text--darken-4"
+        >
           <v-spacer/>{{ titulo }}<v-spacer/>
         </v-card-title>
       </v-card>

@@ -12,6 +12,7 @@ const admin = require('./db/admin')
 const config = require('./db/config')
 const user = require('./db/user')
 const medisur = require('./db/medisur')
+const urgencias = require('./db/urgencias')
 const consultas = require('./db/consultas')
 const historial = require('./db/historial')
 const medicos = require('./db/medicos')
@@ -99,6 +100,7 @@ app.use('/admin', admin)
 
 app.use('/personas', personas({ io }))
 
+app.use('/urgencias', urgencias)
 app.use('/consultas', consultas({ io }))
 
 app.use('/consultas', historial.consultas)
@@ -122,6 +124,7 @@ app.use('/', broadcast({ io }))
 app.use('/', errorPhase)
 
 io.on('connection', (socket) => {})
+io.of('/urgencias').on('connection', () => {})
 io.of('/consultas').on('connection', (socket) => { /* console.log('/consultas') */ })
 io.of('/medisur').on('connection', (socket) => { /*console.log('/medisur')*/ })
 io.of('/historial').on('connection', () => {})

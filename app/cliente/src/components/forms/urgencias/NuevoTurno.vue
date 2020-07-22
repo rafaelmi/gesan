@@ -17,27 +17,13 @@
             :messages="toMilSeparator(args.cedula)"
             disabled
           />
-          <v-select v-if="type === 'consulta'"
-            label="Médico"
-            :items="medicos.map(el => el.nombre)"
-            :rules="[(val => !!val || 'Este campo es obligatorio')]"
-            required
-            v-model="medico"
-          />
           <v-text-field
             label="Seguro Médico"
             :rules="[(val => !!val || 'Este campo es obligatorio')]"
             required
             v-model="seguro"
           />
-          <v-select v-if="type === 'consulta'"
-            :items="[ 1, 2, 3 ]"
-            :rules="[(val => !!val || 'Este campo es obligatorio')]"
-            label="Consultorio"
-            required
-            v-model="consultorio"
-          />
-          <v-select v-if="type === 'urgencia'"
+          <v-select
             :items="[ 'cama_a', 'cama_b', 'observacion' ]"
             :rules="[(val => !!val || 'Este campo es obligatorio')]"
             label="Cama"
@@ -56,9 +42,9 @@
 </template>
 <script>
 import mixUtils from '@/mixins/utils'
-import { mapGetters, mapActions } from 'vuex'
+import { mapActions } from 'vuex'
 
-const namespace = 'consultas'
+const namespace = 'urgencias'
 
 export default {
   props: {
@@ -66,7 +52,7 @@ export default {
     paciente: Object,
     type: {
       type: String,
-      default: 'consulta'
+      default: 'urgencia'
     }
   },
 
@@ -75,11 +61,9 @@ export default {
   ],
 
   data: () => ({
-    medico: '', // 'Justo Melgarejo',
-    consultorio: 1,
+    cama: 'cama_a',
     seguro: 'PARTICULAR',
-    title: 'Nueva Consulta'
-    // icon: 'mdi-smart-card'
+    title: 'Nueva Urgencia'
   }),
 
   computed: {
@@ -94,23 +78,16 @@ export default {
     },
 
     args () {
-      const medico = this.medicos.find(el => el.nombre === this.medico)
       const res = Object.assign({}, this.paciente,
         {
-          tipo: this.type,
-          medico: medico ? medico._id : 'urgencias', // medico && medico._id,
-          consultorio: this.type === 'urgencia' ? 'URGENCIAS' : this.consultorio,
+          cama: this.cama,
           seguro: this.seguro
         }
       )
       delete res._id
       delete res.historial
       return res
-    },
-
-    ...mapGetters([
-      'medicos'
-    ])
+    }
   },
 
   methods: {
@@ -134,8 +111,6 @@ export default {
     ...mapActions(namespace, [
       'send'
     ])
-
   }
-
 }
 </script>

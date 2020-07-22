@@ -1,0 +1,13 @@
+# PENDIENTES
+- Posibilidad de borrar los servicios del paciente
+- Optimizar cuota mensual, segun fecha de actualizacion
+- Validar en API que no esté repetida la factura al reportar pago
+- Chequear el orden de los items en la presentación
+- Corregir monto en algunos items del plan
+- ¿Que pasa si vienen dos personas del mismo seguro al mismo tiempo?
+  - Se precisa crear eventos por asegurado
+- Validar cobertura por eventos (medicamentos y descartables)
+- *** CHEQUEAR LA VISTA 'vMedisurPlanes' EN MONGO (SE PUEDE REDUCIR EL ARRAY)
+- Bloquear acceso a vistas en router, según permisos
+- Hacer consultorio reactivo al momento de registrar nuevo paciente
+- Mejorar mensaje de error, sobretodo en formularios

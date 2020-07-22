@@ -27,6 +27,10 @@
         :paciente="paciente"
         :type="formConsultasNewType"
       />
+      <c-form-urgencias-nuevo
+        v-model="swFormUrgenciasNew"
+        :paciente="paciente"
+      />
     </c-ficha-card>
     <c-ficha-card
       titulo="HISTORIAL"
@@ -79,6 +83,7 @@ export default {
     'c-ficha-card': () => import('@/components/ficha/FichaCard.vue'),
     'c-ficha-persona': () => import('@/components/ficha/FichaPersona.vue'),
     'c-form-consultas-nuevo': () => import('@/components/forms/citas/NuevoTurno.vue'),
+    'c-form-urgencias-nuevo': () => import('@/components/forms/urgencias/NuevoTurno.vue'),
     'c-historia': () => import('@/components/Historia.vue')
   },
 
@@ -88,6 +93,7 @@ export default {
 
   data: () => ({
     swFormConsultasNew: false,
+    swFormUrgenciasNew: false,
     formConsultasNewType: null
   }),
 
@@ -103,7 +109,7 @@ export default {
         },
         {
           titulo: 'NUEVA URGENCIA',
-          icon: 'mdi-ambulance',
+          icon: 'mdi-bandage',
           click: this.nuevaUrgencia,
           disabled: !(this.permisos.urgencias && this.permisos.urgencias.create)
         },
@@ -140,8 +146,7 @@ export default {
     },
 
     nuevaUrgencia () {
-      this.formConsultasNewType = 'urgencia'
-      this.swFormConsultasNew = true
+      this.swFormUrgenciasNew = true
     },
 
     ...mapActions(namespace, [

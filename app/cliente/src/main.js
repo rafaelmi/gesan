@@ -12,6 +12,7 @@ Vue.config.productionTip = false
 
 const nsps = [
   '',
+  'urgencias',
   'consultas',
   'medisur',
   'historial'

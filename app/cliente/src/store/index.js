@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import api from '@/include/api'
+import urgencias from './modules/urgencias'
 import consultas from './modules/consultas'
 import medisur from './modules/medisur'
 import historial from './modules/historial'
@@ -9,6 +10,7 @@ import reportes from './modules/reportes'
 Vue.use(Vuex)
 
 const modules = {
+  urgencias,
   consultas,
   medisur,
   historial,
@@ -125,11 +127,13 @@ export default new Vuex.Store({
                   args: { sid: socket.id }
                 }).then((res) => {
                   if (!getters.started) {
-                    commit('start')
-                    resolve()
-                    if (res.result === 200) {
-                      dispatch('setup', res.data)
-                    }
+                    setTimeout(function () {
+                      commit('start')
+                      resolve()
+                      if (res.result === 200) {
+                        dispatch('setup', res.data)
+                      }
+                    }, 500) // Timer para estabilizar sockets (revisar conexión de sockets)
                   }
                 }).catch(reject)
               })
@@ -189,6 +193,7 @@ export default new Vuex.Store({
             url: '/medicos',
             command: 'get'
           }),
+          dispatch('urgencias/setup'),
           dispatch('consultas/setup'),
           dispatch('medisur/setup'),
           dispatch('historial/setup'),

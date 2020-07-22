@@ -1,12 +1,12 @@
 import Index from '../views/Urgencias/Index.vue'
-import Consulta from '../views/Urgencias/Consulta.vue'
+import Cama from '../views/Urgencias/Atencion/Cama/Index.vue'
 import Turnos from '../views/Urgencias/Turnos.vue'
-import Consultorio from '../views/Urgencias/Consultorio.vue'
+import Atencion from '../views/Urgencias/Atencion/Index.vue'
 
 export default [
   {
     path: '/urgencias',
-    redirect: '/urgencias/consultorio'
+    redirect: '/urgencias/atencion'
   },
   {
     path: '/urgencias',
@@ -18,26 +18,16 @@ export default [
         component: Turnos
       },
       {
-        path: 'turnos/:accion/:arg',
-        component: Turnos
+        path: 'turnos/:id',
+        component: () => import('../views/Urgencias/Evento.vue')
       },
       {
-        path: 'consulta/:consulta',
-        component: Consulta
+        path: 'atencion',
+        component: Atencion
       },
       {
-        path: 'consultorio',
-        redirect: '/urgencias/consultorio/index'
-      },
-      {
-        path: 'consultorio/:consultorio',
-        component: Consultorio,
-        children: [
-          {
-            path: 'consulta/:consulta',
-            component: Consulta
-          }
-        ]
+        path: 'atencion/:cama',
+        component: Cama
       }
     ]
   }

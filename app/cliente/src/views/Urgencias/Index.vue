@@ -27,7 +27,7 @@ export default {
           'supervisor'
         ].find(el2 => el2 === el)).length
       ) {
-        res.push({ title: 'CONSULTORIO', to: '/urgencias/consultorio' })
+        res.push({ title: 'ATENCIÓN MÉDICA', to: '/urgencias/atencion' })
         res.push({ title: 'RECEPCIÓN', to: '/urgencias/turnos' })
       }
       return res

@@ -17,8 +17,7 @@ const codes = {
   //451: {title: "Transacción Cancelada", details: ""},
   452: {title: "Usuario Conectado", details: "El usuario ya inició sesión con anterioridad"},
   453: {title: "Usuario Desconectado", details: "No se ha establecido sesión o esta ha sido cerrada con anterioridad"},
-  454: {title: "Transacción Invalida", details: "Intente nuevamente o comuniquese con un asesor"},
-  455: {title: "Acción Incorrecta", details: "La transacción no se encuentra en el estado esperado"},
+  454: {title: "Recurso ocupado", details: "La cama o habitación no se encuentra disponible"},
   500: {title: "Error Interno del Servidor", details: ""},
 }
 
