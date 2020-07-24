@@ -5,9 +5,10 @@ const state = () => ({
 })
 
 const getters = {
-  consultas: (state) => state.consultas.filter(el => el.tipo !== 'urgencia'),
+  // consultas: (state) => state.consultas.filter(el => el.tipo !== 'urgencia'),
+  consultas: (state) => state.consultas,
 
-  urgencias: (state) => state.consultas.filter(el => el.tipo === 'urgencia'),
+  // urgencias: (state) => state.consultas.filter(el => el.tipo === 'urgencia'),
 
   permisos: (state, getters, rootState, rootGetters) => {
     return rootGetters.permisos.consultas || null

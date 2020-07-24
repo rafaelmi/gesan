@@ -22,6 +22,14 @@ export default [
       {
         path: 'ficha/:userid',
         component: () => import('../views/Reportes/Ficha.vue')
+      },
+      {
+        path: 'consultas',
+        component: () => import('../views/Reportes/Consultas.vue')
+      },
+      {
+        path: 'urgencias',
+        component: () => import('../views/Reportes/Urgencias.vue')
       }
     ]
   }

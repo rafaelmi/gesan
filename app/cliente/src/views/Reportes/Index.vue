@@ -26,8 +26,10 @@ export default {
           'supervisor'
         ].find(el2 => el2 === el)).length
       ) {
-        res.push({ title: 'MEDICOS', to: '/reportes/medicos' })
+        res.push({ title: 'MÉDICOS', to: '/reportes/medicos' })
         res.push({ title: 'FICHA', to: '/reportes/ficha' })
+        res.push({ title: 'CONSULTAS', to: '/reportes/consultas' })
+        res.push({ title: 'URGENCIAS', to: '/reportes/urgencias' })
       }
       return res
     },
