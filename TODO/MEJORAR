@@ -1,0 +1,3 @@
+# MEJORAR
+- Verificar conexión de los sockets antes de hacer setup
+- Hacer refresh luego de recuperada la conexión, no antes

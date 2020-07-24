@@ -19,16 +19,19 @@ export default {
       num.slice(-7)
     },
     toTimestamp (val) {
-      const date = new Date(val)
-      // return date.toLocaleDateString('es-PY') + ' ' + date.toLocaleTimeString('es-PY')
-      return this.toDate(date) + ' ' + date.toLocaleTimeString('es-PY')
+      if (!val) return null
+      else {
+        const date = new Date(val)
+        // return date.toLocaleDateString('es-PY') + ' ' + date.toLocaleTimeString('es-PY')
+        return this.toDate(date) + ' ' + date.toLocaleTimeString('es-PY')
+      }
     },
     toDate (val) {
       const date = new Date(val)
       return (
-        date.getUTCFullYear() + '-' +
-        (date.getUTCMonth() + 1).toString().padStart(2, '0') + '-' +
-        date.getUTCDate().toString().padStart(2, '0')
+        date.getFullYear() + '-' +
+        (date.getMonth() + 1).toString().padStart(2, '0') + '-' +
+        date.getDate().toString().padStart(2, '0')
       )
     },
     toEdad (val) {

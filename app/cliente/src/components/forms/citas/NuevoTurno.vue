@@ -17,8 +17,16 @@
             :messages="toMilSeparator(args.cedula)"
             disabled
           />
-          <v-text-field
+          <v-select
+            :items="[ 'PROGRAMADA', 'ESPONTÁNEA']"
+            :rules="[(val => !!val || 'Este campo es obligatorio')]"
+            label="Tipo de Consulta"
+            required
+            v-model="tipo"
+          />
+          <v-select v-if="type === 'consulta'"
             label="Médico"
+            :items="medicos.map(el => el.nombre)"
             :rules="[(val => !!val || 'Este campo es obligatorio')]"
             required
             v-model="medico"
@@ -29,12 +37,19 @@
             required
             v-model="seguro"
           />
-          <v-select
+          <v-select v-if="type === 'consulta'"
             :items="[ 1, 2, 3 ]"
             :rules="[(val => !!val || 'Este campo es obligatorio')]"
             label="Consultorio"
             required
             v-model="consultorio"
+          />
+          <v-select v-if="type === 'urgencia'"
+            :items="[ 'cama_a', 'cama_b', 'observacion' ]"
+            :rules="[(val => !!val || 'Este campo es obligatorio')]"
+            label="Cama"
+            required
+            v-model="cama"
           />
         </v-form>
       </v-card-text>
@@ -48,14 +63,18 @@
 </template>
 <script>
 import mixUtils from '@/mixins/utils'
-import { mapActions } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 
 const namespace = 'consultas'
 
 export default {
   props: {
     value: Boolean,
-    paciente: Object
+    paciente: Object,
+    type: {
+      type: String,
+      default: 'consulta'
+    }
   },
 
   mixins: [
@@ -63,7 +82,8 @@ export default {
   ],
 
   data: () => ({
-    medico: 'Justo Melgarejo',
+    tipo: 'PROGRAMADA',
+    medico: '', // 'Justo Melgarejo',
     consultorio: 1,
     seguro: 'PARTICULAR',
     title: 'Nueva Consulta'
@@ -82,17 +102,23 @@ export default {
     },
 
     args () {
+      const medico = this.medicos.find(el => el.nombre === this.medico)
       const res = Object.assign({}, this.paciente,
         {
-          medico: this.medico,
-          consultorio: this.consultorio,
+          tipoConsulta: this.tipo,
+          medico: medico ? medico._id : 'urgencias', // medico && medico._id,
+          consultorio: this.type === 'urgencia' ? 'URGENCIAS' : this.consultorio,
           seguro: this.seguro
         }
       )
       delete res._id
       delete res.historial
       return res
-    }
+    },
+
+    ...mapGetters([
+      'medicos'
+    ])
   },
 
   methods: {

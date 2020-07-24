@@ -12,13 +12,12 @@ const codes = {
   403: {title: "Petición No Autorizada", details: "No tiene permisos para ejecutar esta acción"},
   404: {title: "Transacción Invalida", details: "Esta compra no existe"},
   450: {title: "Petición Rechazada", details: "El asegurado no cuenta con suficiente cobertura"},
-  451: {title: "Petición Rechazada", details: "El contrato se encuentra en mora"},
+  451: {title: "Petición No Autorizada", details: "No tiene permitido acceder desde su ubicación actual"},
   // 450: {title: "Transacción Rechazada", details: "Fondos insuficientes"},
   //451: {title: "Transacción Cancelada", details: ""},
   452: {title: "Usuario Conectado", details: "El usuario ya inició sesión con anterioridad"},
   453: {title: "Usuario Desconectado", details: "No se ha establecido sesión o esta ha sido cerrada con anterioridad"},
-  454: {title: "Transacción Invalida", details: "Intente nuevamente o comuniquese con un asesor"},
-  455: {title: "Acción Incorrecta", details: "La transacción no se encuentra en el estado esperado"},
+  454: {title: "Recurso ocupado", details: "La cama o habitación no se encuentra disponible"},
   500: {title: "Error Interno del Servidor", details: ""},
 }
 

@@ -2,6 +2,7 @@ const API = '/historial'
 
 const state = () => ({
   pacientes: [],
+  historial: [],
   paciente: null
 })
 
@@ -15,9 +16,27 @@ const getters = {
     return paciente
   }),
 
+  /*
+  historial: (state) => state.historial.map(el => {
+    const historial = Object.assign(
+      {},
+      el,
+      { historial: el.historial ? el.historial.filter(el => el.estado === 'FINALIZADO') : [] }
+    )
+    console.log(historial)
+    return historial
+    // return historial.sort((a, b) => b.fecha - a.fecha)
+  }),
+  */
+  historial: (state) => {
+    return state.historial
+  },
+
   paciente: (state, getters, rootState) => {
     const paciente = getters.pacientes.find(el => el._id === state.paciente) || {}
-    paciente.historial && paciente.historial.sort((el1, el2) => el2.fecha - el1.fecha)
+    const historial = getters.historial.find(el => el._id === paciente._id)
+    paciente.historial = historial ? historial.historial : []
+    if (paciente.historial) paciente.historial.sort((el1, el2) => el2.fecha - el1.fecha)
     return paciente
   },
 
@@ -56,6 +75,13 @@ const actions = {
     state.pacientes = [
       ...data,
       ...state.pacientes.filter(oldel => !data.find(newel => oldel._id === newel._id))
+    ]
+  },
+
+  HISTORIAL_historial ({ state, commit, dispatch }, data) {
+    state.historial = [
+      ...data,
+      ...state.historial.filter(oldel => !data.find(newel => oldel._id === newel._id))
     ]
   }
 }

@@ -48,12 +48,20 @@ router.post('/login', ({ body, session }, res, next) => {
     session.usuario = data.usuario
     session.nombre = data.nombre
     session.tipo = data.tipo
+    session.flags = data.flags
     // session.allowedRooms = data.allowedRooms || []
     // data.sid = session.id
 
     setPermisos(data)
     Object.assign(session, { perfiles: data.perfiles }, { permisos: data.permisos })
-    res.json(response(200, data))
+    /*
+    session.timeout = setTimeout((sess) => {
+      sess && sess.username && sess.destroy()
+    }, 1000 * 60 * 1, session).unref()
+    */
+    res.locals.data = data
+    next()
+    // res.json(response(200, data))
   }).catch(next)
 })
 
@@ -71,7 +79,9 @@ router.post('/info', ({ body, session }, res, next) => {
     delete data.password;
     // data.sid = session.id
     setPermisos(data)
-    res.json(response(200, data))
+    res.locals.data = data
+    next()
+    // res.json(response(200, data))
   }).catch(next)
 })
 

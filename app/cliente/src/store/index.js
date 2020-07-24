@@ -1,16 +1,20 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import api from '@/include/api'
+import urgencias from './modules/urgencias'
 import consultas from './modules/consultas'
 import medisur from './modules/medisur'
 import historial from './modules/historial'
+import reportes from './modules/reportes'
 
 Vue.use(Vuex)
 
 const modules = {
+  urgencias,
   consultas,
   medisur,
-  historial
+  historial,
+  reportes
 }
 const nsps = Object.keys(modules)
 
@@ -25,6 +29,7 @@ export default new Vuex.Store({
     socket: null,
     nextRoute: '/home',
     personas: [],
+    medicos: [],
     alert: {
       sw: false,
       title: '',
@@ -32,13 +37,13 @@ export default new Vuex.Store({
       color: '',
       icon: ''
     }
-    // defaultState: null
   },
 
   getters: {
     started: state => state.state !== 'INIT',
     logged: state => state.state !== 'INIT' && state.state !== 'STARTED',
-    permisos: state => (state.user && state.user.permisos) || {}
+    permisos: state => (state.user && state.user.permisos) || {},
+    medicos: (state, getters, rootState) => state.medicos
   },
 
   mutations: {
@@ -122,11 +127,13 @@ export default new Vuex.Store({
                   args: { sid: socket.id }
                 }).then((res) => {
                   if (!getters.started) {
-                    commit('start')
-                    resolve()
-                    if (res.result === 200) {
-                      dispatch('setup', res.data)
-                    }
+                    setTimeout(function () {
+                      commit('start')
+                      resolve()
+                      if (res.result === 200) {
+                        dispatch('setup', res.data)
+                      }
+                    }, 500) // Timer para estabilizar sockets (revisar conexión de sockets)
                   }
                 }).catch(reject)
               })
@@ -163,17 +170,34 @@ export default new Vuex.Store({
       })
     },
 
-    setup ({ commit, state, dispatch }, data) {
+    setup ({ commit, state, getters, dispatch }, data) {
       return new Promise((resolve, reject) => {
         commit('login', data)
+        setInterval(() => {
+          const timeout = setTimeout(function () {
+            location.reload()
+          }, 10000)
+          dispatch('send', {
+            url: '/config',
+            command: 'keepAlive'
+          }).then(() => {
+            clearTimeout(timeout)
+          })
+        }, 1000 * 60 * 5)
         Promise.all([
           dispatch('send', {
             url: '/personas',
             command: 'get'
           }),
+          getters.permisos.medicos && dispatch('send', {
+            url: '/medicos',
+            command: 'get'
+          }),
+          dispatch('urgencias/setup'),
           dispatch('consultas/setup'),
           dispatch('medisur/setup'),
-          dispatch('historial/setup')
+          dispatch('historial/setup'),
+          dispatch('reportes/setup')
         ]).then(() => {
           commit('establish', data)
           resolve()
@@ -225,6 +249,13 @@ export default new Vuex.Store({
       state.personas = [
         ...data,
         ...state.personas.filter(oldel => !data.find(newel => oldel._id === newel._id))
+      ]
+    },
+
+    SOCKET_medicos ({ state }, data) {
+      state.medicos = [
+        ...data,
+        ...state.medicos.filter(oldel => !data.find(newel => oldel._id === newel._id))
       ]
     }
   },

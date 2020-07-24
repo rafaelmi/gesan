@@ -73,7 +73,7 @@ export default {
           'admin',
           'supervisor'
         ].find(el2 => el2 === el)).length
-      ) res.push({ title: 'TURNOS', to: 'turnos' })
+      ) res.push({ title: 'RECEPCIÓN', to: 'turnos' })
       return res
     },
 

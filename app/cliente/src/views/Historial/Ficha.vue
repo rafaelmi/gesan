@@ -2,7 +2,7 @@
   <c-ficha v-if="paciente._id"
     :titulo="paciente.nombre"
   >
-    <c-ficha-paciente :paciente="paciente"/>
+    <c-ficha-persona :persona="paciente"/>
     <c-ficha-card
       titulo="ACCIONES"
     >
@@ -25,6 +25,11 @@
       <c-form-consultas-nuevo
         v-model="swFormConsultasNew"
         :paciente="paciente"
+        :type="formConsultasNewType"
+      />
+      <c-form-urgencias-nuevo
+        v-model="swFormUrgenciasNew"
+        :paciente="paciente"
       />
     </c-ficha-card>
     <c-ficha-card
@@ -41,12 +46,12 @@
               <v-list-item two-line>
                 <v-list-item-content>
                   <v-list-item-title v-text="toTimestamp(historial.fecha)"/>
-                  <v-list-item-subtitle v-text="'CONSULTA'"/>
+                  <v-list-item-subtitle v-text="historial.tipo"/>
                 </v-list-item-content>
               </v-list-item>
             </v-list>
           </v-expansion-panel-header>
-          <v-expansion-panel-content v-if="historial.estado === 'FINALIZADO'">
+          <v-expansion-panel-content>
             <v-list dense>
               <v-list-item two-line>
                 <v-list-item-content>
@@ -55,7 +60,8 @@
                 </v-list-item-content>
               </v-list-item>
             </v-list>
-            <c-historia :consulta="historial"/>
+            <c-consulta-historia v-if="historial.tipo === 'CONSULTA'" :consulta="historial"/>
+            <c-urgencia-historia v-else-if="historial.tipo === 'URGENCIA'" :consulta="historial"/>
           </v-expansion-panel-content>
         </v-expansion-panel>
       </v-expansion-panels>
@@ -76,9 +82,11 @@ export default {
   components: {
     'c-ficha': () => import('@/components/ficha/Ficha.vue'),
     'c-ficha-card': () => import('@/components/ficha/FichaCard.vue'),
-    'c-ficha-paciente': () => import('@/components/ficha/FichaPaciente.vue'),
+    'c-ficha-persona': () => import('@/components/ficha/FichaPersona.vue'),
     'c-form-consultas-nuevo': () => import('@/components/forms/citas/NuevoTurno.vue'),
-    'c-historia': () => import('@/components/Historia.vue')
+    'c-form-urgencias-nuevo': () => import('@/components/forms/urgencias/NuevoTurno.vue'),
+    'c-consulta-historia': () => import('@/components/Historia.vue'),
+    'c-urgencia-historia': () => import('@/views/Urgencias/Atencion/Cama/Historia.vue')
   },
 
   mixins: [
@@ -86,7 +94,9 @@ export default {
   ],
 
   data: () => ({
-    swFormConsultasNew: false
+    swFormConsultasNew: false,
+    swFormUrgenciasNew: false,
+    formConsultasNewType: null
   }),
 
   computed: {
@@ -96,8 +106,14 @@ export default {
         {
           titulo: 'NUEVA CONSULTA',
           icon: 'mdi-stethoscope',
-          click: this.nuevoTurno
-          // disabled: this.paciente.historial[0] && this.paciente.historial[0].estado !== 'FINALIZADO'
+          click: this.nuevoTurno,
+          disabled: !(this.permisos.consultas && this.permisos.consultas.create)
+        },
+        {
+          titulo: 'NUEVA URGENCIA',
+          icon: 'mdi-bandage',
+          click: this.nuevaUrgencia,
+          disabled: !(this.permisos.urgencias && this.permisos.urgencias.create)
         },
         { titulo: 'NUEVO ESTUDIO', icon: 'mdi-microscope', disabled },
         { titulo: 'NUEVO INGRESO', icon: 'mdi-bed', disabled },
@@ -108,11 +124,22 @@ export default {
     ...mapGetters(namespace, [
       'pacientes',
       'paciente'
+    ]),
+
+    ...mapGetters([
+      'permisos'
     ])
   },
 
   created () {
     const paciente = this.$route.params.paciente
+    this.send({
+      command: 'get',
+      args: {
+        _id: paciente
+      }
+    })
+
     paciente && this.selectPaciente(paciente)
     /*
     if (this.$route.path === '/historial/ficha') {
@@ -123,11 +150,17 @@ export default {
 
   methods: {
     nuevoTurno () {
+      this.formConsultasNewType = 'consulta'
       this.swFormConsultasNew = true
     },
 
+    nuevaUrgencia () {
+      this.swFormUrgenciasNew = true
+    },
+
     ...mapActions(namespace, [
-      'selectPaciente'
+      'selectPaciente',
+      'send'
     ])
   }
 }

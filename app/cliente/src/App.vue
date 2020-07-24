@@ -118,6 +118,7 @@ export default {
       const permisos = this.permisos
       return [
         { title: 'Inicio', icon: 'mdi-home', to: '/home' },
+        { title: 'Urgencias', icon: 'mdi-bandage', to: permisos && permisos.urgencias && '/urgencias' },
         { title: 'Consulta Externa', icon: 'mdi-stethoscope', to: permisos && permisos.consultas && '/citas' },
         {
           title: 'Historial Médico',
@@ -131,7 +132,8 @@ export default {
         { title: 'Medisur', icon: 'mdi-shield-half-full', to: permisos && permisos.medisur && '/medisur/contratos' },
         { title: 'Farmacia', icon: 'mdi-pill', to: false },
         { title: 'Facturación', icon: 'mdi-receipt', to: false },
-        { title: 'Tesorería', icon: 'mdi-cash-usd', to: false }
+        { title: 'Tesorería', icon: 'mdi-cash-usd', to: false },
+        { title: 'Reportes', icon: 'mdi-file-chart', to: permisos && permisos.reportes && '/reportes' }
       ]
     },
 

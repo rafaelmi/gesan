@@ -36,7 +36,7 @@ export default [
         children: [
           {
             path: 'consulta/:consulta',
-            name: 'innerConsulta',
+            // name: 'innerConsulta',
             component: Consulta
           }
         ]

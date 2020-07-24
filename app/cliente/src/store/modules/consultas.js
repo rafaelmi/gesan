@@ -5,6 +5,11 @@ const state = () => ({
 })
 
 const getters = {
+  // consultas: (state) => state.consultas.filter(el => el.tipo !== 'urgencia'),
+  consultas: (state) => state.consultas,
+
+  // urgencias: (state) => state.consultas.filter(el => el.tipo === 'urgencia'),
+
   permisos: (state, getters, rootState, rootGetters) => {
     return rootGetters.permisos.consultas || null
   }
@@ -36,7 +41,7 @@ const actions = {
       command: 'update',
       args: {
         _id: consulta._id,
-        estado: 'CONSULTANDO',
+        estado: (consulta.estado === 'EN ESPERA' && 'CONSULTANDO') || undefined,
         llamar: true
       }
     })
@@ -74,12 +79,13 @@ const actions = {
   },
 
   nextConsulta ({ state }, { consultorio, router }) {
+    const modulo = (consultorio === 'URGENCIAS') ? 'urgencias' : 'citas'
     const consulta = state.consultas.find(item => {
       return ['EN ESPERA', 'CONSULTANDO'].find(el => item.estado === el) &&
       (item.consultorio === consultorio)
     }) || null
     router.push(
-      '/citas/consultorio/' + consultorio + '/consulta/' +
+      '/' + modulo + '/consultorio/' + consultorio.toString().toLowerCase() + '/consulta/' +
       (consulta ? consulta._id : 'index')
     )
   },
