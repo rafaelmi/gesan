@@ -10,12 +10,25 @@ const getters = {
     return rootState.consultas.consultas.map(el => {
       return {
         _id: el._id,
-        tipo: el.tipo,
+        tipo: el.tipo || 'PROGRAMADA',
         medico: el.medico,
         nombre: el.nombre,
         fechaInicio: utils.methods.toTimestamp(el.fechaInicio),
         fechaFin: utils.methods.toTimestamp(el.fechaFin),
         duracion: Math.round((el.fechaFin - el.fechaInicio) / 1000 / 60)
+      }
+    })
+  },
+
+  urgencias: (state, getters, rootState, rootGetters) => {
+    return rootState.urgencias.urgencias.map(el => {
+      return {
+        _id: el._id,
+        nombre: el.nombre,
+        inicio: utils.methods.toTimestamp(el.inicio),
+        fin: utils.methods.toTimestamp(el.fin),
+        duracion: Math.round((el.fin - el.inicio) / 1000 / 60),
+        observacion: el.cama === 'observacion' ? 'SI' : 'NO'
       }
     })
   },

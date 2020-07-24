@@ -34,7 +34,8 @@ export default {
         sortBy: 'nombre',
         onClickRow: (item) => {
           this.$router.push('ficha/' + item._id)
-        }
+        },
+        creable: false
       }
     },
 

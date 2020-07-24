@@ -28,6 +28,7 @@
       <v-data-table
         :headers="cheaders.diario"
         :items="diario"
+        item-key="fecha"
         sort-by="fecha"
         sort-desc
         class="elevation-1"
