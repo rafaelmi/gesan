@@ -54,8 +54,8 @@ export default {
         consultas: [
           { text: 'Paciente', value: 'nombre' },
           { text: 'Tipo', value: 'tipo' },
-          { text: 'Inicio', value: 'fechaInicio' },
-          { text: 'Fin', value: 'fechaFin' },
+          { text: 'Inicio', value: 'inicio' },
+          { text: 'Fin', value: 'fin' },
           { text: 'Duración (minutos)', value: 'duracion', align: 'right' }
         ],
         diario: [
@@ -69,7 +69,7 @@ export default {
 
     diario () {
       return Object.entries(this.consultas.reduce((acc, cur) => {
-        const fecha = this.toDate(cur.fechaFin)
+        const fecha = this.toDate(cur.fin || cur.fecha)
         // acc[fecha] = acc[fecha] + 1 || 1
         if (!acc[fecha]) acc[fecha] = []
         acc[fecha].push(cur)

@@ -29,6 +29,7 @@ export default {
       ) res.push({ title: 'PACIENTES', to: '/historial/pacientes' })
       if (
         perfiles.filter(el => [
+          'recepcion',
           'medico',
           'master',
           'admin',

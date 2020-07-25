@@ -24,9 +24,15 @@
             required
             v-model="tipo"
           />
-          <v-select v-if="type === 'consulta'"
+          <!--<v-select v-if="type === 'consulta'"
             label="Médico"
             :items="medicos.map(el => el.nombre)"
+            :rules="[(val => !!val || 'Este campo es obligatorio')]"
+            required
+            v-model="medico"
+          />-->
+          <v-text-field v-if="type === 'consulta'"
+            label="Médico"
             :rules="[(val => !!val || 'Este campo es obligatorio')]"
             required
             v-model="medico"
@@ -83,7 +89,7 @@ export default {
 
   data: () => ({
     tipo: 'PROGRAMADA',
-    medico: '', // 'Justo Melgarejo',
+    medico: 'Justo Melgarejo',
     consultorio: 1,
     seguro: 'PARTICULAR',
     title: 'Nueva Consulta'
@@ -102,11 +108,12 @@ export default {
     },
 
     args () {
-      const medico = this.medicos.find(el => el.nombre === this.medico)
+      // const medico = this.medicos.find(el => el.nombre === this.medico)
       const res = Object.assign({}, this.paciente,
         {
           tipoConsulta: this.tipo,
-          medico: medico ? medico._id : 'urgencias', // medico && medico._id,
+          // medico: medico ? medico._id : 'urgencias', // medico && medico._id,
+          medico: this.medico,
           consultorio: this.type === 'urgencia' ? 'URGENCIAS' : this.consultorio,
           seguro: this.seguro
         }

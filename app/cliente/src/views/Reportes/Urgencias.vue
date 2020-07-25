@@ -69,7 +69,7 @@ export default {
 
     diario () {
       return Object.entries(this.urgencias.reduce((acc, cur) => {
-        const fecha = this.toDate(cur.fin)
+        const fecha = this.toDate(cur.fin || cur.fecha)
         // acc[fecha] = acc[fecha] + 1 || 1
         if (!acc[fecha]) acc[fecha] = []
         acc[fecha].push(cur)

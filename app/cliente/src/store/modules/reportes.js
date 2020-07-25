@@ -13,8 +13,9 @@ const getters = {
         tipo: el.tipo || 'PROGRAMADA',
         medico: el.medico,
         nombre: el.nombre,
-        fechaInicio: utils.methods.toTimestamp(el.fechaInicio),
-        fechaFin: utils.methods.toTimestamp(el.fechaFin),
+        fecha: el.fecha,
+        inicio: utils.methods.toTimestamp(el.fechaInicio),
+        fin: utils.methods.toTimestamp(el.fechaFin),
         duracion: Math.round((el.fechaFin - el.fechaInicio) / 1000 / 60)
       }
     })
@@ -25,6 +26,7 @@ const getters = {
       return {
         _id: el._id,
         nombre: el.nombre,
+        fecha: el.fecha,
         inicio: utils.methods.toTimestamp(el.inicio),
         fin: utils.methods.toTimestamp(el.fin),
         duracion: Math.round((el.fin - el.inicio) / 1000 / 60),

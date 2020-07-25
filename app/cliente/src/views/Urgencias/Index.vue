@@ -21,6 +21,7 @@ export default {
       const res = []
       if (
         perfiles.filter(el => [
+          'recepcion',
           'urgencias',
           'master',
           'admin',
