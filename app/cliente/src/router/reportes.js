@@ -2,7 +2,7 @@ export default [
   {
     path: '/reportes',
     beforeEnter: (to, from, next) => {
-      next('/reportes/medicos')
+      next('/reportes/consultas')
     }
   },
   {

@@ -52,6 +52,8 @@ export default new Vuex.Store({
       let home
       if (state.user.perfiles.find(el => el === 'consultorio')) {
         home = '/citas/consultorio'
+      } else if (state.user.perfiles.find(el => el === 'urgencias')) {
+        home = '/urgencias/atencion'
       } else {
         home = '/'
       }
@@ -280,10 +282,10 @@ export default new Vuex.Store({
             url: '/personas',
             command: 'get'
           }),
-          getters.permisos.medicos && dispatch('send', {
-            url: '/medicos',
-            command: 'get'
-          }),
+          // getters.permisos.medicos && dispatch('send', {
+          //  url: '/medicos',
+          //  command: 'get'
+          // }),
           dispatch('urgencias/setup'),
           dispatch('consultas/setup'),
           dispatch('medisur/setup'),
