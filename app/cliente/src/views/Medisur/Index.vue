@@ -3,6 +3,7 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 
 export default {
   components: {
@@ -10,13 +11,24 @@ export default {
   },
 
   data: () => ({
-    tabs: [
-      { title: 'CONTRATOS', to: '/medisur/contratos' },
-      { title: 'ASEGURADOS', to: '/medisur/asegurados' },
-      // { title: 'EVENTOS', to: '/medisur/eventos' },
-      { title: 'PAGOS', to: '/medisur/pagos' },
-      { title: 'PLANES', to: '/medisur/planes' }
-    ]
-  })
+  }),
+
+  computed: {
+    tabs () {
+      const res = []
+      const medisur = this.views.medisur
+      if (medisur) {
+        medisur.contratos && res.push({ title: 'CONTRATOS', to: '/medisur/contratos' })
+        medisur.asegurados && res.push({ title: 'ASEGURADOS', to: '/medisur/asegurados' })
+        medisur.pagos && res.push({ title: 'PAGOS', to: '/medisur/pagos' })
+        medisur.planes && res.push({ title: 'PLANES', to: '/medisur/planes' })
+      }
+      return res
+    },
+
+    ...mapGetters([
+      'views'
+    ])
+  }
 }
 </script>

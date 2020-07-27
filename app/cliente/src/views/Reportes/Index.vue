@@ -3,7 +3,7 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapState, mapGetters } from 'vuex'
 
 // const namespace = 'reportes'
 
@@ -17,27 +17,24 @@ export default {
 
   computed: {
     tabs () {
-      const perfiles = this.user.perfiles || []
       const res = []
-      if (
-        perfiles.filter(el => [
-          'master',
-          'admin',
-          'supervisor'
-        ].find(el2 => el2 === el)).length
-      ) {
-        // res.push({ title: 'MÉDICOS', to: '/reportes/medicos' })
-        // res.push({ title: 'FICHA', to: '/reportes/ficha' })
-        res.push({ title: 'CONSULTAS', to: '/reportes/consultas' })
-        res.push({ title: 'URGENCIAS', to: '/reportes/urgencias' })
+      const reportes = this.views.reportes
+      if (reportes) {
+        // reportes.medicos && res.push({ title: 'MÉDICOS', to: '/reportes/medicos' })
+        // reportes.ficha && res.push({ title: 'FICHA', to: '/reportes/ficha' })
+        reportes.consultas && res.push({ title: 'CONSULTAS', to: '/reportes/consultas' })
+        reportes.urgencias && res.push({ title: 'URGENCIAS', to: '/reportes/urgencias' })
       }
       return res
     },
 
     ...mapState([
       'user'
-    ])
+    ]),
 
+    ...mapGetters([
+      'views'
+    ])
   }
 }
 </script>

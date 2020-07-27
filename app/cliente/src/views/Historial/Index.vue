@@ -3,7 +3,7 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapState, mapGetters } from 'vuex'
 
 const namespace = 'historial'
 
@@ -17,43 +17,26 @@ export default {
 
   computed: {
     tabs () {
-      const perfiles = this.user.perfiles || []
       const res = []
-      if (
-        perfiles.filter(el => [
-          'recepcion',
-          'master',
-          'admin',
-          'supervisor'
-        ].find(el2 => el2 === el)).length
-      ) res.push({ title: 'PACIENTES', to: '/historial/pacientes' })
-      if (
-        perfiles.filter(el => [
-          'recepcion',
-          'medico',
-          'master',
-          'admin',
-          'supervisor'
-        ].find(el2 => el2 === el)).length
-      ) res.push({ title: 'FICHA MÉDICA', to: '/historial/ficha' + (this.paciente ? '/' + this.paciente : '') })
+      const historial = this.views.historial
+      if (historial) {
+        historial.pacientes && res.push({ title: 'PACIENTES', to: '/historial/pacientes' })
+        historial.ficha && res.push({ title: 'FICHA MÉDICA', to: '/historial/ficha' + (this.paciente ? '/' + this.paciente : '') })
+      }
       return res
     },
-    /*
-    tabs () {
-      return [
-        { title: 'PACIENTES', to: '/historial/pacientes' },
-        { title: 'FICHA MÉDICA', to: '/historial/ficha' + (this.paciente ? '/' + this.paciente : '') }
-      ]
-    },
-    */
+
     ...mapState(namespace, [
       'paciente'
     ]),
 
     ...mapState([
       'user'
-    ])
+    ]),
 
+    ...mapGetters([
+      'views'
+    ])
   }
 }
 </script>

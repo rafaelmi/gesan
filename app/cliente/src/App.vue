@@ -30,7 +30,16 @@
       <v-app-bar-nav-icon v-if="allowDrawer"
         @click.stop="drawer = !drawer"
       />
-      <v-toolbar-title>{{ title }}</v-toolbar-title>
+      <v-toolbar-title v-if="allowDrawer">{{ title }}</v-toolbar-title>
+      <v-btn v-else
+        text
+        @click="$router.replace('/')"
+      >
+        <v-icon>mdi-home</v-icon>
+        <span class="px-2">
+          INICIO
+        </span>
+      </v-btn>
 
       <v-snackbar v-model="alert.sw" :color="alert.color" top vertical>
         <v-container>
@@ -115,25 +124,17 @@ export default {
   computed: {
 
     menuItems () {
-      const permisos = this.permisos
+      const views = this.views || {}
       return [
         { title: 'Inicio', icon: 'mdi-home', to: '/home' },
-        { title: 'Urgencias', icon: 'mdi-bandage', to: permisos && permisos.urgencias && '/urgencias' },
-        { title: 'Consulta Externa', icon: 'mdi-stethoscope', to: permisos && permisos.consultas && '/citas' },
-        {
-          title: 'Historial Médico',
-          icon: 'mdi-account-details',
-          to: this.user &&
-            !this.user.perfiles.find(el => el === 'medico') &&
-            permisos &&
-            permisos.historial &&
-            '/historial'
-        },
-        { title: 'Medisur', icon: 'mdi-shield-half-full', to: permisos && permisos.medisur && '/medisur/contratos' },
+        { title: 'Urgencias', icon: 'mdi-bandage', to: views.urgencias && '/urgencias' },
+        { title: 'Consulta Externa', icon: 'mdi-stethoscope', to: views.citas && '/citas' },
+        { title: 'Historial Médico', icon: 'mdi-account-details', to: views.historial && '/historial' },
+        { title: 'Medisur', icon: 'mdi-shield-half-full', to: views.medisur && '/medisur/contratos' },
         { title: 'Farmacia', icon: 'mdi-pill', to: false },
         { title: 'Facturación', icon: 'mdi-receipt', to: false },
         { title: 'Tesorería', icon: 'mdi-cash-usd', to: false },
-        { title: 'Reportes', icon: 'mdi-file-chart', to: permisos && permisos.reportes && '/reportes' }
+        { title: 'Reportes', icon: 'mdi-file-chart', to: views.reportes && '/reportes' }
       ]
     },
 
@@ -142,7 +143,8 @@ export default {
     },
 
     allowDrawer () {
-      return true // this.$route.name !== 'Pantalla'
+      return this.flags.app.drawer
+      // return true // this.$route.name !== 'Pantalla'
     },
 
     title () {
@@ -156,8 +158,10 @@ export default {
     ]),
 
     ...mapGetters([
-      'permisos',
-      'perfiles'
+      'perfiles',
+      'views',
+      'flags',
+      'home'
     ])
 
     /* time () {

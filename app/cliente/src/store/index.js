@@ -41,9 +41,100 @@ export default new Vuex.Store({
 
   getters: {
     started: state => state.state !== 'INIT',
+
     logged: state => state.state !== 'INIT' && state.state !== 'STARTED',
+
     permisos: state => (state.user && state.user.permisos) || {},
-    medicos: (state, getters, rootState) => state.medicos
+
+    medicos: (state, getters, rootState) => state.medicos,
+
+    home: (state) => {
+      let home
+      if (state.user.perfiles.find(el => el === 'consultorio')) {
+        home = '/citas/consultorio'
+      } else {
+        home = '/'
+      }
+      return home
+    },
+
+    views: (state) => {
+      const views = {
+        urgencias: {},
+        citas: {},
+        historial: {},
+        medisur: {},
+        reportes: {}
+      }
+      state.user && state.user.perfiles.forEach(perfil => {
+        switch (perfil) {
+          case 'master':
+          case 'admin':
+          case 'supervisor':
+            views.urgencias.atencion = true
+            views.urgencias.turnos = true
+            views.citas.consultorio = true
+            views.citas.turnos = true
+            views.historial.pacientes = true
+            views.historial.ficha = true
+            views.medisur.contratos = true
+            views.medisur.asegurados = true
+            views.medisur.pagos = true
+            views.medisur.planes = true
+            views.reportes.consultas = true
+            views.reportes.urgencias = true
+            break
+
+          case 'medisur':
+            views.medisur.contratos = true
+            views.medisur.asegurados = true
+            views.medisur.pagos = true
+            views.medisur.planes = true
+            break
+
+          case 'recepcion':
+            views.urgencias.turnos = true
+            views.citas.turnos = true
+            views.historial.pacientes = true
+            views.historial.ficha = true
+            break
+
+          case 'ugencias':
+            views.urgencias.atencion = true
+            views.historial.ficha = true
+            break
+
+          case 'consultorio':
+            views.citas.consultorio = true
+            views.historial.ficha = true
+            break
+
+          default:
+        }
+      })
+      Object.entries(views).forEach(([key, val]) => {
+        if (!Object.keys(val).length) delete views[key]
+      })
+      return views
+    },
+
+    flags: (state) => {
+      const flags = { app: { } }
+      state.user && state.user.perfiles.forEach(perfil => {
+        switch (perfil) {
+          case 'master':
+          case 'admin':
+          case 'supervisor':
+          case 'medisur':
+          case 'recepcion':
+            flags.app.drawer = true
+            break
+
+          default:
+        }
+      })
+      return flags
+    }
   },
 
   mutations: {

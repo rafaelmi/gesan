@@ -60,6 +60,7 @@ export default {
   ],
 
   data: () => ({
+    sending: false,
     editedHeaders: {
       historia: {
         titulo: 'HISTORIA CLÍNICA',
@@ -102,7 +103,7 @@ export default {
 
     disable () {
       return {
-        editar: this.consulta.estado !== 'CONSULTANDO'
+        editar: this.sending || this.consulta.estado !== 'CONSULTANDO'
       }
     }
   },
@@ -110,17 +111,23 @@ export default {
   methods: {
     save () {
       if (!this.disable.editar) {
+        this.sending = true
         return this.send({
           command: 'update',
           args: this.editedItem
+        }).then(() => {
+          this.sending = false
         })
       }
     },
 
     saveRealizado () {
+      this.sending = true
       return this.send({
         command: 'update',
         args: this.editedItem
+      }).then(() => {
+        this.sending = false
       })
     },
 
