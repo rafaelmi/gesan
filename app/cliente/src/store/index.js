@@ -120,7 +120,7 @@ export default new Vuex.Store({
       return views
     },
 
-    flags: (state) => {
+    flags: (state, getters) => {
       const flags = { app: { } }
       state.user && state.user.perfiles.forEach(perfil => {
         switch (perfil) {
@@ -131,8 +131,14 @@ export default new Vuex.Store({
           case 'recepcion':
             flags.app.drawer = true
             break
-
           default:
+        }
+        if (
+          getters.permisos.user &&
+          getters.permisos.user.password &&
+          getters.permisos.user.password.update
+        ) {
+          flags.app.passwordUpdate = true
         }
       })
       return flags

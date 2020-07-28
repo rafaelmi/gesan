@@ -157,6 +157,17 @@
             <v-list-item-title v-text="'ANTERIOR PACIENTE'"/>
           </v-list-item-content>
         </v-list-item>
+        <v-list-item
+          :disabled="disable.eliminar"
+          @click="onTerminar"
+        >
+          <v-list-item-icon>
+            <v-icon v-text="'mdi-exit-run'" color="red"/>
+          </v-list-item-icon>
+          <v-list-item-content>
+            <v-list-item-title v-text="'ELIMINAR'"/>
+          </v-list-item-content>
+        </v-list-item>
       </v-list>
     </c-ficha-card>
     <c-historia :consulta="consulta"/>

@@ -1,3 +1,4 @@
+const Joi = require('@hapi/joi')
 const monk = require('monk')
 const db = monk('localhost/sanasur')
 const crypto = require('crypto')
@@ -5,6 +6,8 @@ const response = require('./response')
 const router = require('express').Router()
 
 const users = db.get('vAuthUsuarios')
+const table = db.get('authUsuarios')
+const view = users
 
 function setPermisos(data) {
   const callback = (acc, permisos) => {
@@ -91,6 +94,54 @@ router.post('/logout', ({ body, session }, res, next) => {
   if (!session.username) throw 453
   session.destroy();
   res.json(response(200))
+})
+
+const schema = Joi.object({
+  username: Joi.string()
+    .min(3)
+    .max(15)
+    .required(),
+
+  password: Joi.string()
+    .min(3)
+    .max(15)
+    .required(),
+
+  new: Joi.string()
+    .min(3)
+    .max(15)
+    // .pattern(new RegExp('^[a-zA-Z0-9]{6,15}$'))
+    .required(),
+
+  repeat: Joi.ref('new')
+}).with('new', 'repeat');
+
+router.post('/password/update', ({ body }, res, next) => {
+  schema.validateAsync(Object.create(body)).then(val => {
+    const password = (pass) => {
+      return crypto.createHash('sha256')
+                .update(pass)
+                .digest('hex')
+    }
+    view.findOne({
+                    _id: val.username,
+                     password: password(val.password)
+                  },{castIds: false})
+    .then(data => {
+      if (!data) throw 401
+      args = {
+        password: password(val.new),
+        modificado: Date.now()
+      }
+      table.findOneAndUpdate(
+        {_id: val.username},
+        {$set: args},
+        {castIds: false}
+      ).then(data => {
+        next()
+      }).catch(next)
+    }).catch(next)
+  }).catch(() => { throw 400 })
 })
 
 module.exports = router

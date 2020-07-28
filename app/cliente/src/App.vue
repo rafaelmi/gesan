@@ -69,6 +69,11 @@
           </template>
           <v-list>
             <v-list-item
+              @click="changePassword = true"
+            >
+              <v-list-item-title>Cambiar password</v-list-item-title>
+            </v-list-item>
+            <v-list-item
               @click="$router.push('/logout')"
             >
               <v-list-item-title>Salir</v-list-item-title>
@@ -88,6 +93,7 @@
     </v-app-bar>
 
     <v-content>
+      <c-change-password v-model="changePassword"/>
       <router-view></router-view>
     </v-content>
 
@@ -111,6 +117,7 @@ export default {
   name: 'App',
 
   components: {
+    'c-change-password': () => import('@/components/forms/ChangePassword.vue')
   },
 
   data: () => ({
@@ -118,7 +125,8 @@ export default {
     drawerItem: 0,
     barColor: 'blue darken-3',
     time: null,
-    timerItervalId: null
+    timerItervalId: null,
+    changePassword: false
   }),
 
   computed: {

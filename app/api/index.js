@@ -55,7 +55,10 @@ function checkPermission({url, session}, res, next) {
     user: {
       info: true,
       logout: true,
-      login: true
+      login: true,
+      password: {
+        update: true
+      }
     },
     config: {
       keepAlive: true
