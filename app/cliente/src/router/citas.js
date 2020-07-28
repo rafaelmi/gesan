@@ -29,6 +29,7 @@ export default [
         name: 'Consulta',
         component: Consulta
       },
+      /*
       {
         path: 'consultorio/:consultorio',
         name: 'Consultorio',
@@ -40,6 +41,15 @@ export default [
             component: Consulta
           }
         ]
+      },
+      */
+      {
+        path: 'consultorio/:index',
+        component: Consultorio
+      },
+      {
+        path: 'consultorio',
+        redirect: 'consultorio/0'
       }
     ]
   }

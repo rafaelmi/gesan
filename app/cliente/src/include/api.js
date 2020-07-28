@@ -1,7 +1,7 @@
 const API_URL = '/api'
 
 function command (args) {
-  let url = API_URL + args.url
+  let url = API_URL + (args.url || '/')
   url += args.modulo ? '/' + args.modulo : ''
   url += '/' + args.command
   return fetch(url, {

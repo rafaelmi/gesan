@@ -26,11 +26,15 @@
 </template>
 
 <script>
-// @ is an alias to /src
-
 export default {
   name: 'Home',
   components: {
+  },
+  beforeRouteEnter (to, from, next) {
+    next(vm => {
+      const home = vm.$store.getters.home
+      if (home !== '/') vm.$router.replace(home)
+    })
   }
 }
 </script>

@@ -41,7 +41,7 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapState, mapGetters } from 'vuex'
 
 // const namespace = 'consultas'
 
@@ -56,24 +56,12 @@ export default {
 
   computed: {
     tabs () {
-      const perfiles = this.user.perfiles || []
       const res = []
-      if (
-        perfiles.filter(el => [
-          'medico',
-          'master',
-          'admin',
-          'supervisor'
-        ].find(el2 => el2 === el)).length
-      ) res.push({ title: 'CONSULTORIO', to: 'consultorio/index' })
-      if (
-        perfiles.filter(el => [
-          'recepcion',
-          'master',
-          'admin',
-          'supervisor'
-        ].find(el2 => el2 === el)).length
-      ) res.push({ title: 'RECEPCIÓN', to: 'turnos' })
+      const citas = this.views.citas
+      if (citas) {
+        citas.consultorio && res.push({ title: 'CONSULTORIO', to: 'consultorio' })
+        citas.turnos && res.push({ title: 'RECEPCIÓN', to: 'turnos' })
+      }
       return res
     },
 
@@ -83,6 +71,10 @@ export default {
 
     ...mapState([
       'user'
+    ]),
+
+    ...mapGetters([
+      'views'
     ])
 
   },
