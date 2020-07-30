@@ -30,6 +30,10 @@ module.exports = ({ io }) => {
     io.of('/urgencias').to('/urgencias#' + session.sid).emit('update', locals.data)
   })
 
+  router.post('/internaciones/get', ({ session }, { locals }) => {
+    io.of('/internaciones').to('/internaciones#' + session.sid).emit('update', locals.data)
+  })
+
   // router.post('/historial/pacientes/create', historial.update)
 
   /*

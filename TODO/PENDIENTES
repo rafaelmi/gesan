@@ -11,3 +11,7 @@
 - Bloquear acceso a vistas en router, según permisos
 - Hacer consultorio reactivo al momento de registrar nuevo paciente
 - Mejorar mensaje de error, sobretodo en formularios
+
+- OJO con colocar replace en lugar de push para los tabs de internacion
+
+- *** OPCIÓN DE ELIMINAR CONSULTA ****

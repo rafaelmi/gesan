@@ -14,6 +14,7 @@ const nsps = [
   '',
   'urgencias',
   'consultas',
+  'internaciones',
   'medisur',
   'historial'
 ]
@@ -55,6 +56,7 @@ Vue.use(new VueSocketIO({
 */
 
 router.beforeEach((to, from, next) => {
+  store.dispatch('setTitle', to.path)
   store.dispatch('start').then(() => {
     if (to.meta && to.meta.public) next()
     else {
