@@ -14,4 +14,24 @@ router.post('/get', ({ body }, { locals }, next) => {
   }).catch(next)
 })
 
+router.post('/create', ({ body }, res, next) => {
+  let args = Object.assign({}, body)
+  const current = Date.now()
+  args.fecha = current
+  args.inicio = current
+  args.modificado = current
+  args.estado = 'ACTIVO'
+  view.findOne({
+    sala: args.sala,
+    estado: 'ACTIVO'
+  }).then(data => {
+    if (data) throw 454
+    table.insert(args)
+    .then(data => {
+      Object.assign(res.locals, { data })
+      next()
+    }).catch(next)
+  }).catch(next)
+})
+
 module.exports = router

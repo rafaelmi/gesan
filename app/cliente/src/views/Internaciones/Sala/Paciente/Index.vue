@@ -2,14 +2,10 @@
   <c-ficha :titulo="titulo">
     <template v-if="sala">
       <c-ficha-persona :persona="sala"/>
-      <c-detalles :cama="sala"/>
-      <c-servicios :cama="sala"/>
-      <c-acciones :cama="sala"
+      <c-acciones :sala="sala"
         @finish="finish = true"
       />
-      <c-historia :consulta="sala"
-        :swFinish="finish"
-      />
+      <c-detalles :sala="sala"/>
     </template>
     <v-card v-else
       class="mx-auto text-center red--text"
@@ -30,9 +26,7 @@ export default {
     'c-ficha': () => import('@/components/ficha/Ficha.vue'),
     'c-ficha-persona': () => import('@/components/ficha/FichaPersona.vue'),
     'c-detalles': () => import('./Detalles.vue'),
-    'c-servicios': () => import('./Servicios.vue'),
-    'c-acciones': () => import('./Acciones.vue'),
-    'c-historia': () => import('./Historia.vue')
+    'c-acciones': () => import('./Acciones.vue')
   },
 
   mixins: [
@@ -49,7 +43,7 @@ export default {
 
   computed: {
     titulo () {
-      return 'SALA ' + this.$route.params.sala
+      return this.sala && this.sala.nombre // 'SALA ' + this.$route.params.sala
     },
 
     sala () {

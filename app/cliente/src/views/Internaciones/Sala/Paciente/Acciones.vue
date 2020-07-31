@@ -1,11 +1,11 @@
 <template>
   <c-ficha-card
     titulo="ACCIONES"
-    sm="4"
+    sm="6"
   >
     <v-list shaped dense>
       <v-list-item
-        @click="$router.push('/historial/ficha/' + cama.cedula)"
+        @click="$router.push('/historial/ficha/' + sala.cedula)"
       >
         <v-list-item-icon>
           <v-icon v-text="'mdi-history'"/>
@@ -15,14 +15,14 @@
         </v-list-item-content>
       </v-list-item>
       <v-list-item
-        :disabled="disable.observacion"
-        @click="onObservacion"
+        :disabled="disable.cambiar"
+        @click="onCambio"
       >
         <v-list-item-icon>
-          <v-icon v-text="'mdi-clipboard-pulse'"/>
+          <v-icon v-text="'mdi-swap-horizontal-bold'"/>
         </v-list-item-icon>
         <v-list-item-content>
-          <v-list-item-title v-text="'A OBSERVACIÓN'"/>
+          <v-list-item-title v-text="'CAMBIAR SALA'"/>
         </v-list-item-content>
       </v-list-item>
       <v-list-item
@@ -33,7 +33,7 @@
           <v-icon v-text="'mdi-stop-circle-outline'" color="red"/>
         </v-list-item-icon>
         <v-list-item-content>
-          <v-list-item-title v-text="'TERMINAR'"/>
+          <v-list-item-title v-text="'DAR DE ALTA'"/>
         </v-list-item-content>
       </v-list-item>
     </v-list>
@@ -43,7 +43,7 @@
 import { mapActions } from 'vuex'
 import mixUtils from '@/mixins/utils'
 
-const namespace = 'urgencias'
+const namespace = 'internaciones'
 
 export default {
   components: {
@@ -55,7 +55,7 @@ export default {
   ],
 
   props: {
-    cama: Object
+    sala: Object
   },
 
   data: () => ({
@@ -64,24 +64,16 @@ export default {
   computed: {
     disable () {
       return {
-        editar: this.cama.estado === 'FINALIZADO',
-        observacion: this.cama.estado === 'FINALIZADO' || this.cama.cama === 'observacion',
-        terminar: this.cama.estado === 'FINALIZADO'
+        editar: this.sala.estado === 'FINALIZADO',
+        terminar: this.sala.estado === 'FINALIZADO',
+        cambiar: this.sala.estado === 'FINALIZADO'
       }
-    },
-
-    urgencia () {
-      return this.cama
     }
   },
 
   methods: {
     onTerminar () {
       this.$emit('finish')
-    },
-
-    onObservacion () {
-      this.toObservacion(this.cama)
     },
 
     save () {
@@ -94,8 +86,7 @@ export default {
     },
 
     ...mapActions(namespace, [
-      'send',
-      'toObservacion'
+      'send'
     ])
   }
 }

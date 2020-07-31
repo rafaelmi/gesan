@@ -13,6 +13,12 @@ module.exports = ({ io }) => {
     }
   }
 
+  const internaciones = {
+    update: (req, { locals }, next) => {
+      io.of('/internaciones').emit('internaciones', locals.data)
+    }
+  }
+
   router.use(({ url, body }, { locals }, next) => {
     let data = locals.data || body
     if (!Array.isArray(data)) data = [ data ]
@@ -25,11 +31,11 @@ module.exports = ({ io }) => {
   router.post('/urgencias/create', urgencias.update /*, historial.update*/)
   router.post('/urgencias/update', urgencias.update /*, historial.update*/)
   router.post('/urgencias/addService', urgencias.update /*, historial.update*/)
-
   router.post('/urgencias/get', ({ session }, { locals }) => {
     io.of('/urgencias').to('/urgencias#' + session.sid).emit('update', locals.data)
   })
 
+  router.post('/internaciones/create', internaciones.update)
   router.post('/internaciones/get', ({ session }, { locals }) => {
     io.of('/internaciones').to('/internaciones#' + session.sid).emit('update', locals.data)
   })

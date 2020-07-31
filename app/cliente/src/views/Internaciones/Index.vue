@@ -42,7 +42,7 @@ export default {
       for (let i = 1; i < 5; i++) {
         headers.push({
           id: i,
-          color: this.salas[i] ? 'red lighten-3' : 'green lighten-3',
+          color: this.salas['' + i] ? 'red lighten-3' : 'green lighten-3',
           to: 'sala/' + i
         })
       }
