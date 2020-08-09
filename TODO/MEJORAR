@@ -1,3 +1,5 @@
 # MEJORAR
 - Verificar conexión de los sockets antes de hacer setup
 - Hacer refresh luego de recuperada la conexión, no antes
+- Colocar timer y deshabilitar edición si se ha perdido la conexión
+- Limitar cantidad de datos con filtro en comando 'get'

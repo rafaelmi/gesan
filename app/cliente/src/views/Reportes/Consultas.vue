@@ -18,6 +18,7 @@
         sort-by="fechaInicio"
         sort-desc
         class="elevation-1"
+        disable-pagination
         hide-default-footer
         dense
       ></v-data-table>

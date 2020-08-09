@@ -1,3 +1,8 @@
+import servicios from './servicios'
+import evolucion from './evolucion'
+import indicaciones from './indicaciones'
+import enfermeria from './enfermeria'
+
 const API = '/internaciones'
 
 const state = () => ({
@@ -49,10 +54,18 @@ const actions = {
   }
 }
 
+const modules = {
+  servicios,
+  evolucion,
+  indicaciones,
+  enfermeria
+}
+
 export default {
   namespaced: true,
   state,
   getters,
   actions,
-  mutations
+  mutations,
+  modules
 }

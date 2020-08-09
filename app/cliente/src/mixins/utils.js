@@ -26,6 +26,10 @@ export default {
         return this.toDate(date) + ' ' + date.toLocaleTimeString('es-PY')
       }
     },
+    toTimestampShort (val) {
+      const timestamp = this.toTimestamp(val)
+      return timestamp.substring(0, timestamp.length - 3)
+    },
     toDate (val) {
       const date = new Date(val)
       return (

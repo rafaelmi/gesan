@@ -26,12 +26,16 @@ router.post('/create', ({ body }, res, next) => {
     estado: 'ACTIVO'
   }).then(data => {
     if (data) throw 454
-    table.insert(args)
-    .then(data => {
+    table.insert(args).then(data => {
       Object.assign(res.locals, { data })
       next()
     }).catch(next)
   }).catch(next)
 })
+
+router.use('/servicios', require('./servicios'))
+router.use('/evolucion', require('./evolucion'))
+router.use('/indicaciones', require('./indicaciones'))
+router.use('/enfermeria', require('./enfermeria'))
 
 module.exports = router

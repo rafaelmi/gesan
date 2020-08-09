@@ -13,6 +13,30 @@ export default [
       {
         path: 'paciente',
         component: () => import('../views/Internaciones/Sala/Paciente/Index.vue')
+      },
+      {
+        path: 'servicios',
+        component: () => import('../views/Internaciones/Sala/Servicios.vue')
+      },
+      {
+        path: 'historia',
+        component: () => import('../views/Internaciones/Sala/Historia/Index.vue')
+      },
+      {
+        path: 'enfermeria',
+        component: () => import('../views/Internaciones/Sala/Enfermeria/Index.vue')
+      },
+      {
+        path: 'evolucion',
+        component: () => import('../views/Internaciones/Sala/Evolucion.vue')
+      },
+      {
+        path: 'estudios',
+        component: () => import('../views/Internaciones/Sala/Estudios.vue')
+      },
+      {
+        path: 'indicaciones',
+        component: () => import('../views/Internaciones/Sala/Indicaciones/Index.vue')
       }
     ]
   }
