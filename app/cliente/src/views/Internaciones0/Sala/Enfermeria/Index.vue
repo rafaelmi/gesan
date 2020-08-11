@@ -6,7 +6,6 @@
       :_id="internacion._id"
       :registro="current"
       :date="currentDate"
-      :template="template"
       :resumen="{
         paciente: sala.nombre,
         sala: sala.sala
@@ -145,15 +144,45 @@ export default {
     },
 
     current () {
-      const current = this.registros[(this.currentDate || new Date()).setMinutes(0, 0, 0).toString()] || null
-      /*
-      if (current) {
-        Object.keys(current).forEach(key => {
-          Object.freeze(current[key])
-        })
-      }
-      */
-      return current
+      // const current = this.registros[(this.currentDate || new Date()).setMinutes(0, 0, 0).toString()] || null
+      const currentHour = (this.currentDate || new Date()).setMinutes(0, 0, 0)
+      const current = this.clone(this.enfermeria)
+      cback = (obj, padre) => Object.entries(obj).reduce((acc, [key, val]) => {
+        if (typeof val === 'object') {
+          if (padre) acc[padre] = cback(val, key)
+          else acc = cback(val, key)
+        }
+        else if (parseInt(key, 10) >= currentHour) {
+            acc[padre] = val
+        }
+        else acc[padre] = null
+        return acc
+      }, {})
+
+
+          acc[key] = val
+        }
+
+
+      const merge = (a, b) => Object.entries(b).reduce((acc, [key, val]) => {
+        if (typeof val === 'object') {
+
+        }
+
+        if (typeof acc[key] !== 'object') {
+          acc[key] = (typeof val === 'object') ? {} : val
+        }
+        else if (typeof val === 'object') acc[key] = cback(val, key)
+
+        if (!val) acc[key] = cback(val, key)
+        if (typeof val === 'object') acc[key] = cback(val, key)
+        else if (parseInt(key, 10) >= currentHour) {
+          acc[padre] = val
+        }
+        return acc
+      }, {})
+      return cback(this.clone(this.template), this.template)
+      // return current
     },
 
     sala () {

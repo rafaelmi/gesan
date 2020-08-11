@@ -34,57 +34,22 @@
         </v-list>
       </c-ficha-card>
       <c-ficha-card sm="12">
-        <v-expansion-panels v-model="expandDia">
+        <v-expansion-panels v-model="expand">
           <v-expansion-panel
             v-for="(dia, key) in diario"
             :key="key"
           >
             <v-expansion-panel-header>
-              <span dense v-text="key"/>
+              <v-list dense>
+                <v-list-item>
+                  <v-list-item-content>
+                    <v-list-item-title v-text="key"/>
+                  </v-list-item-content>
+                </v-list-item>
+              </v-list>
             </v-expansion-panel-header>
             <v-expansion-panel-content>
-              <v-expansion-panels v-model="expandGrupo">
-                <v-expansion-panel v-for="(grupo, key) in dia"
-                  :key="key"
-                >
-                  <v-expansion-panel-header>
-                    <span v-text="key"/>
-                  </v-expansion-panel-header>
-                  <v-expansion-panel-content>
-                    <template v-if="key === 'Evolución'">
-                      <v-data-table
-                        :headers="[
-                          { text: 'Hora', align: 'start', value: 'hora' },
-                          { text: 'Anotación', align: 'start', value: 'value' }
-                        ]"
-                        :items="grupo"
-                        disable-pagination
-                        hide-default-footer
-                      />
-                    </template>
-                    <template v-else>
-                      <v-row dense no-wrap>
-                        <v-col cols="3">
-                          <v-data-table
-                            :headers="[{ text: 'Parámetro', align: 'start', value: 'param' }]"
-                            :items="grupo"
-                            disable-pagination
-                            hide-default-footer
-                          />
-                        </v-col>
-                        <v-col cols="9">
-                          <v-data-table
-                            :headers="headers"
-                            :items="grupo"
-                            disable-pagination
-                            hide-default-footer
-                          />
-                        </v-col>
-                      </v-row>
-                    </template>
-                  </v-expansion-panel-content>
-                </v-expansion-panel>
-              </v-expansion-panels>
+              {{dia}}
             </v-expansion-panel-content>
           </v-expansion-panel>
         </v-expansion-panels>
@@ -117,8 +82,7 @@ export default {
     titulo: 'REGISTRO DE ENFERMERÍA EN ADULTOS',
     accion: null,
     items: [],
-    expandDia: 0,
-    expandGrupo: 0,
+    expand: 0,
     swEditar: false,
     timeout: null,
     currentDate: null
@@ -153,47 +117,17 @@ export default {
         inicio -= constDia
       }
 
-      for (var dia = (new Date(inicio)).setHours(0, 0, 0, 0); dia < fin; dia += constDia) {
+      for (var dia = (new Date(inicio)).setHours(0, 0, 0); dia < fin; dia += constDia) {
         const registros = this.registros
         const intervalo = {}
         for (var hora = 0; hora < 24; hora++) {
           intervalo[(hora + 7) % 24] = (
             registros &&
-            registros[`${dia + ((hora + 7) * constHora)}`]
+            registros[`${dia + (7 * constHora)}`]
           ) || this.template
         }
-
-        const transmuted = Object.entries(intervalo).reduce((acc, [hora, val]) => {
-          Object.entries(val).forEach(([grupo, val]) => {
-            if (acc[grupo] === undefined) acc[grupo] = []
-            if (typeof val === 'object') {
-              Object.entries(val).forEach(([param, value]) => {
-                if (acc[grupo][param] === undefined) acc[grupo][param] = {}
-                Object.assign(
-                  acc[grupo][param],
-                  Object.fromEntries([[hora, value]])
-                )
-              })
-            } else {
-              acc[grupo].push({ hora, value: val })
-            }
-          })
-          return acc
-        }, {})
-
-        // console.log(transmuted)
-
-        const cleaned = Object.entries(transmuted).reduce((acc, [grupo, params]) => {
-          acc[grupo] = (grupo === 'Evolución')
-            ? params
-            : Object.entries(params).map(([key, val]) => {
-              return Object.assign(val, { param: key })
-            })
-          return acc
-        }, {})
-        diario[this.toDate(dia)] = cleaned
+        diario[this.toDate(dia)] = intervalo
       }
-      console.log(diario)
       return diario
 
       /*
@@ -208,19 +142,6 @@ export default {
         dias += 1
       } */
       // return this.registros
-    },
-
-    headers () {
-      const headers = []
-      for (let i = 0; i < 24; i++) {
-        const hora = `${(i + 7) % 24}`
-        headers.push({
-          text: hora.padStart(2, '0'),
-          align: 'center',
-          value: hora
-        })
-      }
-      return headers
     },
 
     current () {

@@ -92,11 +92,10 @@ export default {
   props: {
     value: Boolean,
     resumen: Object,
-    registro: Object,
     _id: String,
     send: Function,
     date: Date,
-    template: {
+    registro: {
       type: Object,
       default: () => Object.assign({
         'Signos Vitales': {
@@ -167,7 +166,8 @@ export default {
     },
 
     fields () {
-      const fields = JSON.parse(JSON.stringify(this.registro || this.template))
+      const fields = this.clone(this.registro)
+
       Object.entries(this.template).forEach(([grupo, val]) => {
         Object.entries(val).forEach(([field, val]) => {
           if (fields[grupo][field] === undefined) fields[grupo][field] = null
@@ -176,6 +176,7 @@ export default {
       return fields
       // return JSON.parse(JSON.stringify(Object.assign({}, this.template, this.registro)))
     }
+
   },
 
   methods: {

@@ -50,6 +50,9 @@ export default {
       months += years * 12 + (months < 0 && 12)
 
       return years < 2 ? months + ' Meses' : years + ' Años'
+    },
+    clone (val) {
+      return JSON.parse(JSON.stringify(val))
     }
   }
 }
