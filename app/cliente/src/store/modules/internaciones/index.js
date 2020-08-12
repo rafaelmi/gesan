@@ -2,6 +2,8 @@ import servicios from './servicios'
 import evolucion from './evolucion'
 import indicaciones from './indicaciones'
 import enfermeria from './enfermeria'
+import estudios from './estudios'
+import historia from './historia'
 
 const API = '/internaciones'
 
@@ -58,7 +60,9 @@ const modules = {
   servicios,
   evolucion,
   indicaciones,
-  enfermeria
+  enfermeria,
+  estudios,
+  historia
 }
 
 export default {

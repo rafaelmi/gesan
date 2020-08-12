@@ -37,5 +37,6 @@ router.use('/servicios', require('./servicios'))
 router.use('/evolucion', require('./evolucion'))
 router.use('/indicaciones', require('./indicaciones'))
 router.use('/enfermeria', require('./enfermeria'))
+router.use('/estudios', require('./estudios'))
 
 module.exports = router

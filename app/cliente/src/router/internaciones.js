@@ -32,7 +32,7 @@ export default [
       },
       {
         path: 'estudios',
-        component: () => import('../views/Internaciones/Sala/Estudios.vue')
+        component: () => import('../views/Internaciones/Sala/Estudios/Index.vue')
       },
       {
         path: 'indicaciones',

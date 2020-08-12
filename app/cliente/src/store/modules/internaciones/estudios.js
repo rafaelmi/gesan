@@ -1,5 +1,4 @@
-import nuevo from './nuevo'
-const API = '/internaciones/indicaciones'
+const API = '/internaciones/estudios'
 
 const state = () => ({
 })
@@ -20,11 +19,12 @@ const mutations = {
 const actions = {
   send ({ dispatch, state }, props) {
     return dispatch('send', Object.assign(props, { url: API }), { root: true })
-  }
-}
+  },
 
-const modules = {
-  nuevo
+  sendFile ({ dispatch, state }, props) {
+    return dispatch('sendFile', Object.assign(props, { url: API }), { root: true })
+  }
+
 }
 
 export default {
@@ -32,6 +32,5 @@ export default {
   state,
   getters,
   actions,
-  mutations,
-  modules
+  mutations
 }

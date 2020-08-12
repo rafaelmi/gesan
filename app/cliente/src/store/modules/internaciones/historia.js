@@ -1,4 +1,4 @@
-const API = '/internaciones/enfermeria'
+const API = '/internaciones/historia'
 
 const state = () => ({
 })

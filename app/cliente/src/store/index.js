@@ -350,6 +350,23 @@ export default new Vuex.Store({
       })
     },
 
+    sendFile ({ state, commit }, props) {
+      return new Promise((resolve, reject) => {
+        api.sendFile(props)
+          .then((result) => {
+            if (result.result < 400) {
+              resolve(result)
+            } else {
+              commit('error', result)
+              reject(new Error(result.title + ': ' + result.details))
+            }
+          })
+          .catch(() => {
+            reject(new Error('Error Interno'))
+          })
+      })
+    },
+
     setTitle ({ state }, url) {
       let title
       const path = url.split('/')

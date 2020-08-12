@@ -38,6 +38,7 @@ module.exports = ({ io }) => {
   router.post('/internaciones/create', internaciones.update)
   router.post('/internaciones/servicios/create', internaciones.update)
   router.post('/internaciones/evolucion/create', internaciones.update)
+  router.post('/internaciones/estudios/create', internaciones.update)
   router.post('/internaciones/enfermeria/update', internaciones.update)
   router.post('/internaciones/indicaciones/nuevo/:command', internaciones.update)
   router.post('/internaciones/get', ({ session }, { locals }) => {

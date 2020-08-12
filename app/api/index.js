@@ -4,6 +4,7 @@ const bodyParser = require('body-parser')
 const morgan = require('morgan')
 const session = require('express-session')
 const redis = require('redis')
+const fileUpload = require('express-fileupload')
 
 const response = require('./db/response')
 const personas = require('./db/personas')
@@ -28,6 +29,7 @@ const store = new RedisStore({ client: redis.createClient() })
 
 const ipSanatorio = '181.127.134.182' // '127.0.0.1'
 
+app.use(fileUpload())
 app.use(morgan('tiny'))
 app.use(cors())
 app.use(bodyParser.json())
@@ -51,7 +53,7 @@ function checkOrigin({headers, session}, res, next) {
   }
 }
 
-function checkPermission({url, session}, res, next) {
+function checkPermission({url, session, method}, res, next) {
   const public = {
     user: {
       info: true,
@@ -65,13 +67,17 @@ function checkPermission({url, session}, res, next) {
       keepAlive: true
     }
   }
-  let path = url.split('/')
-  path.shift()
-  if (path.reduce((acc, cur) => {
-      return ((typeof acc) === 'object') && acc[cur]
-    }, Object.assign({}, session.permisos, public))
-  ) next()
-  else next(403)
+  if (method === 'GET') {
+    next()
+  } else {
+    let path = url.split('/')
+    path.shift()
+    if (path.reduce((acc, cur) => {
+        return ((typeof acc) === 'object') && acc[cur]
+      }, Object.assign({}, session.permisos, public))
+    ) next()
+    else next(403)
+  }
 }
 
 function errorPhase(err, req, res, next) {

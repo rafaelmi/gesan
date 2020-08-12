@@ -36,6 +36,7 @@
           GUARDAR
         </v-btn>
     </c-ficha-card>
+    <!--
     <c-ficha-card sm="12">
         <v-expansion-panels v-model="expand">
           <v-expansion-panel>
@@ -80,6 +81,7 @@
           </v-expansion-panel>
         </v-expansion-panels>
       </c-ficha-card>
+    -->
   </c-ficha>
 </template>
 <script>
@@ -90,12 +92,14 @@ const namespace = 'internaciones/historia'
 
 export default {
   components: {
-    // 'c-resumen': () => import('../Resumen.vue'),
     'c-ficha': () => import('@/components/ficha/Ficha.vue'),
-    'c-ficha-card': () => import('@/components/ficha/FichaCard.vue'),
     'c-ficha-persona': () => import('@/components/ficha/FichaPersona.vue'),
+    'c-ficha-card': () => import('@/components/ficha/FichaCard.vue')
+    /*
+    // 'c-resumen': () => import('../Resumen.vue'),
     // 'c-add-nota': () => import('@/components/forms/inner/AddNota.vue'),
     'c-nuevo': () => import('./Nuevo.vue')
+    */
   },
 
   mixins: [

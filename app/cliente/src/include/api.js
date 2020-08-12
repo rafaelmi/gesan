@@ -14,6 +14,21 @@ function command (args) {
     .then(res => res.json())
 }
 
+function sendFile (args) {
+  let url = API_URL + (args.url || '/')
+  url += args.modulo ? '/' + args.modulo : ''
+  console.log(args)
+  return fetch(url, {
+    method: 'POST',
+    body: args.formData,
+    headers: {
+      'content-type': 'multipart/form-data'
+    }
+  })
+    .then(res => res.json())
+}
+
 export default {
-  command
+  command,
+  sendFile
 }
