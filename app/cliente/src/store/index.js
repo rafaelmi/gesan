@@ -3,6 +3,7 @@ import Vuex from 'vuex'
 import api from '@/include/api'
 import urgencias from './modules/urgencias'
 import consultas from './modules/consultas'
+import internaciones from './modules/internaciones'
 import medisur from './modules/medisur'
 import historial from './modules/historial'
 import reportes from './modules/reportes'
@@ -12,6 +13,7 @@ Vue.use(Vuex)
 const modules = {
   urgencias,
   consultas,
+  internaciones,
   medisur,
   historial,
   reportes
@@ -36,7 +38,8 @@ export default new Vuex.Store({
       details: '',
       color: '',
       icon: ''
-    }
+    },
+    title: 'INICIO'
   },
 
   getters: {
@@ -64,6 +67,7 @@ export default new Vuex.Store({
       const views = {
         urgencias: {},
         citas: {},
+        internaciones: {},
         historial: {},
         medisur: {},
         reportes: {}
@@ -77,6 +81,7 @@ export default new Vuex.Store({
             views.urgencias.turnos = true
             views.citas.consultorio = true
             views.citas.turnos = true
+            views.internaciones.salas = true
             views.historial.pacientes = true
             views.historial.ficha = true
             views.medisur.contratos = true
@@ -294,6 +299,7 @@ export default new Vuex.Store({
           // }),
           dispatch('urgencias/setup'),
           dispatch('consultas/setup'),
+          dispatch('internaciones/setup'),
           dispatch('medisur/setup'),
           dispatch('historial/setup'),
           dispatch('reportes/setup')
@@ -342,6 +348,49 @@ export default new Vuex.Store({
             reject(new Error('Error Interno'))
           })
       })
+    },
+
+    sendFile ({ state, commit }, props) {
+      return new Promise((resolve, reject) => {
+        api.sendFile(props)
+          .then((result) => {
+            if (result.result < 400) {
+              resolve(result)
+            } else {
+              commit('error', result)
+              reject(new Error(result.title + ': ' + result.details))
+            }
+          })
+          .catch(() => {
+            reject(new Error('Error Interno'))
+          })
+      })
+    },
+
+    setTitle ({ state }, url) {
+      let title
+      const path = url.split('/')
+      switch (path[1]) {
+        case 'urgencias':
+        case 'historial':
+        case 'medisur':
+        case 'reportes':
+          title = path[1]
+          break
+
+        case 'citas':
+          title = 'CONSULTA EXTERNA'
+          break
+
+        case 'internaciones':
+          title = 'INTERNACIONES'
+          if (path[2]) title += ' / SALA ' + path[3]
+          break
+
+        default:
+          title = 'INICIO'
+      }
+      state.title = title.toUpperCase()
     },
 
     SOCKET_personas ({ state }, data) {

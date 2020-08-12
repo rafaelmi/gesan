@@ -1,6 +1,7 @@
 import Vue from 'vue'
 // import VueCookies from 'vue-cookies'
 import VueSocketIO from 'vue-socket.io'
+import FileUpload from 'v-file-upload'
 import App from './App.vue'
 import router from './router'
 import store from './store'
@@ -10,10 +11,13 @@ import '@mdi/font/css/materialdesignicons.css'
 
 Vue.config.productionTip = false
 
+Vue.use(FileUpload)
+
 const nsps = [
   '',
   'urgencias',
   'consultas',
+  'internaciones',
   'medisur',
   'historial'
 ]
@@ -55,6 +59,7 @@ Vue.use(new VueSocketIO({
 */
 
 router.beforeEach((to, from, next) => {
+  store.dispatch('setTitle', to.path)
   store.dispatch('start').then(() => {
     if (to.meta && to.meta.public) next()
     else {

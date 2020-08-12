@@ -157,17 +157,19 @@
             <v-list-item-title v-text="'ANTERIOR PACIENTE'"/>
           </v-list-item-content>
         </v-list-item>
+        <!--
         <v-list-item
           :disabled="disable.eliminar"
-          @click="onTerminar"
+          @click="onDelete"
         >
           <v-list-item-icon>
-            <v-icon v-text="'mdi-exit-run'" color="red"/>
+            <v-icon v-text="'mdi-delete-forever'" color="red"/>
           </v-list-item-icon>
           <v-list-item-content>
             <v-list-item-title v-text="'ELIMINAR'"/>
           </v-list-item-content>
         </v-list-item>
+      -->
       </v-list>
     </c-ficha-card>
     <c-historia :consulta="consulta"/>
@@ -262,7 +264,8 @@ export default {
         editar: this.consulta.estado !== 'CONSULTANDO',
         llamar: this.consulta.estado === 'FINALIZADO',
         siguiente: this.consulta.estado === 'FINALIZADO' || !this.id || this.last, // || !this.$route.params.consultorio
-        anterior: this.consulta.estado === 'FINALIZADO' || !this.id || this.first
+        anterior: this.consulta.estado === 'FINALIZADO' || !this.id || this.first,
+        eliminar: this.consulta.estado !== 'EN ESPERA'
       }
     },
 
@@ -321,6 +324,13 @@ export default {
           args: this.editedItem
         })
       }
+    },
+
+    onDelete () {
+      this.send({
+        command: 'delete',
+        args: { _id: this.consulta._id }
+      })
     },
 
     ...mapActions(namespace, [

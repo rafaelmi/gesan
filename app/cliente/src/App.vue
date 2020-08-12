@@ -137,6 +137,7 @@ export default {
         { title: 'Inicio', icon: 'mdi-home', to: '/home' },
         { title: 'Urgencias', icon: 'mdi-bandage', to: views.urgencias && '/urgencias' },
         { title: 'Consulta Externa', icon: 'mdi-stethoscope', to: views.citas && '/citas' },
+        { title: 'Internaciones', icon: 'mdi-bed', to: views.internaciones && '/internaciones' },
         { title: 'Historial Médico', icon: 'mdi-account-details', to: views.historial && '/historial' },
         { title: 'Medisur', icon: 'mdi-shield-half-full', to: views.medisur && '/medisur/contratos' },
         { title: 'Farmacia', icon: 'mdi-pill', to: false },
@@ -154,14 +155,16 @@ export default {
       return this.flags.app.drawer
       // return true // this.$route.name !== 'Pantalla'
     },
-
+    /*
     title () {
       return this.menuItems[this.drawerItem || 0].title
     },
+    */
 
     ...mapState([
       // alert: state => state.alert
       'alert',
+      'title',
       'user'
     ]),
 

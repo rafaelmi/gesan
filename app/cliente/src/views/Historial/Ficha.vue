@@ -31,6 +31,10 @@
         v-model="swFormUrgenciasNew"
         :paciente="paciente"
       />
+      <c-form-ingresos-nuevo
+        v-model="swFormIngresosNew"
+        :paciente="paciente"
+      />
     </c-ficha-card>
     <c-ficha-card
       titulo="HISTORIAL"
@@ -85,6 +89,7 @@ export default {
     'c-ficha-persona': () => import('@/components/ficha/FichaPersona.vue'),
     'c-form-consultas-nuevo': () => import('@/components/forms/citas/NuevoTurno.vue'),
     'c-form-urgencias-nuevo': () => import('@/components/forms/urgencias/NuevoTurno.vue'),
+    'c-form-ingresos-nuevo': () => import('./forms/NuevoIngreso.vue'),
     'c-consulta-historia': () => import('@/components/Historia.vue'),
     'c-urgencia-historia': () => import('@/views/Urgencias/Atencion/Cama/Historia.vue')
   },
@@ -96,6 +101,7 @@ export default {
   data: () => ({
     swFormConsultasNew: false,
     swFormUrgenciasNew: false,
+    swFormIngresosNew: false,
     formConsultasNewType: null
   }),
 
@@ -115,8 +121,13 @@ export default {
           click: this.nuevaUrgencia,
           disabled: !(this.permisos.urgencias && this.permisos.urgencias.create)
         },
+        {
+          titulo: 'NUEVO INGRESO',
+          icon: 'mdi-bed',
+          click: this.nuevoIngreso,
+          disabled: !(this.permisos.internaciones && this.permisos.internaciones.create)
+        },
         { titulo: 'NUEVO ESTUDIO', icon: 'mdi-microscope', disabled },
-        { titulo: 'NUEVO INGRESO', icon: 'mdi-bed', disabled },
         { titulo: 'NUEVO PROCEDIMIENTO', icon: 'mdi-box-cutter', disabled }
       ]
     },
@@ -156,6 +167,10 @@ export default {
 
     nuevaUrgencia () {
       this.swFormUrgenciasNew = true
+    },
+
+    nuevoIngreso () {
+      this.swFormIngresosNew = true
     },
 
     ...mapActions(namespace, [

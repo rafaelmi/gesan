@@ -6,6 +6,7 @@ import Medisur from '../views/Medisur'
 import historial from './historial'
 import urgencias from './urgencias'
 import citas from './citas'
+import internaciones from './internaciones'
 import reportes from './reportes'
 
 Vue.use(VueRouter)
@@ -75,6 +76,7 @@ const routes = [
 
   ...urgencias,
   ...citas,
+  ...internaciones,
   ...historial,
   ...reportes
 ]

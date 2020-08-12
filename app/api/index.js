@@ -4,6 +4,7 @@ const bodyParser = require('body-parser')
 const morgan = require('morgan')
 const session = require('express-session')
 const redis = require('redis')
+const fileUpload = require('express-fileupload')
 
 const response = require('./db/response')
 const personas = require('./db/personas')
@@ -14,6 +15,7 @@ const user = require('./db/user')
 const medisur = require('./db/medisur')
 const urgencias = require('./db/urgencias')
 const consultas = require('./db/consultas')
+const internaciones = require('./db/internaciones')
 const historial = require('./db/historial')
 const medicos = require('./db/medicos')
 const test = require('./db/test')
@@ -27,6 +29,7 @@ const store = new RedisStore({ client: redis.createClient() })
 
 const ipSanatorio = '181.127.134.182' // '127.0.0.1'
 
+app.use(fileUpload())
 app.use(morgan('tiny'))
 app.use(cors())
 app.use(bodyParser.json())
@@ -50,7 +53,7 @@ function checkOrigin({headers, session}, res, next) {
   }
 }
 
-function checkPermission({url, session}, res, next) {
+function checkPermission({url, session, method}, res, next) {
   const public = {
     user: {
       info: true,
@@ -64,13 +67,17 @@ function checkPermission({url, session}, res, next) {
       keepAlive: true
     }
   }
-  let path = url.split('/')
-  path.shift()
-  if (path.reduce((acc, cur) => {
-      return ((typeof acc) === 'object') && acc[cur]
-    }, Object.assign({}, session.permisos, public))
-  ) next()
-  else next(403)
+  if (method === 'GET') {
+    next()
+  } else {
+    let path = url.split('/')
+    path.shift()
+    if (path.reduce((acc, cur) => {
+        return ((typeof acc) === 'object') && acc[cur]
+      }, Object.assign({}, session.permisos, public))
+    ) next()
+    else next(403)
+  }
 }
 
 function errorPhase(err, req, res, next) {
@@ -105,6 +112,7 @@ app.use('/personas', personas({ io }))
 
 app.use('/urgencias', urgencias)
 app.use('/consultas', consultas({ io }))
+app.use('/internaciones', internaciones)
 
 // app.use('/consultas', historial.consultas)
 app.use('/historial/pacientes', historial.pacientes)
@@ -130,6 +138,7 @@ app.use('/', errorPhase)
 io.on('connection', (socket) => {})
 io.of('/urgencias').on('connection', () => {})
 io.of('/consultas').on('connection', (socket) => { /* console.log('/consultas') */ })
+io.of('/internaciones').on('connection', () => {})
 io.of('/medisur').on('connection', (socket) => { /*console.log('/medisur')*/ })
 io.of('/historial').on('connection', () => {})
 // io.of('/reportes').on('connection', () => {})

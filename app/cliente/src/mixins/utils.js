@@ -26,6 +26,10 @@ export default {
         return this.toDate(date) + ' ' + date.toLocaleTimeString('es-PY')
       }
     },
+    toTimestampShort (val) {
+      const timestamp = this.toTimestamp(val)
+      return timestamp.substring(0, timestamp.length - 3)
+    },
     toDate (val) {
       const date = new Date(val)
       return (
@@ -46,6 +50,9 @@ export default {
       months += years * 12 + (months < 0 && 12)
 
       return years < 2 ? months + ' Meses' : years + ' Años'
+    },
+    clone (val) {
+      return JSON.parse(JSON.stringify(val))
     }
   }
 }
