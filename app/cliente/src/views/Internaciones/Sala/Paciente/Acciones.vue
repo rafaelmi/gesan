@@ -1,7 +1,7 @@
 <template>
   <c-ficha-card
     titulo="ACCIONES"
-    sm="6"
+    sm="4"
   >
     <v-list shaped dense>
       <v-list-item
@@ -73,7 +73,12 @@ export default {
 
   methods: {
     onTerminar () {
-      this.$emit('finish')
+      return this.send({
+        command: 'finish',
+        args: {
+          _id: this.sala._id
+        }
+      })
     },
 
     save () {

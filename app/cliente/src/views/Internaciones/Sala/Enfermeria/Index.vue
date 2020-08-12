@@ -193,7 +193,6 @@ export default {
         }, {})
         diario[this.toDate(dia)] = cleaned
       }
-      console.log(diario)
       return diario
 
       /*

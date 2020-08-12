@@ -157,6 +157,7 @@
             <v-list-item-title v-text="'ANTERIOR PACIENTE'"/>
           </v-list-item-content>
         </v-list-item>
+        <!--
         <v-list-item
           :disabled="disable.eliminar"
           @click="onDelete"
@@ -168,6 +169,7 @@
             <v-list-item-title v-text="'ELIMINAR'"/>
           </v-list-item-content>
         </v-list-item>
+      -->
       </v-list>
     </c-ficha-card>
     <c-historia :consulta="consulta"/>

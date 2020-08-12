@@ -1,7 +1,7 @@
 <template>
   <c-ficha-card
     titulo="DETALLES"
-    sm="12"
+    sm="6"
   >
     <v-row no-gutters>
       <v-col cols="6">
@@ -18,12 +18,14 @@
               <v-list-item-subtitle v-text="'Ingreso'"/>
             </v-list-item-content>
           </v-list-item>
+          <!--
           <v-list-item two-line>
             <v-list-item-content>
               <v-list-item-title v-text="duracion"/>
               <v-list-item-subtitle v-text="'Duración (días)'"/>
             </v-list-item-content>
           </v-list-item>
+        -->
           <v-list-item two-line>
             <v-list-item-content>
               <v-list-item-title v-text="sala.origen"/>

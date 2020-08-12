@@ -1,8 +1,4 @@
 <template>
-  <c-ficha
-   :titulo="titulo"
-  >
-    <c-ficha-persona :persona="sala"/>
     <c-ficha-card titulo=" ">
       <v-textarea
         class="mx-auto px-4"
@@ -82,7 +78,6 @@
         </v-expansion-panels>
       </c-ficha-card>
     -->
-  </c-ficha>
 </template>
 <script>
 import { mapGetters, mapActions } from 'vuex'
@@ -92,8 +87,6 @@ const namespace = 'internaciones/historia'
 
 export default {
   components: {
-    'c-ficha': () => import('@/components/ficha/Ficha.vue'),
-    'c-ficha-persona': () => import('@/components/ficha/FichaPersona.vue'),
     'c-ficha-card': () => import('@/components/ficha/FichaCard.vue')
     /*
     // 'c-resumen': () => import('../Resumen.vue'),

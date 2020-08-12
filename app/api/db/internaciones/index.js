@@ -33,10 +33,30 @@ router.post('/create', ({ body }, res, next) => {
   }).catch(next)
 })
 
+router.post('/finish', ({ body }, res, next) => {
+  let args = Object.assign({}, body)
+  const current = Date.now()
+  args.fin = current
+  args.modificado = current
+  args.estado = 'FINALIZADO'
+  table.findOneAndUpdate(
+    {
+      _id: monk.id(args._id),
+      estado: 'ACTIVO'
+    },
+    { $set: args }
+  ).then(data => {
+    if (!Object.keys(data).length) throw 500
+    Object.assign(res.locals, { data })
+    next()
+  }).catch(next)
+})
+
 router.use('/servicios', require('./servicios'))
 router.use('/evolucion', require('./evolucion'))
 router.use('/indicaciones', require('./indicaciones'))
 router.use('/enfermeria', require('./enfermeria'))
 router.use('/estudios', require('./estudios'))
+router.use('/historia', require('./historia'))
 
 module.exports = router

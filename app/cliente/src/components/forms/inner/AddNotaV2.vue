@@ -1,6 +1,6 @@
 <template>
   <v-textarea
-    class="mx-auto px-4"
+    class="px-4"
     v-model="editedValue"
     :disabled="sending"
     :loading="sending"
@@ -28,25 +28,20 @@ export default {
       type: String,
       default: '4'
     },
-    value: {
-      type: String,
-      default: ''
-    }
+    value: String
   },
   data: () => ({
-    internalValue: null,
+    editedValue: '',
     sending: false,
     error: null
   }),
 
   computed: {
-    editedValue: {
-      get () {
-        return this.internalValue || this.value || ''
-      },
-      set (val) {
-        this.internalValue = val
-      }
+  },
+
+  watch: {
+    value (val) {
+      this.editedValue = val
     }
   },
 
@@ -63,7 +58,7 @@ export default {
           args
         }).then(() => {
           this.sending = false
-          this.internalValue = null
+          // this.editedValue = ''
           this.$store.commit('success')
         }).catch(() => {
           this.sending = false

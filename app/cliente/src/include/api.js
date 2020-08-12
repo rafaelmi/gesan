@@ -17,7 +17,6 @@ function command (args) {
 function sendFile (args) {
   let url = API_URL + (args.url || '/')
   url += args.modulo ? '/' + args.modulo : ''
-  console.log(args)
   return fetch(url, {
     method: 'POST',
     body: args.formData,
