@@ -164,7 +164,7 @@ export default {
         }
 
         const transmuted = Object.entries(intervalo).reduce((acc, [hora, val]) => {
-          Object.entries(val).forEach(([grupo, val]) => {
+          val && Object.entries(val).forEach(([grupo, val]) => {
             if (acc[grupo] === undefined) acc[grupo] = []
             if (typeof val === 'object') {
               Object.entries(val).forEach(([param, value]) => {
