@@ -1,5 +1,6 @@
 <template>
   <div>
+    <!--
     <c-editar-registro v-if="swEditar"
       v-model="swEditar"
       :send="send"
@@ -12,12 +13,14 @@
         sala: sala.sala
       }"
     />
+  -->
     <c-ficha
      :titulo="titulo"
     >
-      <c-ficha-card titulo="PACIENTE">
-        <c-resumen :paciente="sala.nombre"/>
+      <c-ficha-card titulo="PACIENTE" sm="12">
+        <c-resumen :paciente="internacion.nombre"/>
       </c-ficha-card>
+      <!--
       <c-ficha-card titulo="ACCIONES">
         <v-list>
           <v-list-item
@@ -33,6 +36,7 @@
           </v-list-item>
         </v-list>
       </c-ficha-card>
+    -->
       <c-ficha-card sm="12">
         <v-expansion-panels v-model="expandDia">
           <v-expansion-panel
@@ -93,7 +97,7 @@
   </div>
 </template>
 <script>
-import { mapGetters, mapActions } from 'vuex'
+import { mapState, mapGetters, mapActions } from 'vuex'
 import mixUtils from '@/mixins/utils'
 
 const namespace = 'internaciones/enfermeria'
@@ -102,7 +106,7 @@ export default {
   components: {
     'c-ficha': () => import('@/components/ficha/Ficha.vue'),
     'c-ficha-card': () => import('@/components/ficha/FichaCard.vue'),
-    'c-editar-registro': () => import('./Editar/Index.vue'),
+    // 'c-editar-registro': () => import('./Editar/Index.vue'),
     'c-resumen': () => import('../Resumen.vue')
   },
 
@@ -126,7 +130,9 @@ export default {
 
   computed: {
     internacion () {
-      return this.sala
+      return this.sala ||
+        this.internaciones.find(el => el._id === this.$route.params.id) ||
+        null
     },
 
     enfermeria () {
@@ -243,6 +249,10 @@ export default {
         create: this.internacion.estado === 'FINALIZADO'
       }
     },
+
+    ...mapState('internaciones', [
+      'internaciones'
+    ]),
 
     ...mapGetters(namespace, [
       'salas'

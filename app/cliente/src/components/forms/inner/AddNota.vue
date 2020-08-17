@@ -6,12 +6,13 @@
     :loading="sending"
     :error-messages="error"
     :label="label"
-    :append-outer-icon="editedValue.length && 'mdi-send'"
+    :append-outer-icon="!blurred && editedValue.length && 'mdi-send'"
     :rows="rows"
     clearable
     auto-grow
     outlined
     @click:append-outer="create"
+    @blur="blur"
   />
 </template>
 <script>
@@ -31,6 +32,10 @@ export default {
     value: {
       type: String,
       default: ''
+    },
+    blurred: {
+      type: Boolean,
+      default: false
     }
   },
   data: () => ({
@@ -51,6 +56,10 @@ export default {
   },
 
   methods: {
+    blur () {
+      if (this.blurred && this.value !== this.editedValue) this.create()
+    },
+
     create () {
       const args = {
         _id: this._id
