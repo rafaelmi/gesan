@@ -8,7 +8,6 @@
       :label="field.titulo"
       :rows="field.rows"
       :field="key"
-      blurred
     />
   </c-ficha-card>
 </template>

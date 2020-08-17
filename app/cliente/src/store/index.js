@@ -384,7 +384,7 @@ export default new Vuex.Store({
 
         case 'internaciones':
           title = 'INTERNACIONES'
-          if (path[2]) title += ' / SALA ' + path[3]
+          if (path[2] === 'sala') title += ' / SALA ' + path[3]
           break
 
         default:

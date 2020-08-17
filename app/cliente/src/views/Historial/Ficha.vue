@@ -49,14 +49,14 @@
             <v-list dense>
               <v-list-item two-line>
                 <v-list-item-content>
-                  <v-list-item-title v-text="toTimestamp(historial.fecha)"/>
+                  <v-list-item-title v-text="toTimestampShort(historial.fecha)"/>
                   <v-list-item-subtitle v-text="historial.tipo"/>
                 </v-list-item-content>
               </v-list-item>
             </v-list>
           </v-expansion-panel-header>
           <v-expansion-panel-content>
-            <v-list dense>
+            <v-list dense v-if="historial.tipo !== 'INTERNACION'">
               <v-list-item two-line>
                 <v-list-item-content>
                   <v-list-item-title v-text="historial.medico"/>
@@ -66,6 +66,9 @@
             </v-list>
             <c-consulta-historia v-if="historial.tipo === 'CONSULTA'" :consulta="historial"/>
             <c-urgencia-historia v-else-if="historial.tipo === 'URGENCIA'" :consulta="historial"/>
+            <c-internaciones-historia v-else-if="historial.tipo === 'INTERNACION'"
+              :value="historial"
+            />
           </v-expansion-panel-content>
         </v-expansion-panel>
       </v-expansion-panels>
@@ -91,7 +94,8 @@ export default {
     'c-form-urgencias-nuevo': () => import('@/components/forms/urgencias/NuevoTurno.vue'),
     'c-form-ingresos-nuevo': () => import('./forms/NuevoIngreso.vue'),
     'c-consulta-historia': () => import('@/components/Historia.vue'),
-    'c-urgencia-historia': () => import('@/views/Urgencias/Atencion/Cama/Historia.vue')
+    'c-urgencia-historia': () => import('@/views/Urgencias/Atencion/Cama/Historia.vue'),
+    'c-internaciones-historia': () => import('@/views/Internaciones/Id/Resumen/Index.vue')
   },
 
   mixins: [

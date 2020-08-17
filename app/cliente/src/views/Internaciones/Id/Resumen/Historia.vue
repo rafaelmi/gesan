@@ -1,15 +1,5 @@
 <template>
   <c-ficha-card :titulo="titulo" sm="8">
-    <c-add-nota v-for="(field, key) in fields"
-      :key="key"
-      :send="send"
-      :_id="internacion._id"
-      :value="last[key] || null"
-      :label="field.titulo"
-      :rows="field.rows"
-      :field="key"
-      blurred
-    />
   </c-ficha-card>
 </template>
 <script>
@@ -20,8 +10,7 @@ const namespace = 'internaciones/historia'
 
 export default {
   components: {
-    'c-ficha-card': () => import('@/components/ficha/FichaCard.vue'),
-    'c-add-nota': () => import('@/components/forms/inner/AddNota.vue')
+    'c-ficha-card': () => import('@/components/ficha/FichaCard.vue')
     /*
     // 'c-resumen': () => import('../Resumen.vue'),
     // 'c-add-nota': () => import('@/components/forms/inner/AddNota.vue'),
