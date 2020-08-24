@@ -19,7 +19,8 @@ const nsps = [
   'consultas',
   'internaciones',
   'medisur',
-  'historial'
+  'historial',
+  'productos'
 ]
 nsps.forEach(nsp => {
   Vue.use(new VueSocketIO({

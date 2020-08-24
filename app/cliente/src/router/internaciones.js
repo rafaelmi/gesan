@@ -16,7 +16,7 @@ export default [
       },
       {
         path: 'servicios',
-        component: () => import('../views/Internaciones/Sala/Servicios.vue')
+        component: () => import('../views/Internaciones/Sala/Servicios/Index.vue')
       },
       {
         path: 'historia',
@@ -51,7 +51,7 @@ export default [
       },
       {
         path: 'servicios',
-        component: () => import('../views/Internaciones/Id/Servicios.vue')
+        component: () => import('../views/Internaciones/Id/Servicios/Index.vue')
       },
       {
         path: 'historia',

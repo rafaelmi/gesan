@@ -19,6 +19,12 @@ module.exports = ({ io }) => {
     }
   }
 
+  const productos = {
+    update: (req, { locals }, next) => {
+      io.of('/productos').emit('update', locals.data)
+    }
+  }
+
   router.use(({ url, body }, { locals }, next) => {
     let data = locals.data || body
     if (!Array.isArray(data)) data = [ data ]
@@ -66,6 +72,12 @@ module.exports = ({ io }) => {
 
   router.post('/historial/get', ({ session }, { locals }) => {
     io.of('/historial').to('/historial#' + session.sid).emit('historial', locals.data)
+  })
+
+  router.post('/productos/create', productos.update)
+  router.post('/productos/update', productos.update)
+  router.post('/productos/get', ({ session }, { locals }) => {
+    io.of('/productos').to('/productos#' + session.sid).emit('update', locals.data)
   })
 
   router.post('/medicos/get', ({ session }, { locals }) => {

@@ -19,16 +19,14 @@ export default {
     tabs () {
       const res = []
       const internaciones = this.views.internaciones
-      // const path = this.$route.path
       if (internaciones) {
         if (internaciones.salas) {
-          res.push({ title: 'HISTORIA CLÍNICA', to: 'paciente' })
-          res.push({ title: 'SERVICIOS', to: 'servicios' })
-          // res.push({ title: 'HISTORIA CLÍNICA', to: 'historia' })
-          res.push({ title: 'ENFERMERÍA', to: 'enfermeria' })
-          res.push({ title: 'EVOLUCIÓN', to: 'evolucion' })
-          res.push({ title: 'ESTUDIOS', to: 'estudios' })
-          res.push({ title: 'INDICACIONES', to: 'indicaciones' })
+          internaciones.salas.historia && res.push({ title: 'HISTORIA CLÍNICA', to: 'paciente' })
+          internaciones.salas.servicios && res.push({ title: 'SERVICIOS', to: 'servicios' })
+          internaciones.salas.enfermeria && res.push({ title: 'ENFERMERÍA', to: 'enfermeria' })
+          internaciones.salas.evolucion && res.push({ title: 'EVOLUCIÓN', to: 'evolucion' })
+          internaciones.salas.estudios && res.push({ title: 'ESTUDIOS', to: 'estudios' })
+          internaciones.salas.indicaciones && res.push({ title: 'INDICACIONES', to: 'indicaciones' })
         }
       }
       return res
