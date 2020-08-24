@@ -7,6 +7,7 @@ import internaciones from './modules/internaciones'
 import medisur from './modules/medisur'
 import historial from './modules/historial'
 import reportes from './modules/reportes'
+import productos from './modules/productos'
 
 Vue.use(Vuex)
 
@@ -16,7 +17,8 @@ const modules = {
   internaciones,
   medisur,
   historial,
-  reportes
+  reportes,
+  productos
 }
 const nsps = Object.keys(modules)
 
@@ -81,7 +83,14 @@ export default new Vuex.Store({
             views.urgencias.turnos = true
             views.citas.consultorio = true
             views.citas.turnos = true
-            views.internaciones.salas = true
+            views.internaciones.salas = {
+              historia: true,
+              servicios: true,
+              enfermeria: true,
+              evolucion: true,
+              estudios: true,
+              indicaciones: true
+            }
             views.historial.pacientes = true
             views.historial.ficha = true
             views.medisur.contratos = true
@@ -104,6 +113,10 @@ export default new Vuex.Store({
             views.citas.turnos = true
             views.historial.pacientes = true
             views.historial.ficha = true
+            views.internaciones.salas = {
+              historia: true,
+              servicios: true
+            }
             break
 
           case 'ugencias':
@@ -302,7 +315,8 @@ export default new Vuex.Store({
           dispatch('internaciones/setup'),
           dispatch('medisur/setup'),
           dispatch('historial/setup'),
-          dispatch('reportes/setup')
+          dispatch('reportes/setup'),
+          dispatch('productos/setup')
         ]).then(() => {
           commit('establish', data)
           resolve()
