@@ -59,6 +59,8 @@ export default new Vuex.Store({
         home = '/citas/consultorio'
       } else if (state.user.perfiles.find(el => el === 'urgencias')) {
         home = '/urgencias/atencion'
+      } else if (state.user.perfiles.find(el => el === 'internacion')) {
+        home = '/internaciones'
       } else {
         home = '/'
       }
@@ -126,6 +128,18 @@ export default new Vuex.Store({
 
           case 'consultorio':
             views.citas.consultorio = true
+            views.historial.ficha = true
+            break
+
+          case 'internacion':
+            views.internaciones.salas = {
+              historia: true,
+              servicios: true,
+              enfermeria: true,
+              evolucion: true,
+              estudios: true,
+              indicaciones: true
+            }
             views.historial.ficha = true
             break
 

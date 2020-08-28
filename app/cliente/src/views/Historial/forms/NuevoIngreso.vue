@@ -24,7 +24,7 @@
             v-model="seguro"
           />
           <v-select
-            :items="[ '1', '2', '3', '4', '5' ]"
+            :items="[ '1', '2', '3', '4', '5', '6', '7' ]"
             :rules="[(val => !!val || 'Este campo es obligatorio')]"
             label="Sala"
             required
