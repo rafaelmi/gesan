@@ -290,7 +290,8 @@ export default new Vuex.Store({
             .then((res) => {
               if (res.result === 200) {
                 dispatch('setup', res.data)
-                  .then(() => resolve())
+                //  .then(() => resolve())
+                resolve()
               } else {
                 reject(new Error(res.details))
               }
